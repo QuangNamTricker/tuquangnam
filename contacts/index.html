@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Me - Hacker Style</title>
+  <link rel="stylesheet" href="contacts.css">
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <style>
+    .dark-mode {
+      filter: invert(1) hue-rotate(180deg);
+      transition: all 0.3s ease-in-out;
+    }
+    #formStatus {
+      margin-top: 10px;
+      font-weight: bold;
+      color: #00ff99;
+      text-shadow: 0 0 5px #00ff99;
+    }
+    .social-links a i {
+      margin-right: 8px;
+    }
+  </style>
+</head>
+<body>
+  <button class="toggle-mode" onclick="toggleDarkMode()">🌓</button>
+  <main class="container">
+    <h1 class="glitch">📞 Contact TQN</h1>
+    <p class="typing">Mọi góp ý đều được lắng nghe và trân trọng 💌</p>
+
+    <div class="bank-info">
+      <h2>Mạng Xã Hội</h2>
+      <div class="social-links">        
+        <a href="https://facebook.com/tuquangnam07" target="_blank"><i class="fab fa-facebook"></i>Facebook</a>
+        <a href="https://github.com/tuquangnam07" target="_blank"><i class="fab fa-github"></i>GitHub</a>
+        <a href="https://t.me/tuquangnam" target="_blank"><i class="fab fa-telegram"></i>Telegram</a>
+        <a href="mailto:tuquangnamht2007@gmail.com"><i class="fas fa-envelope"></i>Email</a>
+      </div>
+    </div>
+
+    <div class="bank-info" id="contact">
+      <h2>Góp ý / Feedback</h2>
+      <form id="contactForm">
+        <input type="text" placeholder="Tên của bạn" name="name" required><br><br>
+        <input type="email" placeholder="Email của bạn" name="email" required><br><br>
+        <textarea placeholder="Nội dung góp ý..." name="message" rows="5" required></textarea><br><br>
+        <button type="submit" class="cv-button">Gửi</button>
+      </form>
+      <div id="formStatus"></div>
+    </div>
+      <footer>
+    <p>&copy; 2025 TQN Contact Zone. All rights reserved.
+
+    </p>
+  </footer>
+  
+  </main>
+
+
+
+    <script>
+    const token = "7315329822:AAEfzCe8NSQM6yvWH0zwzJxsvKYMvHxYhHU";
+    const chatId = "5674777894";
+
+    function toggleDarkMode() {
+      document.body.classList.toggle("dark-mode");
+    }
+
+    document.getElementById("contactForm").addEventListener("submit", async function(e) {
+      e.preventDefault();
+      const name = this.name.value;
+      const email = this.email.value;
+      const message = this.message.value;
+
+      const userAgent = navigator.userAgent;
+      const platform = navigator.platform;
+      const language = navigator.language;
+
+      const ipInfo = await fetch("https://api.ipify.org?format=json")
+        .then(res => res.json())
+        .catch(() => ({ ip: "Không lấy được IP" }));
+
+      const text = `📬 Góp ý mới từ web:\n👤 Tên: ${name}\n📧 Email: ${email}\n📝 Nội dung: ${message}\n🌐 IP: ${ipInfo.ip}\n🧠 Trình duyệt: ${userAgent}\n💻 Hệ điều hành: ${platform}\n🈯 Ngôn ngữ: ${language}`;
+
+      document.getElementById("formStatus").textContent = "⏳ Đang gửi...";
+
+      fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ chat_id: chatId, text: text })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.ok) {
+          document.getElementById("formStatus").textContent = "✅ Gửi thành công! Cảm ơn bạn 💖";
+          this.reset();
+        } else {
+          document.getElementById("formStatus").textContent = "❌ Lỗi khi gửi. Thử lại sau!";
+        }
+      })
+      .catch(err => {
+        document.getElementById("formStatus").textContent = "⚠️ Không thể kết nối đến Telegram.";
+      });
+    });
+  </script>
+</body>
+</html>
