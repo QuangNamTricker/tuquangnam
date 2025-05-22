@@ -1,13 +1,105 @@
-<!-- index.html -->
-<!DOCTYPE html>
-<html>
+  <!DOCTYPE html>
+  <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Loading...</title>
-  </head>
-  <body>
-    <div id="root">Đang tải...</div>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Từ Quang Nam | Hacker Portfolio</title>
 
-    <script src="app.js"></script>
+    <!-- Fonts + Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="main.css" />
+    <header class="header">
+      
+    <div class="logo">
+      <h2></h2>
+    </div>
+    <nav class="nav-menu">
+      <a href="/taoqrchuyenkhoan">Tạo QR Chuyển Khoản</a>
+      <a href="#bank-info">Bank Info</a>
+      <a href="#cv-section">CV</a>
+      <a href="#terminal-mode">Terminal</a>
+    </nav>
+    <div class="header-extra">
+
+    </div>
+  </header>
+
+  </head>
+  <body onload="initPage()">
+
+    <!-- Sakura Canvas -->
+    <canvas id="canvas_sakura"></canvas>
+
+    <!-- Dark Mode Toggle -->
+    <button class="toggle-mode" onclick="toggleDarkMode()"><i class="fas fa-adjust"></i></button>
+
+  <div class="music-control">
+    <button onclick="toggleMusic()"><i class="fas fa-music"></i> Music</button>
+    <audio id="bg-music" src="https://files.catbox.moe/dwy88x.mp3" autoplay loop></audio>
+  </div>
+
+
+    <!-- Main Container -->
+    <div class="container">
+      <h1 class="glitch" data-text="TỪ QUANG NAM">TỪ QUANG NAM</h1>
+      <p class="typing" id="typing-text"></p>
+
+      <!-- Avatar -->
+      <div class="avatar">
+        <img src="https://scontent.fhan4-4.fna.fbcdn.net/v/t39.30808-6/320230524_1187208422226173_318101637077122211_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeEqqkDHRFdOA_-grtbmcrifZdf_OgaAv0Fl1_86BoC_Qf65SiT7gAcqcMD--Vdqhdc&_nc_ohc=z0K1CSVsJgEQ7kNvwECbK9v&_nc_oc=AdmCXaCvLxU5tQSwPkLOPJINcKeb-hSt6ziNgivNM4ac7DtuN-hD2nt4aU9i_RFBzakYWptKeJj4ow-qciNF9Dfv&_nc_zt=23&_nc_ht=scontent.fhan4-4.fna&_nc_gid=ejKly32gr-lJNcv9uVg3uw&oh=00_AfLJq9MLEAIdm3RXzA-S_cCy-3GWZtbCDRIx4cpd5MhNsw&oe=6834DA9E" alt="avatar" />
+      </div>
+
+      <!-- Social Links -->
+      <div class="social-links">
+        <a href="https://fb.com/tuquangnam07" target="_blank"><i class="fab fa-facebook"></i></a>
+        <a href="https://youtube.com/@TuQuangNam" target="_blank"><i class="fab fa-youtube"></i></a>
+        <a href="https://t.me/tuquangnam" target="_blank"><i class="fab fa-telegram"></i></a>
+        <a href="https://discord.gg/username" target="_blank"><i class="fab fa-discord"></i></a>
+      </div>
+
+      <!-- Bank Info -->
+      <div class="bank-info">
+        <h2><i class="fas fa-university"></i> Bank Info</h2>
+        <p><strong>MBBANK:</strong> <span class="copy-text" onclick="copyToClipboard('0888385536')">0888385536 - TU QUANG NAM <i class="fas fa-copy"></i></span></p>
+        <p><strong>Momo:</strong> <span class="copy-text" onclick="copyToClipboard('0888385536')">0888385536 - TU QUANG NAM <i class="fas fa-copy"></i></span></p>
+      </div>
+
+      <!-- Skills -->
+      <div class="skills">
+        <h2><i class="fas fa-code"></i> Skills</h2>
+        <ul>
+          <li>HTML/CSS</li>
+          <li>JavaScript</li>
+          <li>Python</li>
+          <li>React</li>
+          <li>Tool Dev</li>
+        </ul>
+      </div>
+
+      <!-- CV Download -->
+      <div class="cv-section">
+        <a href="cv.pdf" download class="cv-button"><i class="fas fa-file-download"></i> Download CV</a>
+      </div>
+
+      <!-- Terminal Mode -->
+      <div class="terminal-mode">
+        <h2><i class="fas fa-terminal"></i> Terminal Mode</h2>
+        <p>Type <strong>help</strong> to see available commands.</p>
+
+        <input type="text" id="terminal-input" placeholder="> Type a command..." onkeydown="handleTerminal(event)" />
+        <div id="terminal-output"></div>
+      </div>
+
+      <!-- Footer -->
+      <footer>
+        <p>Created by <strong>Từ Quang Nam</strong> • &copy; 2025</p>
+      </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="main.js"></script>
   </body>
-</html>
+  </html>
