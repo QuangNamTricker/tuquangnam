@@ -77,7 +77,7 @@ function startSakura() {
 
 // 🧠 Typing Effect
 function typingEffect() {
-  const text = "Hello, I'm TQN - Full-Stack Developer & Tool Builder";
+  const text = "Hello, I'm Từ Quang Nam - Full-Stack Developer & Tool Builder";
   let i = 0;
   const el = document.getElementById("typing-text");
   function type() {
