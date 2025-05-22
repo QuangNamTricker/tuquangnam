@@ -188,14 +188,19 @@
       const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
       const now = new Date().toLocaleString();
 
-      // Lấy IP & vị trí IP từ ipapi.co
+      // Lấy IP & vị trí IP từ ipwhois.app
       let ipData = { ip: "Không lấy được IP", city: "Unknown", region: "Unknown", country: "Unknown" };
       try {
-        const res = await fetch("https://ipapi.co/json/");
+        const res = await fetch("https://ipwhois.app/json/");
         if (res.ok) {
-          ipData = await res.json();
+          const data = await res.json();
+          ipData.ip = data.ip || ipData.ip;
+          ipData.city = data.city || ipData.city;
+          ipData.region = data.region || ipData.region;
+          ipData.country = data.country || ipData.country;
         }
       } catch {}
+
 
       // Lấy location nếu user đồng ý
       const geo = await getGeolocation();
