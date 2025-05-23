@@ -113,22 +113,47 @@
     }
 
     @media (max-width: 768px) {
-      .container {
-        flex-direction: column;
-        align-items: flex-start;
-      }
+  .container {
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+  }
 
-      .left-side {
-        text-align: center;
-        padding: 0;
-        margin-bottom: 30px;
-      }
+  .left-side {
+    padding: 0;
+    margin-bottom: 20px;
+    text-align: center;
+  }
 
-      .left-side h1 {
-        font-size: 48px;
-      }
+  .left-side h1 {
+    font-size: 40px;
+  }
 
-      .left-side p {
-        font-size: 18px;
-      }
-    }
+  .left-side p {
+    font-size: 16px;
+  }
+
+  .right-side {
+    width: 100%;
+    max-width: 100%;
+    box-shadow: none;
+    padding: 15px;
+    border-radius: 0;
+  }
+
+  .right-side input,
+  .login-btn,
+  .create-account {
+    font-size: 16px;
+    padding: 12px;
+  }
+
+  .create-account {
+    width: 100%;
+  }
+
+  .bottom-text {
+    font-size: 12px;
+    padding: 10px;
+  }
+}
