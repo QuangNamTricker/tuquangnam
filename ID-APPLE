@@ -1,0 +1,441 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Share ID Apple tải Shadowrocket - Từ Quang Nam</title>
+  <meta name="description" content="Share ID tải Shadowrocket Free - Copyright By Từ Quang Nam - Cập Nhật Liên Tục." />
+  <link rel="icon" type="image/png" href="https://is1-ssl.mzstatic.com/image/thumb/Purple126/v4/9c/5b/fd/9c5bfd42-7608-5aa7-15fd-033837a5cad0/AppIcon-0-0-1x_U007emarketing-0-10-0-0-85-220.png/246x0w.webp">
+
+  <style>
+    /* Thêm CSS mới cho phần liên hệ */
+    /* Ẩn thanh điều hướng của Blogger */
+#navbar-iframe {
+  display: none !important;
+}
+    .contact-admin {
+      margin: 30px auto;
+      padding: 20px;
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      border-radius: 15px;
+      max-width: 500px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      border: 1px solid #3ea9ce;
+    }
+    
+    .contact-admin h3 {
+      color: #3ea9ce;
+      margin-top: 0;
+      font-size: 20px;
+      text-align: center;
+      padding-bottom: 10px;
+      border-bottom: 1px dashed #3ea9ce;
+    }
+    
+    .contact-methods {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 15px;
+    }
+    
+    .contact-card {
+      background: rgba(255,255,255,0.1);
+      padding: 12px;
+      border-radius: 10px;
+      width: 120px;
+      text-align: center;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .contact-card:hover {
+      transform: translateY(-5px);
+      background: rgba(62, 169, 206, 0.2);
+      box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+    }
+    
+    .contact-card img {
+      width: 40px;
+      height: 40px;
+      margin-bottom: 8px;
+    }
+    
+    .contact-card span {
+      display: block;
+      font-size: 14px;
+      color: #fff;
+    }
+    
+    .light-mode .contact-admin {
+      background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
+      border: 1px solid #0066cc;
+    }
+    
+    .light-mode .contact-admin h3 {
+      color: #0066cc;
+      border-bottom-color: #0066cc;
+    }
+    
+    .light-mode .contact-card {
+      background: rgba(0,0,0,0.05);
+    }
+    
+    .light-mode .contact-card:hover {
+      background: rgba(0, 102, 204, 0.1);
+    }
+    
+    .light-mode .contact-card span {
+      color: #333;
+    }
+body {
+      margin: 0;
+      font-family: "Segoe UI", sans-serif;
+      background-color: #000;
+      color: #fff;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    body.light-mode {
+      background-color: #f5f5f5;
+      color: #000;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .title {
+      font-size: 18px;
+      color: #bee4ff;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .light-mode .title {
+      color: #0066cc;
+    }
+
+    .main-image {
+      width: 360px;
+      border-radius: 20px;
+      box-shadow: 0px 0px 15px rgba(79, 191, 232, 0.6);
+      transition: transform 0.3s ease;
+    }
+
+    .main-image:hover {
+      transform: scale(1.03);
+    }
+
+    .highlight {
+      color: #ff87c3;
+      font-weight: bold;
+    }
+
+    .light-mode .highlight {
+      color: #d6006b;
+    }
+
+    .note {
+      margin: 20px 0;
+      font-size: 22px;
+      font-weight: bold;
+      color: #e21b1b;
+    }
+
+    #myIframe {
+      width: 100%;
+      height: 100vh;
+      border: none;
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 99;
+      background-color: #000;
+    }
+
+    .light-mode #myIframe {
+      background-color: #f5f5f5;
+    }
+
+    #controlButton {
+      position: fixed;
+      bottom: 15px;
+      right: 15px;
+      z-index: 100;
+      background-color: #18191a;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      box-shadow: 0 0 10px #00ff96;
+      transition: 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .light-mode #controlButton {
+      background-color: #3ea9ce;
+      box-shadow: 0 0 10px #0077cc;
+    }
+
+    #controlButton:hover {
+      background-color: #452d5b;
+      box-shadow: 0 0 15px #ca17c6;
+    }
+
+    #backToTop {
+      position: fixed;
+      bottom: 80px;
+      right: 15px;
+      background-color: #3ea9ce;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      z-index: 101;
+      font-size: 18px;
+    }
+
+    .light-mode #backToTop {
+      background-color: #0066cc;
+    }
+
+    .time {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #ccc;
+    }
+
+    .light-mode .time {
+      color: #666;
+    }
+
+    #notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: #4CAF50;
+      color: white;
+      padding: 15px;
+      border-radius: 5px;
+      z-index: 1000;
+      display: none;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    #onlineCounter {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background-color: #333;
+      color: white;
+      padding: 8px 12px;
+      border-radius: 20px;
+      font-size: 14px;
+      z-index: 100;
+    }
+
+    .light-mode #onlineCounter {
+      background-color: #3ea9ce;
+    }
+
+    .rating {
+      margin-top: 15px;
+    }
+
+    .rating span {
+      font-size: 24px;
+      cursor: pointer;
+      color: #ccc;
+    }
+
+    .rating span.active {
+      color: gold;
+    }
+
+    #randomTip {
+      margin: 20px auto;
+      padding: 12px;
+      background-color: #1a1a1a;
+      border-radius: 8px;
+      max-width: 80%;
+      font-size: 14px;
+    }
+
+    .light-mode #randomTip {
+      background-color: #e0e0e0;
+      color: #333;
+    }
+
+    #loading {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.8);
+      z-index: 999;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    .light-mode #loading {
+      background-color: rgba(245,245,245,0.9);
+    }
+
+    #themeToggle {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      z-index: 100;
+      background: #333;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .light-mode #themeToggle {
+      background: #3ea9ce;
+    }
+  </style>
+<link rel="me" href="https://www.blogger.com/profile/15178085193703886925" />
+<meta name='google-adsense-platform-account' content='ca-host-pub-1556223355139109'/>
+<meta name='google-adsense-platform-domain' content='blogspot.com'/>
+<!-- --><style type="text/css">@import url(//www.blogger.com/static/v1/v-css/navbar/3334278262-classic.css);
+div.b-mobile {display:none;}
+</style>
+
+</head>
+
+<body><script type="text/javascript">
+    function setAttributeOnload(object, attribute, val) {
+      if(window.addEventListener) {
+        window.addEventListener('load',
+          function(){ object[attribute] = val; }, false);
+      } else {
+        window.attachEvent('onload', function(){ object[attribute] = val; });
+      }
+    }
+  </script>
+<div id="navbar-iframe-container"></div>
+<script type="text/javascript" src="https://apis.google.com/js/platform.js"></script>
+<script type="text/javascript">
+      gapi.load("gapi.iframes:gapi.iframes.style.bubble", function() {
+        if (gapi.iframes && gapi.iframes.getContext) {
+          gapi.iframes.getContext().openChild({
+              url: 'https://www.blogger.com/navbar/224900040915925776?origin\x3dhttps://id-apple-by-tu-quang-nam.blogspot.com',
+              where: document.getElementById("navbar-iframe-container"),
+              id: "navbar-iframe"
+          });
+        }
+      });
+    </script>
+  <div id="notification">🎉 Có tài khoản mới vừa được cập nhật!</div>
+  <div id="onlineCounter">👥 0 người online</div>
+  <button id="themeToggle">🌙</button>
+<br><br><br><br>
+  <div class="container" id="mainContent">
+    <div class="title">
+      <img src="https://is1-ssl.mzstatic.com/image/thumb/Purple126/v4/9c/5b/fd/9c5bfd42-7608-5aa7-15fd-033837a5cad0/AppIcon-0-0-1x_U007emarketing-0-10-0-0-85-220.png/246x0w.webp" width="24" height="24">
+      SHADOWROCKET <span class="highlight"><a src="https:facebook.com/tuquangnam07">© Từ Quang Nam</a></span>
+    </div>
+    <div>
+        <h5>Kéo Xuống Cuối Cùng Để Liên Hệ Với ADMIN</h5>
+    </div>
+
+    <div class="content">
+      <p>
+        <span style="color: #7a55f2;">Đăng Nhập</span>
+        <span style="color: #e21b1b;">iCloud</span> Là Người
+        <span style="color: #e21b1b;">NGU ❌</span><br>
+        <span style="color: #ca17c6;">Đăng Nhập</span>
+        <span style="color: #3ea9ce;">App Store</span> Là Người
+        <span style="color: #3ea9ce;">KHÔN ✅</span>
+      </p>
+
+      <p>Hướng Dẫn Đăng Nhập App Store:</p>
+      <img class="main-image" src="https://i.imgur.com/f3Tc4Wl.jpeg" alt="Hướng dẫn Shadowrocket">
+
+      <p class="note">Tải xong thì đăng xuất ngay là người thông minh!</p>
+
+      <div id="randomTip">
+        <strong>💡 Mẹo:</strong> <span id="tipText">Đăng xuất App Store sau khi tải ứng dụng để bảo mật.</span>
+      </div>
+
+      <div class="rating">
+        <span onclick="rate(1)">★</span>
+        <span onclick="rate(2)">★</span>
+        <span onclick="rate(3)">★</span>
+        <span onclick="rate(4)">★</span>
+        <span onclick="rate(5)">★</span>
+      </div>
+    </div>
+
+    <div class="time" id="currentTime"></div>
+  </div>
+
+  <div id="loading">
+    <div style="color: white; font-size: 24px; margin-bottom: 20px;">Đang tải... <span id="loadingDots">.</span></div>
+    <div id="countdown" style="color: #3ea9ce; font-size: 16px;"></div>
+  </div>
+  <!-- Các phần khác giữ nguyên -->
+
+  <div class="container" id="mainContent">
+    <!-- Các phần hiện có giữ nguyên -->
+    
+    <!-- Thêm phần liên hệ admin trước thẻ đóng </div> của container -->
+    <div class="contact-admin">
+      <h3>📞 LIÊN HỆ ADMIN</h3>
+      <div class="contact-methods">
+        <div class="contact-card" onclick="window.open('https://facebook.com/tuquangnam07', '_blank')">
+          <img src="https://cdn-icons-png.flaticon.com/512/124/124010.png" alt="Facebook">
+          <span>Facebook</span>
+        </div>
+        <div class="contact-card" onclick="copyToClipboard('tuquangnamht2007@gmail.com')">
+          <img src="https://cdn-icons-png.flaticon.com/512/281/281769.png" alt="Email">
+          <span>Email</span>
+        </div>
+        <div class="contact-card" onclick="copyToClipboard('0888385536')">
+          <img src="https://cdn-icons-png.flaticon.com/512/126/126341.png" alt="Zalo">
+          <span>Zalo</span>
+        </div>
+        <div class="contact-card" onclick="window.open('https://t.me/tuquangnam07', '_blank')">
+          <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" alt="Telegram">
+          <span>Telegram</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="time" id="currentTime"></div>
+  </div>
+  <iframe id="myIframe" src="https://idapple.htpn.vn/unlock.php"></iframe>
+  <button id="controlButton">👉 Lấy Tài Khoản <img src="https://i.imgur.com/shgRcYn.png" width="20" style="border-radius: 50%;"></button>
+
+  <button id="backToTop" onclick="scrollToTop()">↑</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
+  <script src="idapple.js"></script>
+</body>
+
+</html>
