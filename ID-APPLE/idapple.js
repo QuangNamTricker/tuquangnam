@@ -1,4 +1,4 @@
-  <script>
+
     // Tự động hiển thị thời gian
     function updateTime() {
       const now = new Date();
@@ -185,4 +185,3 @@
         });
       }
     });
-  </script>
