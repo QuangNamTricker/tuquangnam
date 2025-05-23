@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard | TUQUANGNAM</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body class="bg-gray-900 text-white font-mono">
+
+<!-- Login Screen -->
+<div id="login-screen" class="fixed inset-0 bg-gray-950 flex items-center justify-center">
+  <div class="bg-gray-800 p-6 rounded-xl shadow-xl">
+    <h2 class="text-2xl font-bold mb-4">Login to Dashboard</h2>
+    <input type="password" id="login-input" placeholder="Enter password" class="w-full p-2 rounded bg-gray-700 text-white mb-4">
+    <button onclick="checkLogin()" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded">Login</button>
+  </div>
+</div>
+
+<!-- Main Dashboard -->
+<div id="dashboard" class="hidden min-h-screen flex">
+  <!-- Sidebar -->
+  <aside class="w-64 bg-gray-800 p-4 space-y-4">
+    <h1 class="text-2xl font-bold mb-6">TQN Admin</h1>
+    <nav class="flex flex-col gap-2">
+      <button onclick="showTab('profile')">🧑 Thông Tin</button>
+      <button onclick="showTab('bank')">💳 Bank Info</button>
+      <button onclick="showTab('skills')">🛠️ Kỹ Năng</button>
+      <button onclick="showTab('music')">🎧 Nhạc nền</button>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="flex-1 p-6 space-y-6">
+    <!-- Profile Tab -->
+    <section id="tab-profile">
+      <h2 class="text-xl font-bold mb-2">Thông tin cá nhân</h2>
+      <input id="name" placeholder="Tên" class="w-full p-2 mb-2 rounded bg-gray-700">
+      <input id="quote" placeholder="Câu nói hay" class="w-full p-2 mb-2 rounded bg-gray-700">
+      <input id="avatar" placeholder="Link Avatar" class="w-full p-2 mb-2 rounded bg-gray-700">
+      <button onclick="saveProfile()" class="bg-green-600 px-4 py-2 rounded">Lưu</button>
+    </section>
+
+    <!-- Bank Tab -->
+    <section id="tab-bank" class="hidden">
+      <h2 class="text-xl font-bold mb-2">Thông tin ngân hàng</h2>
+      <input id="mbbank" placeholder="Số TK MBBANK" class="w-full p-2 mb-2 rounded bg-gray-700">
+      <input id="momo" placeholder="Số TK MoMo" class="w-full p-2 mb-2 rounded bg-gray-700">
+      <button onclick="saveBank()" class="bg-green-600 px-4 py-2 rounded">Lưu</button>
+    </section>
+
+    <!-- Skills Tab -->
+    <section id="tab-skills" class="hidden">
+      <h2 class="text-xl font-bold mb-2">Kỹ năng</h2>
+      <input id="new-skill" placeholder="Nhập kỹ năng mới" class="w-full p-2 mb-2 rounded bg-gray-700">
+      <button onclick="addSkill()" class="bg-blue-600 px-4 py-2 rounded mb-4">Thêm</button>
+      <ul id="skills-list" class="list-disc pl-5"></ul>
+    </section>
+
+    <!-- Music Tab -->
+    <section id="tab-music" class="hidden">
+      <h2 class="text-xl font-bold mb-2">Nhạc nền</h2>
+      <input id="music" placeholder="Link mp3" class="w-full p-2 mb-2 rounded bg-gray-700">
+      <button onclick="saveMusic()" class="bg-green-600 px-4 py-2 rounded">Lưu</button>
+    </section>
+  </main>
+</div>
+
+<script>
+const password = "tuquangnam";
+
+function checkLogin() {
+  const input = document.getElementById("login-input").value;
+  if (input === password) {
+    document.getElementById("login-screen").classList.add("hidden");
+    document.getElementById("dashboard").classList.remove("hidden");
+    loadAll();
+  } else {
+    alert("Sai mật khẩu!");
+  }
+}
+
+function showTab(tab) {
+  ["profile", "bank", "skills", "music"].forEach(id => {
+    document.getElementById(`tab-${id}`).classList.add("hidden");
+  });
+  document.getElementById(`tab-${tab}`).classList.remove("hidden");
+}
+
+function saveProfile() {
+  localStorage.setItem("name", document.getElementById("name").value);
+  localStorage.setItem("quote", document.getElementById("quote").value);
+  localStorage.setItem("avatar", document.getElementById("avatar").value);
+  alert("Đã lưu thông tin cá nhân!");
+}
+
+function saveBank() {
+  localStorage.setItem("mbbank", document.getElementById("mbbank").value);
+  localStorage.setItem("momo", document.getElementById("momo").value);
+  alert("Đã lưu thông tin ngân hàng!");
+}
+
+function saveMusic() {
+  localStorage.setItem("music", document.getElementById("music").value);
+  alert("Đã lưu nhạc nền!");
+}
+
+function addSkill() {
+  const skill = document.getElementById("new-skill").value;
+  if (skill) {
+    let skills = JSON.parse(localStorage.getItem("skills") || "[]");
+    skills.push(skill);
+    localStorage.setItem("skills", JSON.stringify(skills));
+    document.getElementById("new-skill").value = "";
+    loadSkills();
+  }
+}
+
+function loadSkills() {
+  const list = document.getElementById("skills-list");
+  list.innerHTML = "";
+  const skills = JSON.parse(localStorage.getItem("skills") || "[]");
+  skills.forEach((s, i) => {
+    const li = document.createElement("li");
+    li.textContent = s;
+    list.appendChild(li);
+  });
+}
+
+function loadAll() {
+  document.getElementById("name").value = localStorage.getItem("name") || "";
+  document.getElementById("quote").value = localStorage.getItem("quote") || "";
+  document.getElementById("avatar").value = localStorage.getItem("avatar") || "";
+  document.getElementById("mbbank").value = localStorage.getItem("mbbank") || "";
+  document.getElementById("momo").value = localStorage.getItem("momo") || "";
+  document.getElementById("music").value = localStorage.getItem("music") || "";
+  loadSkills();
+}
+</script>
+</body>
+</html>
