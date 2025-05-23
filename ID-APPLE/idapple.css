@@ -1,1 +1,310 @@
+  <style>
+    /* Thêm CSS mới cho phần liên hệ */
+    /* Ẩn thanh điều hướng của Blogger */
+#navbar-iframe {
+  display: none !important;
+}
+    .contact-admin {
+      margin: 30px auto;
+      padding: 20px;
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      border-radius: 15px;
+      max-width: 500px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      border: 1px solid #3ea9ce;
+    }
+    
+    .contact-admin h3 {
+      color: #3ea9ce;
+      margin-top: 0;
+      font-size: 20px;
+      text-align: center;
+      padding-bottom: 10px;
+      border-bottom: 1px dashed #3ea9ce;
+    }
+    
+    .contact-methods {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 15px;
+    }
+    
+    .contact-card {
+      background: rgba(255,255,255,0.1);
+      padding: 12px;
+      border-radius: 10px;
+      width: 120px;
+      text-align: center;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .contact-card:hover {
+      transform: translateY(-5px);
+      background: rgba(62, 169, 206, 0.2);
+      box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+    }
+    
+    .contact-card img {
+      width: 40px;
+      height: 40px;
+      margin-bottom: 8px;
+    }
+    
+    .contact-card span {
+      display: block;
+      font-size: 14px;
+      color: #fff;
+    }
+    
+    .light-mode .contact-admin {
+      background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
+      border: 1px solid #0066cc;
+    }
+    
+    .light-mode .contact-admin h3 {
+      color: #0066cc;
+      border-bottom-color: #0066cc;
+    }
+    
+    .light-mode .contact-card {
+      background: rgba(0,0,0,0.05);
+    }
+    
+    .light-mode .contact-card:hover {
+      background: rgba(0, 102, 204, 0.1);
+    }
+    
+    .light-mode .contact-card span {
+      color: #333;
+    }
+body {
+      margin: 0;
+      font-family: "Segoe UI", sans-serif;
+      background-color: #000;
+      color: #fff;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
 
+    body.light-mode {
+      background-color: #f5f5f5;
+      color: #000;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .title {
+      font-size: 18px;
+      color: #bee4ff;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .light-mode .title {
+      color: #0066cc;
+    }
+
+    .main-image {
+      width: 360px;
+      border-radius: 20px;
+      box-shadow: 0px 0px 15px rgba(79, 191, 232, 0.6);
+      transition: transform 0.3s ease;
+    }
+
+    .main-image:hover {
+      transform: scale(1.03);
+    }
+
+    .highlight {
+      color: #ff87c3;
+      font-weight: bold;
+    }
+
+    .light-mode .highlight {
+      color: #d6006b;
+    }
+
+    .note {
+      margin: 20px 0;
+      font-size: 22px;
+      font-weight: bold;
+      color: #e21b1b;
+    }
+
+    #myIframe {
+      width: 100%;
+      height: 100vh;
+      border: none;
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 99;
+      background-color: #000;
+    }
+
+    .light-mode #myIframe {
+      background-color: #f5f5f5;
+    }
+
+    #controlButton {
+      position: fixed;
+      bottom: 15px;
+      right: 15px;
+      z-index: 100;
+      background-color: #18191a;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      box-shadow: 0 0 10px #00ff96;
+      transition: 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .light-mode #controlButton {
+      background-color: #3ea9ce;
+      box-shadow: 0 0 10px #0077cc;
+    }
+
+    #controlButton:hover {
+      background-color: #452d5b;
+      box-shadow: 0 0 15px #ca17c6;
+    }
+
+    #backToTop {
+      position: fixed;
+      bottom: 80px;
+      right: 15px;
+      background-color: #3ea9ce;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      z-index: 101;
+      font-size: 18px;
+    }
+
+    .light-mode #backToTop {
+      background-color: #0066cc;
+    }
+
+    .time {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #ccc;
+    }
+
+    .light-mode .time {
+      color: #666;
+    }
+
+    #notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: #4CAF50;
+      color: white;
+      padding: 15px;
+      border-radius: 5px;
+      z-index: 1000;
+      display: none;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    #onlineCounter {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background-color: #333;
+      color: white;
+      padding: 8px 12px;
+      border-radius: 20px;
+      font-size: 14px;
+      z-index: 100;
+    }
+
+    .light-mode #onlineCounter {
+      background-color: #3ea9ce;
+    }
+
+    .rating {
+      margin-top: 15px;
+    }
+
+    .rating span {
+      font-size: 24px;
+      cursor: pointer;
+      color: #ccc;
+    }
+
+    .rating span.active {
+      color: gold;
+    }
+
+    #randomTip {
+      margin: 20px auto;
+      padding: 12px;
+      background-color: #1a1a1a;
+      border-radius: 8px;
+      max-width: 80%;
+      font-size: 14px;
+    }
+
+    .light-mode #randomTip {
+      background-color: #e0e0e0;
+      color: #333;
+    }
+
+    #loading {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.8);
+      z-index: 999;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    .light-mode #loading {
+      background-color: rgba(245,245,245,0.9);
+    }
+
+    #themeToggle {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      z-index: 100;
+      background: #333;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .light-mode #themeToggle {
+      background: #3ea9ce;
+    }
+  </style>
