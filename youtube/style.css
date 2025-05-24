@@ -1,0 +1,71 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background-color: #111;
+  color: white;
+}
+
+header {
+  background-color: #202020;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+input {
+  flex: 1;
+  padding: 8px;
+  border-radius: 5px;
+  border: none;
+}
+
+button {
+  background: #ff0000;
+  border: none;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+main {
+  display: flex;
+  padding: 20px;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+#videoPlayer {
+  flex: 1 1 640px;
+}
+
+#videoList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 400px;
+}
+
+.videoItem {
+  background: #222;
+  padding: 10px;
+  cursor: pointer;
+  display: flex;
+  gap: 10px;
+  border-radius: 8px;
+  transition: 0.2s;
+}
+
+.videoItem:hover {
+  background: #333;
+}
+
+.videoItem img {
+  width: 120px;
+  border-radius: 6px;
+}
+
+.videoInfo {
+  flex: 1;
+}
