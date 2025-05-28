@@ -1,0 +1,283 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+:root {
+  --primary-color: #e50914;
+  --bg-color: #0d0d0d;
+  --card-bg: #1c1c1e;
+  --text-color: #f5f5f5;
+  --subtext-color: #b3b3b3;
+  --accent-bg: #2c2c2e;
+  --hover-color: #ff2e2e;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  line-height: 1.6;
+}
+
+header {
+  background-color: var(--card-bg);
+  padding: 0.6rem 1rem;
+  text-align: center;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  border-bottom: 1px solid #2a2a2a;
+}
+
+main {
+  padding: 1rem 1rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+#movie-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.movie-card {
+  background-color: var(--card-bg);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+}
+
+.movie-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
+}
+
+.movie-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.movie-card .info {
+  padding: 0.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.movie-card h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.movie-card p {
+  font-size: 0.75rem;
+  color: var(--subtext-color);
+}
+
+#player-section {
+  margin-top: 1.5rem;
+  background-color: var(--accent-bg);
+  border-radius: 12px;
+  padding: 1rem;
+  border: 1px solid #333;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+#movie-title {
+  text-align: center;
+  font-size: 1.2rem;
+  color: var(--primary-color);
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+#video-player {
+  width: 100%;
+  height: 320px;
+  background-color: black;
+  border-radius: 8px;
+  border: 2px solid #000;
+  margin-bottom: 1.5rem;
+}
+
+#episode-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+#episode-list button {
+  background-color: #333;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.7rem;
+  font-size: 0.75rem;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+}
+
+#episode-list button:hover {
+  background-color: var(--hover-color);
+}
+
+#episode-list button.active {
+  background-color: var(--primary-color);
+  font-weight: 600;
+}
+
+.hidden {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  header {
+    font-size: 1rem;
+  }
+
+  .movie-card img {
+    height: 150px;
+  }
+
+  #video-player {
+    height: 220px;
+  }
+
+  #episode-list button {
+    padding: 0.3rem 0.5rem;
+    font-size: 0.65rem;
+  }
+}
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--card-bg);
+  padding: 0.6rem 1rem;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.logo-text {
+  font-weight: 700;
+  user-select: none;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+#search-input {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.85rem;
+  border-radius: 6px;
+  border: none;
+  outline: none;
+  width: 140px;
+  transition: width 0.3s ease;
+  background-color: #222;
+  color: #eee;
+}
+
+#search-input::placeholder {
+  color: #aaa;
+}
+
+#search-input:focus {
+  width: 180px;
+  background-color: #333;
+  color: #fff;
+}
+
+.header-right button {
+  background-color: transparent;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  color: var(--primary-color);
+  padding: 0.2rem 0.4rem;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.header-right button:hover {
+  background-color: rgba(229, 9, 20, 0.2);
+}
+
+/* Responsive cho header-right */
+@media (max-width: 480px) {
+  #search-input {
+    width: 100px;
+  }
+
+  #search-input:focus {
+    width: 130px;
+  }
+}
+body.light-mode {
+  background-color: #f5f5f5;
+  color: #222;
+}
+
+body.light-mode header {
+  background-color: #fff;
+  color: #e50914;
+  border-bottom: 1px solid #ddd;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+body.light-mode .movie-card {
+  background-color: #fff;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+  color: #222;
+}
+
+body.light-mode .movie-card h3,
+body.light-mode .movie-card p {
+  color: #444;
+}
+
+body.light-mode #player-section {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  color: #222;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode #episode-list button {
+  background-color: #ddd;
+  color: #222;
+}
+
+body.light-mode #episode-list button.active {
+  background-color: #e50914;
+  color: #fff;
+}
+
+body.light-mode #episode-list button:hover {
+  background-color: #ff4c4c;
+}

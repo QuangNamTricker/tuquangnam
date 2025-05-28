@@ -1,0 +1,19 @@
+[
+  {
+    "title": "The Red Dawn",
+    "description": "A thrilling action-packed adventure.",
+    "image": "https://picsum.photos/id/1011/400/280",
+    "episodes": [
+      { "title": "Episode 1", "url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" },
+      { "title": "Episode 2", "url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" }
+    ]
+  },
+  {
+    "title": "Mystery of the Lost City",
+    "description": "Uncover secrets hidden deep in the jungle.",
+    "image": "https://picsum.photos/id/1015/400/280",
+    "episodes": [
+      { "title": "Episode 1", "url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4" }
+    ]
+  }
+]
