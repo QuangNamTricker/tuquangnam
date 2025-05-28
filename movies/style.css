@@ -1,5 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
-
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+}
 :root {
   --primary-color: #e50914;
   --bg-color: #0d0d0d;
@@ -17,6 +21,9 @@
 }
 
 body {
+  
+
+  
   font-family: 'Poppins', sans-serif;
   background-color: var(--bg-color);
   color: var(--text-color);
@@ -280,4 +287,21 @@ body.light-mode #episode-list button.active {
 
 body.light-mode #episode-list button:hover {
   background-color: #ff4c4c;
+}
+
+/* Footer dính đáy */
+footer {
+  text-align: center;
+  padding: 1rem 0;
+  font-size: 0.85rem;
+  color: #888;
+  background-color: #121212;
+  border-top: 1px solid #222;
+  user-select: none;
+}
+
+body.light-mode footer {
+  background-color: #f0f0f0;
+  color: #666;
+  border-top: 1px solid #ccc;
 }
