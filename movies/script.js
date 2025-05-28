@@ -144,3 +144,7 @@ searchInput.addEventListener('input', () => {
   );
   renderMovieList(filtered);
 });
+const footer = document.querySelector('footer p');
+const currentYear = new Date().getFullYear();
+footer.innerHTML = `© ${currentYear} Movie Stream. All rights reserved. Made with ❤️ by TQN.`;
+// Thêm sự kiện để tự động phát video khi tảix
