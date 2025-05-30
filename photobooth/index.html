@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Photobooth Pro Max</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>📸 Photobooth Pro Max ✨</h1>
+
+  <div class="container">
+    <video id="video" autoplay></video>
+
+    <div class="controls">
+      <label for="filter">🎨 Filter:</label>
+      <select id="filter">
+        <option value="none">❌ Không</option>
+        <option value="grayscale(100%)">Đen trắng</option>
+        <option value="sepia(100%)">Cổ điển</option>
+        <option value="contrast(200%)">Tương phản mạnh</option>
+        <option value="hue-rotate(90deg)">Xoay màu</option>
+        <option value="brightness(150%)">Sáng rực</option>
+      </select>
+
+      <label><input type="checkbox" id="useFrame"> 🖼️ Thêm khung</label>
+      <label><input type="checkbox" id="useSticker"> 😎 Thêm sticker</label>
+
+      <button id="snap">📷 Chụp ảnh</button>
+    </div>
+
+    <canvas id="canvas" width="640" height="480"></canvas>
+    <a id="download" href="#" download="photo.png">📥 Tải ảnh</a>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
