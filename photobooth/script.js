@@ -23,7 +23,7 @@ navigator.mediaDevices.getUserMedia({ video: true })
     alert('Không thể bật webcam: ' + err);
   });
 
-// Apply filter real-time
+// Áp dụng filter real-time
 filterSelect.addEventListener('change', () => {
   video.style.filter = filterSelect.value;
 });
@@ -46,4 +46,3 @@ snapBtn.addEventListener('click', () => {
   const imgData = canvas.toDataURL('image/png');
   downloadLink.href = imgData;
 });
-// Tải ảnh đã chụp
