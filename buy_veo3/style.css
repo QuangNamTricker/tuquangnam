@@ -1,80 +1,132 @@
+    :root {
+      --bg: #f9fafb;
+      --text: #1f2937;
+      --card: #ffffff;
+      --accent: #3b82f6;
+      --shadow: rgba(0, 0, 0, 0.05);
+    }
+
+    body.dark {
+      --bg: #111827;
+      --text: #e5e7eb;
+      --card: #1f2937;
+      --accent: #60a5fa;
+      --shadow: rgba(255, 255, 255, 0.1);
+    }
+
     * {
       box-sizing: border-box;
-      margin: 0; padding: 0;
-      font-family: 'Share Tech Mono', monospace;
-      color: #00ff99;
-      background: #000;
+      margin: 0;
+      padding: 0;
     }
+
     body {
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-      background: linear-gradient(135deg, #000000 0%, #004d00 100%);
-      overflow-x: hidden;
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 2rem;
+      transition: background-color 0.3s, color 0.3s;
     }
-    main {
-      background: rgba(0, 0, 0, 0.85);
-      padding: 30px;
-      border-radius: 12px;
-      max-width: 450px;
-      width: 100%;
-      box-shadow: 0 0 15px #00ff99;
-    }
+
     h1 {
-      font-size: 2.5rem;
-      text-align: center;
-      margin-bottom: 20px;
-      text-shadow: 0 0 10px #00ff99;
-      user-select: none;
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
     }
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
+
+    .step {
+      background-color: var(--card);
+      padding: 1.5rem;
+      border-radius: 1rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 12px var(--shadow);
+      border-left: 4px solid transparent;
+      transition: border 0.3s ease;
     }
-    label {
-      font-size: 0.9rem;
-      color: #00cc77;
+
+    .step.active {
+      border-left: 4px solid var(--accent);
     }
-    input {
-      background: #001100;
-      border: 2px solid #004400;
+
+    h2 {
+      font-size: 1.25rem;
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+    }
+
+    a {
+      color: var(--accent);
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    img {
+      margin-top: 1rem;
+      border-radius: 0.5rem;
+      max-width: 100%;
+    }
+
+    .tooltip {
+      position: relative;
+      display: inline-block;
+      cursor: help;
+    }
+
+    .tooltip::after {
+      content: attr(data-tip);
+      position: absolute;
+      background: var(--text);
+      color: var(--card);
+      padding: 6px 10px;
       border-radius: 6px;
-      color: #00ff99;
-      font-size: 1rem;
-      padding: 10px;
-      outline-offset: 2px;
-      outline-color: #00ff99;
-      transition: border-color 0.3s ease;
+      font-size: 0.75rem;
+      top: -2rem;
+      left: 0;
+      opacity: 0;
+      transition: opacity 0.2s;
+      white-space: nowrap;
+      pointer-events: none;
     }
-    input:focus {
-      border-color: #00ff99;
+
+    .tooltip:hover::after {
+      opacity: 1;
     }
-    button {
-      background: #00ff99;
-      color: #000;
-      font-weight: 700;
-      font-size: 1.1rem;
-      padding: 12px;
+
+    .toggle-theme {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--accent);
+      color: white;
+      padding: 0.6rem 1rem;
       border: none;
-      border-radius: 8px;
+      border-radius: 0.75rem;
+      font-weight: 600;
       cursor: pointer;
-      box-shadow: 0 0 12px #00ff99;
-      transition: background-color 0.3s ease;
-      user-select: none;
     }
-    button:hover {
-      background: #00cc77;
-      box-shadow: 0 0 18px #00cc77;
+
+    .back-to-top {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 48px;
+      height: 48px;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     }
-    #statusMsg {
-      margin-top: 15px;
-      text-align: center;
-      font-weight: 700;
-      color: #00ff99;
-      text-shadow: 0 0 10px #00ff99;
-      min-height: 24px;
-      user-select: none;
+
+    @media (prefers-color-scheme: dark) {
+      body:not(.light) {
+        background-color: #111827;
+        color: #e5e7eb;
+      }
     }
