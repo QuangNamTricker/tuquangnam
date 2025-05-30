@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Love Rain 3D Effect - Rơi Thẳng</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a0033 30%, #2d0a4e 60%, #0d0d0d 100%);
+            overflow: hidden;
+            font-family: 'Poppins', sans-serif;
+            height: 100vh;
+            position: relative;
+        }
+
+        .falling-text {
+            position: absolute;
+            font-weight: 600;
+            white-space: nowrap;
+            pointer-events: none;
+            z-index: 10;
+            animation: fall linear infinite;
+            text-shadow:
+                0 0 5px currentColor,
+                0 0 10px currentColor,
+                0 0 15px currentColor,
+                0 0 20px currentColor,
+                2px 2px 4px rgba(0,0,0,0.8);
+            user-select: none;
+        }
+
+        .text-love {
+            color: #ff69b4;
+            font-size: clamp(18px, 3vw, 32px);
+            font-weight: 700;
+        }
+
+        .text-name {
+            color: #ff1493;
+            font-size: clamp(16px, 2.5vw, 28px);
+            font-weight: 600;
+        }
+
+        .text-anniversary {
+            color: #ff6b9d;
+            font-size: clamp(14px, 2vw, 24px);
+            font-weight: 500;
+        }
+
+        .text-vietnamese {
+            color: #ff8fa3;
+            font-size: clamp(16px, 2.8vw, 30px);
+            font-weight: 600;
+        }
+
+        .heart {
+            position: absolute;
+            pointer-events: none;
+            z-index: 15;
+            animation: fall linear infinite;
+            font-size: clamp(16px, 2vw, 28px);
+            text-shadow:
+                0 0 10px currentColor,
+                0 0 20px currentColor,
+                0 0 30px currentColor;
+            user-select: none;
+        }
+
+        .heart-pink {
+            color: #ff69b4;
+        }
+
+        .heart-red {
+            color: #ff1493;
+        }
+
+        .heart-coral {
+            color: #ff6b9d;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-100px) translateX(0px) scale(0.8);
+                opacity: 0;
+            }
+            5% {
+                opacity: 1;
+            }
+            50% {
+                transform: translateY(50vh) translateX(5px) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(110vh) translateX(10px) scale(0.6);
+                opacity: 0;
+            }
+        }
+
+        .stars {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            animation: twinkle 3s infinite ease-in-out;
+        }
+
+        @keyframes twinkle {
+            0%, 100% {
+                opacity: 0.3;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.5);
+                box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+            }
+        }
+
+        .floating-hearts {
+            position: absolute;
+            font-size: clamp(12px, 1.5vw, 20px);
+            animation: float 6s ease-in-out infinite;
+            pointer-events: none;
+            opacity: 0.6;
+            text-shadow: 0 0 10px currentColor;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg) scale(1);
+                opacity: 0.4;
+            }
+            25% {
+                transform: translateY(-15px) rotate(5deg) scale(1.1);
+                opacity: 0.8;
+            }
+            50% {
+                transform: translateY(-25px) rotate(-3deg) scale(1.2);
+                opacity: 1;
+            }
+            75% {
+                transform: translateY(-10px) rotate(8deg) scale(1.05);
+                opacity: 0.7;
+            }
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: radial-gradient(circle, #ff69b4, transparent);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: particle-float 8s linear infinite;
+        }
+
+        @keyframes particle-float {
+            0% {
+                transform: translateY(100vh) translateX(0px) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) translateX(50px) scale(0);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+<script>
+    const loveTexts = [
+        { text: "Love u so much♥", type: "love" },
+        { text: "Từ Quang Nam", type: "vietnamese" },
+        { text: "Luôn luôn muốn đi ăn cùng các em♥", type: "vietnamese" },
+        { text: "4 Year Anniversary", type: "anniversary" },
+        { text: "Từ Quang Nam", type: "name" },
+        { text: "Forever Together", type: "love" },
+        { text: "My Love♥", type: "love" },
+        { text: "Tình yêu vĩnh cửu", type: "vietnamese" },
+        { text: "Xa Nhau 3 tháng hè", type: "anniversary" },
+        { text: "Yêu anh nhiều lắm", type: "vietnamese" },
+        { text: "4 years strong♥", type: "anniversary" },
+        { text: "Together Forever", type: "love" },
+        { text: "Xa Nhau 3 tháng hè", type: "vietnamese" },
+        { text: "Love Never Ends", type: "love" },
+        { text: "Từ Quang Namn", type: "vietnamese" }
+    ];
+
+    const hearts = ["💖", "❤️", "💕", "💗", "💘", "💝", "💞", "💓", "♥", "💟"];
+    const heartColors = ["heart-pink", "heart-red", "heart-coral"];
+
+    let textElements = [];
+    let heartElements = [];
+
+    function createStars() {
+        for (let i = 0; i < 150; i++) {
+            const star = document.createElement('div');
+            star.className = 'stars';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.animationDelay = Math.random() * 3 + 's';
+            star.style.animationDuration = (2 + Math.random() * 2) + 's';
+            document.body.appendChild(star);
+        }
+    }
+
+    function createFloatingHearts() {
+        for (let i = 0; i < 25; i++) {
+            const heart = document.createElement('div');
+            heart.className = 'floating-hearts';
+            heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+            heart.style.left = Math.random() * 100 + '%';
+            heart.style.top = Math.random() * 100 + '%';
+            heart.style.color = ['#ff69b4', '#ff1493', '#ff6b9d'][Math.floor(Math.random() * 3)];
+            heart.style.animationDelay = Math.random() * 6 + 's';
+            heart.style.animationDuration = (4 + Math.random() * 4) + 's';
+            document.body.appendChild(heart);
+        }
+    }
+
+    function createParticles() {
+        for (let i = 0; i < 30; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 8 + 's';
+            particle.style.animationDuration = (6 + Math.random() * 4) + 's';
+            document.body.appendChild(particle);
+        }
+    }
+
+    function createFallingText() {
+        const textData = loveTexts[Math.floor(Math.random() * loveTexts.length)];
+        const textElement = document.createElement('div');
+
+        textElement.className = `falling-text text-${textData.type}`;
+        textElement.textContent = textData.text;
+
+        const leftPos = Math.random() * (window.innerWidth - 300);
+        textElement.style.left = leftPos + 'px';
+
+        const duration = 12 + Math.random() * 8;
+        const delay = Math.random() * 2;
+
+        textElement.style.animationDuration = duration + 's';
+        textElement.style.animationDelay = delay + 's';
+
+        // Bỏ perspective, xoay, giữ scale 1
+        textElement.style.transform = 'scale(1)';
+
+        document.body.appendChild(textElement);
+        textElements.push(textElement);
+
+        setTimeout(() => {
+            if (textElement.parentNode) {
+                textElement.parentNode.removeChild(textElement);
+                const index = textElements.indexOf(textElement);
+                if (index > -1) textElements.splice(index, 1);
+            }
+        }, (duration + delay + 1) * 1000);
+    }
+
+    function createFallingHeart() {
+        const heartElement = document.createElement('div');
+        const heartSymbol = hearts[Math.floor(Math.random() * hearts.length)];
+        const heartColorClass = heartColors[Math.floor(Math.random() * heartColors.length)];
+
+        heartElement.className = `heart ${heartColorClass}`;
+        heartElement.textContent = heartSymbol;
+
+        heartElement.style.left = Math.random() * window.innerWidth + 'px';
+
+        const duration = 10 + Math.random() * 10;
+        const delay = Math.random() * 3;
+
+        heartElement.style.animationDuration = duration + 's';
+        heartElement.style.animationDelay = delay + 's';
+
+        document.body.appendChild(heartElement);
+        heartElements.push(heartElement);
+
+        setTimeout(() => {
+            if (heartElement.parentNode) {
+                heartElement.parentNode.removeChild(heartElement);
+                const index = heartElements.indexOf(heartElement);
+                if (index > -1) heartElements.splice(index, 1);
+            }
+        }, (duration + delay + 1) * 1000);
+    }
+
+    // Tạo hiệu ứng liên tục
+    setInterval(createFallingText, 300);
+    setInterval(createFallingHeart, 700);
+
+    // Tạo thêm background đẹp
+    createStars();
+    createFloatingHearts();
+    createParticles();
+
+</script>
+</body>
+</html>
