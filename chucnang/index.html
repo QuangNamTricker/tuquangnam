@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Trang Chủ Webcon | Từ Quang Nam</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    /* RESET & FONT */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    body {
+      background: #f0f2f5;
+      color: #333;
+      padding: 2rem;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    /* DARK MODE */
+    body.dark {
+      background: #121212;
+      color: #eee;
+    }
+    /* HEADER */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid #4f46e5;
+    }
+    header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      cursor: default;
+      user-select: none;
+    }
+    nav a {
+      margin-left: 1.5rem;
+      text-decoration: none;
+      font-weight: 600;
+      color: #4f46e5;
+      transition: color 0.3s;
+    }
+    nav a:hover {
+      color: #7c3aed;
+    }
+    /* DARK MODE BUTTON */
+    #darkToggle {
+      cursor: pointer;
+      background: #4f46e5;
+      border: none;
+      color: white;
+      padding: 0.4rem 1rem;
+      border-radius: 9999px;
+      font-weight: 600;
+      user-select: none;
+      transition: background 0.3s;
+    }
+    #darkToggle:hover {
+      background: #7c3aed;
+    }
+    /* SEARCH */
+    .search-bar {
+      max-width: 400px;
+      margin: 1rem auto 2rem auto;
+      display: flex;
+      justify-content: center;
+    }
+    .search-bar input {
+      width: 100%;
+      padding: 0.5rem 1rem;
+      border-radius: 999px;
+      border: 1px solid #ccc;
+      outline: none;
+      transition: all 0.3s;
+    }
+    body.dark .search-bar input {
+      background: #222;
+      border-color: #555;
+      color: #eee;
+    }
+    .search-bar input:focus {
+      border-color: #4f46e5;
+    }
+    /* GRID */
+    .web-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      animation: fadeIn 1.5s ease-in-out;
+      flex-grow: 1;
+    }
+    /* CARD */
+    .card {
+      background: white;
+      border-radius: 1rem;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    body.dark .card {
+      background: #1e1e1e;
+      box-shadow: 0 8px 20px rgba(255,255,255,0.1);
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+    }
+    body.dark .card:hover {
+      box-shadow: 0 12px 30px rgba(255,255,255,0.2);
+    }
+    .card img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-bottom: 1px solid #eee;
+    }
+    body.dark .card img {
+      border-color: #444;
+    }
+    .card-content {
+      padding: 1rem;
+      flex-grow: 1;
+    }
+    .card-title {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      font-size: 1.2rem;
+      color: #222;
+    }
+    body.dark .card-title {
+      color: #eee;
+    }
+    .card-desc {
+      font-size: 0.9rem;
+      color: #666;
+      margin-bottom: 1rem;
+    }
+    body.dark .card-desc {
+      color: #aaa;
+    }
+    /* SHARE BUTTON */
+    .share-btn {
+      padding: 0.4rem 0.8rem;
+      background: #4267B2;
+      color: white;
+      border-radius: 6px;
+      text-align: center;
+      cursor: pointer;
+      user-select: none;
+      font-weight: 600;
+      transition: background 0.3s;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .share-btn:hover {
+      background: #365899;
+    }
+    /* FOOTER */
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      font-size: 0.8rem;
+      color: #888;
+      user-select: none;
+    }
+    body.dark footer {
+      color: #666;
+    }
+    /* ANIMATION */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🌐 Danh Sách Webcon | Từ Quang Nam</h1>
+    <nav>
+      <a href="#">Home</a>
+      <a href="#contact">Contact</a>
+      <a href="#about">About Us</a>
+      <button id="darkToggle" aria-label="Toggle Dark Mode">🌙</button>
+    </nav>
+  </header>
+
+  <div class="search-bar">
+    <input type="text" id="search" placeholder="Tìm kiếm webcon..." />
+  </div>
+
+  <section class="web-grid" id="webList">
+    <!-- Webcon cards inject -->
+  </section>
+
+  <footer>
+    © 2025 Từ Quang Nam. All rights reserved.
+  </footer>
+
+  <script>
+    // Dữ liệu webcon, ông thêm vào đây
+    const data = [
+      {
+        title: "To-Do App",
+        desc: "Quản lý công việc mỗi ngày.",
+        img: "https://picsum.photos/id/100/400/200",
+        url: "https://todo.example.com"
+      },
+      {
+        title: "Webgame Pixel",
+        desc: "Game pixel chơi trên trình duyệt.",
+        img: "https://picsum.photos/id/101/400/200",
+        url: "https://game.example.com"
+      },
+      {
+        title: "Landing Page AI",
+        desc: "Landing page giới thiệu sản phẩm AI.",
+        img: "https://picsum.photos/id/102/400/200",
+        url: "https://ai.example.com"
+      }
+    ];
+
+    const webList = document.getElementById("webList");
+    const search = document.getElementById("search");
+    const darkToggle = document.getElementById("darkToggle");
+
+    // Render danh sách với chia sẻ facebook button
+    function renderList(filter = "") {
+      webList.innerHTML = "";
+      data.filter(item =>
+        item.title.toLowerCase().includes(filter.toLowerCase()) ||
+        item.desc.toLowerCase().includes(filter.toLowerCase())
+      ).forEach(item => {
+        const card = document.createElement("div");
+        card.className = "card";
+
+        card.innerHTML = `
+          <a href="${item.url}" target="_blank" rel="noopener" style="text-decoration:none; color:inherit;">
+            <img src="${item.img}" alt="${item.title}" />
+            <div class="card-content">
+              <div class="card-title">${item.title}</div>
+              <div class="card-desc">${item.desc}</div>
+            </div>
+          </a>
+          <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(item.url)}" target="_blank" class="share-btn" title="Share trên Facebook">Chia sẻ Facebook</a>
+        `;
+
+        webList.appendChild(card);
+      });
+    }
+
+    // Search filter
+    search.addEventListener("input", e => {
+      renderList(e.target.value);
+    });
+
+    // Dark/Light mode toggle
+    function updateDarkMode(isDark) {
+      if (isDark) {
+        document.body.classList.add("dark");
+        darkToggle.textContent = "☀️";
+      } else {
+        document.body.classList.remove("dark");
+        darkToggle.textContent = "🌙";
+      }
+      localStorage.setItem("darkMode", isDark);
+    }
+
+    darkToggle.addEventListener("click", () => {
+      const isDark = document.body.classList.contains("dark");
+      updateDarkMode(!isDark);
+    });
+
+    // Khởi tạo dark mode theo localStorage
+    const savedDarkMode = localStorage.getItem("darkMode") === "true";
+    updateDarkMode(savedDarkMode);
+
+    // Render lần đầu
+    renderList();
+
+  </script>
+</body>
+</html>
