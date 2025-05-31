@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Love Rain 3D Effect - Rơi Thẳng</title>
     <style>
+        #audio {
+  display: none;
+}
+
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
 
         * {
@@ -183,7 +187,21 @@
     </style>
 </head>
 <body>
+    <audio id="myAudio" src="./music/snvv.mp3" autoplay loop></audio>
+
 <script>
+    <script>
+  const audio = document.getElementById('myAudio');
+
+  // Play nhạc
+  audio.play();
+
+  // Pause nhạc (ví dụ sau 5s)
+  setTimeout(() => {
+    audio.pause();
+  }, 1000);
+</script>
+
     const loveTexts = [
         { text: "Chúc Mừng Sinh Nhật♥", type: "love" },
         { text: "Đoàn Minh Đức", type: "vietnamese" },
