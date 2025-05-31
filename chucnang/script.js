@@ -3,41 +3,44 @@
       {
         title: " ID APPLE Shadowrocket",
         desc: "Share ID APPLE Để Tải Shadowrocket.",
-        img: "https://picsum.photos/id/100/400/200",
+        img: "https://github.com/QuangNamTricker/tuquangnam/blob/main/chucnang/image/id-apple.png?raw=true",
         url: "../ID-APPLE/index.html"
       },
       {
         title: "AI Veo3",
         desc: "Hướng Dẫn Đăng Ký Tài Khoản Và Sử Dụng AI Veo3.",
-        img: "",
-        url: ""
-      },
-
-
-      
-      {
-        title: "",
-        desc: "",
-        img: "",
-        url: ""
-      },
-            {
-        title: "",
-        desc: "",
-        img: "",
-        url: ""
-      },
-            {
-        title: "",
-        desc: "",
-        img: "",
-        url: ""
+        img: "https://github.com/QuangNamTricker/tuquangnam/blob/main/chucnang/image/buy_veo3.png?raw=true",
+        url: "../buy_veo3/index.html"
       },
       {
-        title: "",
-        desc: "",
-        img: "",
-        url: ""
+        title: "Confession",
+        desc: "Gửi Lời Nhắn Bí Mật Tới ADMIN.",
+        img: "https://github.com/QuangNamTricker/tuquangnam/blob/main/chucnang/image/confession.png?raw=true",
+        url: "../confession/index.html"
+      },
+            {
+        title: "Contacts",
+        desc: "Liên Hệ Với ADMIN.",
+        img: "https://github.com/QuangNamTricker/tuquangnam/blob/main/chucnang/image/contacts.png?raw=true",
+        url: "../contacts/index.html"
+      },
+            {
+        title: "Photobooth",
+        desc: " Chụp Ảnh Với Photobooth.",
+        img: "https://github.com/QuangNamTricker/tuquangnam/blob/main/chucnang/image/photobooth.png?raw=true",
+        url: "../photobooth/index.html"
+      },
+      {
+        title: "Tạo QR Chuyển Khoản",
+        desc: " Tạo QR Chuyển Khoản Để Nhận Tiền.",
+        img: "https://github.com/QuangNamTricker/tuquangnam/blob/main/chucnang/image/taoqrchuyenkhoan.png?raw=true",
+        url: "../taoqrchuyenkhoan/index.html"
+      },
+      {
+        title: "YouTube No ADS",
+        desc: " Xem YouTube Không Quảng Cáo.",
+        img: "https://github.com/QuangNamTricker/tuquangnam/blob/main/chucnang/image/youtube.png?raw=true",
+        url: "../youtube/index.html"
       }
     ];
 
