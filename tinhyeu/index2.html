@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style1.css">
+    <script src="app.js" defer></script>
+    <title>Love</title>
+</head>
+<body class="post-template-default single single-post postid-12802 single-format-standard"data-aos-easing="ease" data-aos-duration="400" data-aos-delay="0">
+    <div class="mouse-cursor cursor-outer cursor-hover" style="visibility: visible; transform: translate(781px, 143px);"></div>
+    <div class="mouse-cursor cursor-inner cursor-hover"  style="visibility: visible; transform: translate(781px, 143px);"></div>
+    
+    <div class="loading">
+        <div class="boxHeartImg">
+            <div class="heartItem item1">
+                <img src="./image1/heart.png" alt="">
+            </div>
+            <div class="heartItem item2">
+                <img src="./image1/heart.png" alt="">
+            </div>              
+            <div class="heartItem item3">
+                <img src="./image1/heart.png" alt="">
+            </div>
+        </div>
+        <div class="heartBox">
+            <div class="heart"></div>
+        </div>
+        <div class="progress-bar">
+            <div class="progress"></div>
+            <div class="percent">100%</div>
+        </div>
+        <h2 class="textBox">
+            <span class="textLoad">loading love</span>
+            <span class="cricle1">.</span>
+            <span class="cricle2">.</span>
+            <span class="cricle3">.</span>
+        </h2>
+        <div class="buttonCLick">
+            <img src="./image1/cursor.png" alt="">
+            <div class="button">
+                <p class="textBtn"></p>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    document.addEventListener("mousemove", function(event) {
+    var outerCursor = document.querySelector(".cursor-outer");
+    var innerCursor = document.querySelector(".cursor-inner");
+
+    outerCursor.style.transform = "translate(" + event.clientX + "px, " + event.clientY + "px)";
+    innerCursor.style.transform = "translate(" + event.clientX + "px, " + event.clientY + "px)";
+});
+
+document.addEventListener("mouseover", function(event) {
+    var hoverCursor = document.querySelectorAll(".cursor-hover");
+
+    hoverCursor.forEach(function(cursor) {
+        cursor.classList.add("cursor-hover");
+    });
+});
+
+document.addEventListener("mouseout", function(event) {
+    var hoverCursor = document.querySelectorAll(".cursor-hover");
+
+    hoverCursor.forEach(function(cursor) {
+        cursor.classList.remove(".cursor-hover");
+    });
+});
+</script>
+</html>
