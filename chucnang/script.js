@@ -13,13 +13,13 @@
         url: "../buy_veo3/index.html"
       },
       {
-        title: "Confession",
+        title: "Confession / Bảo Trì",
         desc: "Gửi Lời Nhắn Bí Mật Tới ADMIN.",
         img: "https://github.com/QuangNamTricker/tuquangnam/blob/main/chucnang/image/confession.png?raw=true",
         url: "../confession/index.html"
       },
             {
-        title: "Contacts",
+        title: "Contacts / Bảo Trì",
         desc: "Liên Hệ Với ADMIN.",
         img: "https://github.com/QuangNamTricker/tuquangnam/blob/main/chucnang/image/contacts.png?raw=true",
         url: "../contacts/index.html"
