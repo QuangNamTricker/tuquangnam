@@ -1,5 +1,5 @@
 // version_2.js
-fetch("./thongtincanhan/version_2/index.html")
+fetch("./thongtincanhan/test/index.html")
   .then(res => {
     if (!res.ok) throw new Error("Không tìm thấy nội dung 😵");
     return res.text();
