@@ -1,5 +1,5 @@
-// app.js
-fetch("content.html")
+// version_1.js
+fetch("version_1.html")
   .then(res => {
     if (!res.ok) throw new Error("Không tìm thấy nội dung 😵");
     return res.text();
