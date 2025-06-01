@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TAAG Full Screen Controller</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+        #container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        #controls {
+            padding: 10px;
+            background: #333;
+            color: white;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        #taag-iframe {
+            flex-grow: 1;
+            border: none;
+        }
+        button, input, select {
+            padding: 5px 10px;
+        }
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        
+        <iframe id="taag-iframe" 
+                src="http://patorjk.com/software/taag/#p=display&f=Graffiti&t=Type%20Something%20"></iframe>
+    </div>
+
+    <script>
+        document.getElementById('update-btn').addEventListener('click', function() {
+            const text = encodeURIComponent(document.getElementById('text-input').value);
+            const font = document.getElementById('font-select').value;
+            const iframe = document.getElementById('taag-iframe');
+            iframe.src = `http://patorjk.com/software/taag/#p=display&f=${font}&t=${text}`;
+        });
+
+        document.getElementById('fullscreen-btn').addEventListener('click', function() {
+            const iframe = document.getElementById('taag-iframe');
+            if (iframe.requestFullscreen) {
+                iframe.requestFullscreen();
+            } else if (iframe.webkitRequestFullscreen) { /* Safari */
+                iframe.webkitRequestFullscreen();
+            } else if (iframe.msRequestFullscreen) { /* IE11 */
+                iframe.msRequestFullscreen();
+            }
+        });
+    </script>
+</body>
+</html>
