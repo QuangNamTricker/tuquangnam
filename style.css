@@ -1,0 +1,397 @@
+
+    :root {
+      --primary-color: #00f0ff;
+      --secondary-color: #ff2d75;
+      --bg-color: #0f0f1a;
+      --text-color: #ffffff;
+      --card-bg: rgba(15, 15, 26, 0.8);
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    [data-theme="light"] {
+      --bg-color: #f5f5fa;
+      --text-color: #333333;
+      --card-bg: rgba(255, 255, 255, 0.9);
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg-color);
+      color: var(--text-color);
+      font-family: 'Poppins', sans-serif;
+      overflow-x: hidden;
+      min-height: 100vh;
+      transition: background 0.5s ease;
+    }
+
+    #preloader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--bg-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease;
+    }
+
+    .loader {
+      width: 50px;
+      height: 50px;
+      border: 5px solid rgba(0, 240, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: var(--primary-color);
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    #bgVideo {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      z-index: -1;
+      pointer-events: none;
+      opacity: 0.3;
+    }
+
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      width: 100%;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      padding: 20px;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeIn 1s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .profile-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 30px;
+      width: 100%;
+      max-width: 500px;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .profile-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+    }
+
+    .avatar-frame {
+      position: relative;
+      width: 150px;
+      height: 150px;
+      margin: 0 auto 20px;
+      border-radius: 50%;
+      background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+      padding: 5px;
+      box-shadow: 0 5px 15px rgba(0, 240, 255, 0.4);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(0, 240, 255, 0.7); }
+      70% { box-shadow: 0 0 0 15px rgba(0, 240, 255, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(0, 240, 255, 0); }
+    }
+
+    .avatar {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--bg-color);
+    }
+
+    h1 {
+      font-size: 24px;
+      margin: 10px 0;
+      color: var(--primary-color);
+      font-weight: 700;
+      position: relative;
+      display: inline-block;
+    }
+
+    h1::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 50px;
+      height: 3px;
+      background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+      border-radius: 3px;
+    }
+
+    .verified {
+      color: var(--primary-color);
+      margin-left: 5px;
+      font-size: 16px;
+    }
+
+    .title {
+      font-size: 16px;
+      color: var(--secondary-color);
+      margin-bottom: 20px;
+      font-weight: 500;
+    }
+
+    .social-icons {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+
+    .social-icons a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      margin: 0 10px;
+      color: var(--text-color);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      font-size: 18px;
+    }
+
+    .social-icons a:hover {
+      background: var(--primary-color);
+      color: #000;
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0, 240, 255, 0.4);
+    }
+
+    .info {
+      font-size: 14px;
+      margin: 20px 0;
+      line-height: 1.8;
+      color: var(--text-color);
+      font-weight: 400;
+      letter-spacing: 0.5px;
+      min-height: 100px;
+    }
+
+    .typing-text {
+      border-right: 2px solid var(--primary-color);
+      animation: blink 0.75s step-end infinite;
+    }
+
+    @keyframes blink {
+      from, to { border-color: transparent; }
+      50% { border-color: var(--primary-color); }
+    }
+
+    .timer {
+      font-size: 14px;
+      color: var(--secondary-color);
+      margin: 15px 0;
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    .music-player {
+      margin-top: 20px;
+      width: 100%;
+    }
+
+    .music-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 10px;
+    }
+
+    .music-btn {
+      background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+      border: none;
+      padding: 10px 20px;
+      border-radius: 30px;
+      color: #000;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      box-shadow: 0 5px 15px rgba(0, 240, 255, 0.3);
+    }
+
+    .music-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 240, 255, 0.4);
+    }
+
+    .music-btn i {
+      margin-right: 8px;
+    }
+
+    select {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: var(--text-color);
+      padding: 10px 15px;
+      border-radius: 30px;
+      width: 100%;
+      max-width: 300px;
+      margin: 10px 0;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      outline: none;
+    }
+
+    select:hover {
+      border-color: var(--primary-color);
+    }
+
+    select option {
+      background: var(--bg-color);
+    }
+
+    .theme-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.1);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 100;
+      transition: all 0.3s ease;
+    }
+
+    .theme-toggle:hover {
+      background: var(--primary-color);
+      color: #000;
+    }
+
+    .stats {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-family: 'Orbitron', sans-serif;
+      color: var(--primary-color);
+      display: flex;
+      align-items: center;
+    }
+
+    .stats i {
+      margin-right: 8px;
+    }
+
+    @media screen and (max-width: 768px) {
+      .profile-card {
+        padding: 20px;
+      }
+      
+      .avatar-frame {
+        width: 120px;
+        height: 120px;
+      }
+      
+      h1 {
+        font-size: 20px;
+      }
+      
+      .info {
+        font-size: 13px;
+      }
+      
+      .social-icons a {
+        width: 35px;
+        height: 35px;
+        font-size: 16px;
+        margin: 0 8px;
+      }
+    }
+
+    @media screen and (max-width: 480px) {
+      .profile-card {
+        padding: 15px;
+      }
+      
+      .avatar-frame {
+        width: 100px;
+        height: 100px;
+      }
+      
+      h1 {
+        font-size: 18px;
+      }
+      
+      .title {
+        font-size: 14px;
+      }
+      
+      .info {
+        font-size: 12px;
+      }
+      
+      .social-icons a {
+        width: 30px;
+        height: 30px;
+        font-size: 14px;
+        margin: 0 5px;
+      }
+      
+      .theme-toggle {
+        top: 15px;
+        right: 15px;
+        width: 35px;
+        height: 35px;
+      }
+    }
