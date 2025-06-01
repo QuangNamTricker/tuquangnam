@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Từ Quang Nam | Hacker Portfolio</title>
 
-<!--     thêm -->
+
     <meta name="theme-color" content="#06c1db" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)">
 
@@ -14,22 +14,17 @@
 <meta name="description" content="Từ Quang Nam">
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#06c1db">
-    <!-- Fonts + Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-
-    <!-- CSS -->
     <link rel="stylesheet" href="main.css" />
     <header class="header">
-      
     <div class="logo">
       <h2></h2>
     </div>
     <nav class="nav-menu">
       <a href="/chucnang">Chức Năng</a>
       <a href="/contacts">Contacts</a>
-<!--       <a href="#cv-section">CV</a>
-      <a href="#terminal-mode">Terminal</a> -->
+
     </nav>
     <div class="header-extra">
 
@@ -39,29 +34,27 @@
   </head>
   <body onload="initPage()">
 
-    <!-- Sakura Canvas -->
+    
     <canvas id="canvas_sakura"></canvas>
 
-    <!-- Dark Mode Toggle -->
+    
     <button class="toggle-mode" onclick="toggleDarkMode()"><i class="fas fa-adjust"></i></button>
 
   <div class="music-control">
     <button onclick="toggleMusic()"><i class="fas fa-music"></i> Music</button>
-    <audio id="bg-music" src="https://files.catbox.moe/dwy88x.mp3" autoplay loop></audio>
+    <audio id="bg-music" src="https://files.catbox.moe/dwy88x.mp3"  loop></audio>
   </div>
 
 
-    <!-- Main Container -->
+    
     <div class="container">
-      <h1 class="glitch" data-text="TỪ QUANG NAM">TỪ QUANG NAM</h1>
-      <p class="typing" id="typing-text"></p>
-
-      <!-- Avatar -->
-      <div class="avatar">
+              <div class="avatar">
         <img src="https://github.com/QuangNamTricker/tuquangnam/blob/main/avt-main/avt.jpg?raw=true" alt="avatar" />
       </div>
-
-      <!-- Social Links -->
+      
+      <h1 class="glitch" data-text="TỪ QUANG NAM">TỪ QUANG NAM</h1>
+      <p class="typing" id="typing-text"></p> 
+      <p class="description">Hacker | Developer | Cybersecurity Enthusiast</p>      
       <div class="social-links">
         <a href="https://fb.com/tuquangnam07" target="_blank"><i class="fab fa-facebook"></i></a>
         <a href="https://youtube.com/@TuQuangNam" target="_blank"><i class="fab fa-youtube"></i></a>
@@ -69,14 +62,14 @@
         <a href="https://discord.gg/username" target="_blank"><i class="fab fa-discord"></i></a>
       </div>
 
-      <!-- Bank Info -->
+      
       <div class="bank-info">
         <h2><i class="fas fa-university"></i> Bank Info</h2>
         <p><strong>MBBANK:</strong> <span class="copy-text" onclick="copyToClipboard('0888385536')">0888385536 - TU QUANG NAM <i class="fas fa-copy"></i></span></p>
         <p><strong>Momo:</strong> <span class="copy-text" onclick="copyToClipboard('0888385536')">0888385536 - TU QUANG NAM <i class="fas fa-copy"></i></span></p>
       </div>
 
-      <!-- Skills -->
+      
       <div class="skills">
         <h2><i class="fas fa-code"></i> Skills</h2>
         <ul>
@@ -88,12 +81,12 @@
         </ul>
       </div>
 
-      <!-- CV Download -->
+      
       <div class="cv-section">
         <a href="cv.pdf" download class="cv-button"><i class="fas fa-file-download"></i> Download CV</a>
       </div>
 
-      <!-- Terminal Mode -->
+      
       <div class="terminal-mode">
         <h2><i class="fas fa-terminal"></i> Terminal Mode</h2>
         <p>Type <strong>help</strong> to see available commands.</p>
@@ -102,13 +95,13 @@
         <div id="terminal-output"></div>
       </div>
 
-      <!-- Footer -->
+      
       <footer>
         <p>Created by <strong>Từ Quang Nam</strong> • &copy; 2025</p>
       </footer>
     </div>
 
-    <!-- Scripts -->
+    
     <script src="main.js"></script>
   </body>
   </html>
