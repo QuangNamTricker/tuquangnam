@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Từ Quang Nam - Web Developer</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="preloader">
+    <div class="loader"></div>
+  </div>
+
+  <video autoplay muted loop playsinline id="bgVideo">
+    <source src="backgroud.mp4" type="video/mp4">
+  </video>
+
+  <div class="particles" id="particles-js"></div>
+
+  <div class="theme-toggle" id="themeToggle">
+    <i class="fas fa-moon"></i>
+  </div>
+
+  <div class="container">
+    <div class="profile-card">
+      <div class="avatar-frame">
+        <img src="https://i.pinimg.com/originals/0c/5e/aa/0c5eaa4715b42f1561c390f5f841c48a.gif" alt="avatar" class="avatar">
+      </div>
+      
+      <h1> Từ Quang Nam<span class="verified">✔️</span></h1>
+      <div class="title">Web Developer & Designer</div>
+      
+      <div class="social-icons">
+        <a href="mailto:tuquangnamht2007@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a>
+        <a href="https://t.me/tuquangnam" target="_blank" title="Telegram"><i class="fab fa-telegram"></i></a>
+        <a href="https://facebook.com/tuquangnam07" target="_blank" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://tiktok.com/@tuquangnam07" target="_blank" title="TikTok"><i class="fab fa-tiktok"></i></a>
+        <a href="https://github.com/tuquangnam07" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+      </div>
+
+      <div class="info" id="typingText">
+        <!-- Nội dung sẽ được hiển thị với hiệu ứng đánh máy -->
+      </div>
+
+      <div class="timer">
+        <i class="fas fa-clock"></i> <span id="timer"></span>
+      </div>
+
+      <div class="music-player">
+        <select onchange="changeSong(this.value)" id="songSelect">
+          <option value="">Chọn nhạc nền</option>
+          <option value="./deanhluongthien.mp3">Để Anh Lương Thiện Remix</option>
+          <option value="./emcuoiroia.mp3">Em Cưới Rồi À Remix</option>
+          <option value="./freemanxlowremix.mp3">Free Man x Low Remix</option>
+          <option value="./slayphonk.mp3">Slay Phonk</option>
+          <option value="./thaproitudo.mp3">Tháp Rơi Tự Do</option>
+        </select>
+        
+        <div class="music-controls">
+          <button class="music-btn" onclick="toggleMusic()">
+            <i class="fas fa-play" id="playIcon"></i> <span id="playText">Phát nhạc</span>
+          </button>
+          <input type="range" id="volumeControl" min="0" max="1" step="0.1" value="0.5" onchange="setVolume(this.value)" style="margin-left: 15px;">
+          <i class="fas fa-volume-up" style="margin-left: 5px;"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stats">
+    <i class="fas fa-eye"></i> <span id="visitCount">0</span> lượt xem
+  </div>
+
+  <audio id="bgMusic" loop></audio>
+
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
