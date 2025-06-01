@@ -38,7 +38,7 @@
     }
 
     // Typing effect
-    const textToType = `THIẾT KẾ WEBSITE THEO YÊU CẦU\nCHUẨN SEO, CHUẨN UX/UI\nBẢO HÀNH ĐẾN KHI SẬP GOOGLE\nUY TÍN ĐẶT LÊN HÀNG ĐẦU\nZALO: 0941.564.770`;
+    const textToType = `THIẾT KẾ WEBSITE THEO YÊU CẦU\nCHUẨN SEO, CHUẨN UX/UI\nBẢO HÀNH ĐẾN KHI SẬP GOOGLE\nUY TÍN ĐẶT LÊN HÀNG ĐẦU\nZALO: 0888.385.536`;
     const typingText = document.getElementById('typingText');
     let charIndex = 0;
     
