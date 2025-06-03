@@ -1,0 +1,174 @@
+/*WEBSITE ĐANG ĐƯỢC NÂNG CẤP*/
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 Universe</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #000;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+        }
+        #universe {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .error-message {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            z-index: 100;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="universe"></canvas>
+    <div class="error-message">/*WEBSITE ĐANG ĐƯỢC NÂNG CẤP*/
+        <h1>404</h1>
+        <p>Page not found. But you've discovered planet #<span id="planet-count">0</span></p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/controls/OrbitControls.js"></script>
+    <script src="main.js"></script>
+    <script>
+        // Khởi tạo Three.js scene
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('universe') });
+renderer.setSize(window.innerWidth, window.innerHeight);
+
+// Lưu trữ các hành tinh
+let planets = [];
+let planetCount = 0;
+
+// Tạo ngôi sao nền
+function createStarfield() {
+    const starsGeometry = new THREE.BufferGeometry();
+    const starCount = 10000;
+    const positions = new Float32Array(starCount * 3);
+    
+    for (let i = 0; i < starCount; i++) {
+        positions[i * 3] = (Math.random() - 0.5) * 2000;
+        positions[i * 3 + 1] = (Math.random() - 0.5) * 2000;
+        positions[i * 3 + 2] = (Math.random() - 0.5) * 2000;
+    }
+    
+    starsGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    const starsMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.5 });
+    const starField = new THREE.Points(starsGeometry, starsMaterial);
+    scene.add(starField);
+}
+
+// Tạo hành tinh mới
+function createPlanet() {
+    planetCount++;
+    document.getElementById('planet-count').textContent = planetCount;
+    
+    // Random planet properties
+    const size = Math.random() * 2 + 0.5;
+    const color = new THREE.Color(Math.random(), Math.random(), Math.random());
+    const geometry = new THREE.SphereGeometry(size, 32, 32);
+    const material = new THREE.MeshPhongMaterial({ color, shininess: 100 });
+    const planet = new THREE.Mesh(geometry, material);
+    
+    // Random position
+    planet.position.x = (Math.random() - 0.5) * 50;
+    planet.position.y = (Math.random() - 0.5) * 50;
+    planet.position.z = (Math.random() - 0.5) * 50;
+    
+    // Random rotation speed
+    planet.userData = {
+        rotationSpeed: {
+            x: Math.random() * 0.02,
+            y: Math.random() * 0.02
+        }
+    };
+    
+    // Add atmosphere
+    if (Math.random() > 0.7) {
+        const atmosphereGeometry = new THREE.SphereGeometry(size * 1.2, 32, 32);
+        const atmosphereMaterial = new THREE.MeshPhongMaterial({
+            color: 0x88ccff,
+            transparent: true,
+            opacity: 0.3,
+            shininess: 10
+        });
+        const atmosphere = new THREE.Mesh(atmosphereGeometry, atmosphereMaterial);
+        planet.add(atmosphere);
+    }
+    
+    scene.add(planet);
+    planets.push(planet);
+    return planet;
+}
+
+// Tạo ánh sáng
+function createLights() {
+    const ambientLight = new THREE.AmbientLight(0x333333);
+    scene.add(ambientLight);
+    
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+    directionalLight.position.set(1, 1, 1);
+    scene.add(directionalLight);
+}
+
+// Khởi tạo
+function init() {
+    createStarfield();
+    createLights();
+    camera.position.z = 30;
+    
+    // Tạo hành tinh đầu tiên
+    createPlanet();
+    
+    // Controls
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    
+    // Xử lý resize
+    window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+    
+    // Animation loop
+    function animate() {
+        requestAnimationFrame(animate);
+        
+        // Xoay các hành tinh
+        planets.forEach(planet => {
+            planet.rotation.x += planet.userData.rotationSpeed.x;
+            planet.rotation.y += planet.userData.rotationSpeed.y;
+        });
+        
+        controls.update();
+        renderer.render(scene, camera);
+    }
+    
+    animate();
+    
+    // Tự động thêm hành tinh mới
+    setInterval(() => {
+        if (planets.length < 20) { // Giới hạn số hành tinh
+            createPlanet();
+        }
+    }, 3000);
+}
+
+// Khởi chạy
+init();
+    </script>
+</body>
+</html>
