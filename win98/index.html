@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fake OS - Web Edition</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="desktop">
+        <!-- Desktop Icons -->
+        <div class="icon" data-app="notepad">
+            <img src="https://win98icons.alexmeub.com/icons/png/accessibility_toggle2.png" alt="Notepad">
+            <span>Notepad</span>
+        </div>
+        <div class="icon" data-app="calculator">
+            <img src="https://win98icons.alexmeub.com/icons/png/accessibility_toggle2.png" alt="Calculator">
+            <span>Calculator</span>
+        </div>
+        <div class="icon" data-app="paint">
+            <img src="https://win98icons.alexmeub.com/icons/png/accessibility_toggle2.png" alt="Paint">
+            <span>Paint</span>
+        </div>
+        <div class="icon" data-app="game">
+            <img src="https://win98icons.alexmeub.com/icons/png/accessibility_toggle2.png" alt="Secret Game">
+            <span>Secret Game</span>
+        </div>
+    </div>
+
+    <!-- Taskbar -->
+    <div class="taskbar">
+        <div class="start-button">
+            <img src="assets/icons/start.png" alt="Start">
+            <span>Start</span>
+        </div>
+        <div class="taskbar-icons">
+            <div class="taskbar-icon" data-app="notepad">
+                <img src="assets/icons/notepad-small.png" alt="Notepad">
+            </div>
+        </div>
+        <div class="clock" id="clock">00:00:00</div>
+    </div>
+
+    <!-- App Windows -->
+    <div class="window" id="notepad-window">
+        <div class="title-bar">
+            <div class="title">Notepad</div>
+            <div class="controls">
+                <button class="minimize">-</button>
+                <button class="maximize">□</button>
+                <button class="close">×</button>
+            </div>
+        </div>
+        <div class="content">
+            <textarea id="notepad-content">Type here...</textarea>
+        </div>
+    </div>
+
+    <div class="window" id="calculator-window">
+        <div class="title-bar">
+            <div class="title">Calculator</div>
+            <div class="controls">
+                <button class="minimize">-</button>
+                <button class="maximize">□</button>
+                <button class="close">×</button>
+            </div>
+        </div>
+        <div class="content">
+            <div class="calculator">
+                <input type="text" id="calculator-display" disabled>
+                <div class="buttons">
+                    <button>7</button>
+                    <button>8</button>
+                    <button>9</button>
+                    <button>+</button>
+                    <button>4</button>
+                    <button>5</button>
+                    <button>6</button>
+                    <button>-</button>
+                    <button>1</button>
+                    <button>2</button>
+                    <button>3</button>
+                    <button>*</button>
+                    <button>0</button>
+                    <button>.</button>
+                    <button>=</button>
+                    <button>/</button>
+                    <button class="clear">C</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="window" id="paint-window">
+        <div class="title-bar">
+            <div class="title">Paint</div>
+            <div class="controls">
+                <button class="minimize">-</button>
+                    <button class="maximize">□</button>
+                <button class="close">×</button>
+            </div>
+        </div>
+        <div class="content">
+            <div class="paint-tools">
+                <button data-tool="pencil">✏️</button>
+                <button data-tool="eraser">🧽</button>
+                <input type="color" id="paint-color" value="#000000">
+                <input type="range" id="brush-size" min="1" max="50" value="5">
+            </div>
+            <canvas id="paint-canvas"></canvas>
+        </div>
+    </div>
+
+    <div class="window" id="game-window">
+        <div class="title-bar">
+            <div class="title">Secret Game</div>
+            <div class="controls">
+                <button class="minimize">-</button>
+                <button class="maximize">□</button>
+                <button class="close">×</button>
+            </div>
+        </div>
+        <div class="content">
+            <div id="game-container">
+                <h2>Snake Game</h2>
+                <canvas id="game-canvas" width="300" height="300"></canvas>
+                <p>Use arrow keys to move</p>
+                <p id="game-score">Score: 0</p>
+            </div>
+        </div>
+    </div>
+
+    <audio id="startup-sound" src="assets/sounds/startup.mp3"></audio>
+    <audio id="click-sound" src="assets/sounds/click.wav"></audio>
+
+    <script src="script.js"></script>
+</body>
+</html>
