@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>No Ad YouTube Premium</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #ff0000;
+      --secondary-color: #ff4d4d;
+      --dark-bg: #0f0f0f;
+      --dark-secondary: #272727;
+      --dark-tertiary: #3d3d3d;
+      --text-primary: #ffffff;
+      --text-secondary: #aaaaaa;
+      --transition-speed: 0.3s;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Roboto', 'Segoe UI', Arial, sans-serif;
+      background-color: var(--dark-bg);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Header Styles */
+    header {
+      background-color: var(--dark-secondary);
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: transform var(--transition-speed);
+    }
+
+    .logo:hover {
+      transform: scale(1.05);
+    }
+
+    .logo h1 {
+      font-size: 1.5rem;
+      background: linear-gradient(45deg, var(--primary-color), #ff8e8e);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-weight: 700;
+    }
+
+    .logo i {
+      color: var(--primary-color);
+      font-size: 1.8rem;
+    }
+
+    .search-container {
+      flex: 1;
+      display: flex;
+      max-width: 600px;
+      position: relative;
+    }
+
+    #searchInput {
+      flex: 1;
+      padding: 12px 16px;
+      border-radius: 30px;
+      border: 2px solid var(--dark-tertiary);
+      background-color: var(--dark-secondary);
+      color: var(--text-primary);
+      font-size: 1rem;
+      transition: all var(--transition-speed);
+    }
+
+    #searchInput:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.2);
+    }
+
+    #searchInput::placeholder {
+      color: var(--text-secondary);
+    }
+
+    #searchButton {
+      position: absolute;
+      right: 5px;
+      top: 5px;
+      background: var(--primary-color);
+      border: none;
+      color: white;
+      padding: 7px 15px;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all var(--transition-speed);
+    }
+
+    #searchButton:hover {
+      background: var(--secondary-color);
+      transform: scale(1.05);
+    }
+
+    .header-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .header-btn {
+      background: var(--dark-tertiary);
+      border: none;
+      color: var(--text-primary);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all var(--transition-speed);
+    }
+
+    .header-btn:hover {
+      background: var(--dark-tertiary);
+      transform: rotate(10deg);
+    }
+
+    /* Main Content */
+    main {
+      display: flex;
+      padding: 20px;
+      gap: 20px;
+      max-width: 1800px;
+      margin: 0 auto;
+    }
+
+    #videoPlayer {
+      flex: 1 1 65%;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      transition: all var(--transition-speed);
+    }
+
+    #videoPlayer:hover {
+      box-shadow: 0 15px 35px rgba(255, 0, 0, 0.2);
+    }
+
+    .player-container {
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%; /* 16:9 Aspect Ratio */
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    #playerIframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      border-radius: 12px;
+    }
+
+    .video-info {
+      padding: 15px;
+      background: var(--dark-secondary);
+      border-radius: 12px;
+      margin-top: 15px;
+    }
+
+    .video-info h2 {
+      margin-bottom: 10px;
+      font-size: 1.4rem;
+    }
+
+    .video-actions {
+      display: flex;
+      gap: 15px;
+      margin-top: 15px;
+    }
+
+    .action-btn {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--dark-tertiary);
+      border: none;
+      color: var(--text-primary);
+      padding: 8px 15px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all var(--transition-speed);
+    }
+
+    .action-btn:hover {
+      background: var(--primary-color);
+      transform: translateY(-2px);
+    }
+
+    /* Video List */
+    #videoList {
+      flex: 1 1 30%;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding-right: 5px;
+    }
+
+    #videoList::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    #videoList::-webkit-scrollbar-track {
+      background: var(--dark-secondary);
+      border-radius: 10px;
+    }
+
+    #videoList::-webkit-scrollbar-thumb {
+      background: var(--primary-color);
+      border-radius: 10px;
+    }
+
+    .section-title {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+      padding-bottom: 5px;
+      border-bottom: 2px solid var(--primary-color);
+    }
+
+    .videoItem {
+      background: var(--dark-secondary);
+      padding: 12px;
+      cursor: pointer;
+      display: flex;
+      gap: 12px;
+      border-radius: 10px;
+      transition: all var(--transition-speed);
+      animation: fadeIn 0.5s ease-out;
+      position: relative;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .videoItem:hover {
+      background: var(--dark-tertiary);
+      transform: translateX(5px);
+    }
+
+    .videoItem img {
+      width: 160px;
+      height: 90px;
+      border-radius: 6px;
+      object-fit: cover;
+      transition: all var(--transition-speed);
+    }
+
+    .videoItem:hover img {
+      transform: scale(1.05);
+    }
+
+    .videoInfo {
+      flex: 1;
+    }
+
+    .videoInfo h4 {
+      font-size: 0.95rem;
+      margin-bottom: 5px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .videoInfo p {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+    }
+
+    .favorite-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all var(--transition-speed);
+    }
+
+    .favorite-btn:hover {
+      color: var(--primary-color);
+      transform: scale(1.2);
+    }
+
+    .favorite-btn.active {
+      color: var(--primary-color);
+    }
+
+    /* Loading Animation */
+    .loader {
+      display: none;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .loader .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid var(--dark-tertiary);
+      border-top: 4px solid var(--primary-color);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1200px) {
+      main {
+        flex-direction: column;
+      }
+      
+      #videoPlayer, #videoList {
+        flex: 1 1 100%;
+      }
+      
+      #videoList {
+        max-height: none;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-between;
+      }
+      
+      .videoItem {
+        flex: 0 0 48%;
+      }
+    }
+
+    @media (max-width: 768px) {
+      header {
+        flex-wrap: wrap;
+      }
+      
+      .search-container {
+        order: 3;
+        flex: 1 1 100%;
+        margin-top: 10px;
+      }
+      
+      .videoItem {
+        flex: 0 0 100%;
+      }
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--dark-secondary);
+      color: var(--text-primary);
+      padding: 12px 20px;
+      border-radius: 8px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all var(--transition-speed);
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .toast i {
+      color: var(--primary-color);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo" onclick="location.reload()">
+      <i class="fab fa-youtube"></i>
+      <h1>No Ad YT Premium</h1>
+    </div>
+    
+    <div class="search-container">
+      <input type="text" id="searchInput" placeholder="Tìm kiếm video không quảng cáo..." />
+      <button id="searchButton" onclick="searchVideos()">
+        <i class="fas fa-search"></i>
+      </button>
+    </div>
+    
+    <div class="header-buttons">
+      <button class="header-btn" title="Lịch sử" onclick="showHistory()">
+        <i class="fas fa-history"></i>
+      </button>
+      <button class="header-btn" title="Yêu thích" onclick="showFavorites()">
+        <i class="fas fa-heart"></i>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <section id="videoPlayer">
+      <div class="player-container">
+        <iframe id="playerIframe" src="about:blank" allowfullscreen></iframe>
+      </div>
+      <div class="video-info">
+        <h2 id="videoTitle">Chọn một video để phát</h2>
+        <p id="videoDescription"></p>
+        <div class="video-actions">
+          <button class="action-btn" onclick="likeVideo()">
+            <i class="fas fa-thumbs-up"></i> Thích
+          </button>
+          <button class="action-btn" onclick="addToFavorites()">
+            <i class="fas fa-heart"></i> Yêu thích
+          </button>
+          <button class="action-btn" onclick="shareVideo()">
+            <i class="fas fa-share"></i> Chia sẻ
+          </button>
+        </div>
+      </div>
+    </section>
+    
+    <section id="videoList">
+      <h3 class="section-title">Kết quả tìm kiếm</h3>
+      <div class="loader">
+        <div class="spinner"></div>
+        <p>Đang tải video...</p>
+      </div>
+      <!-- Video items will be inserted here -->
+    </section>
+  </main>
+
+  <div class="toast" id="toast">
+    <i class="fas fa-check-circle"></i>
+    <span id="toastMessage"></span>
+  </div>
+
+  <script>
+    const apiKey = "AIzaSyCQLFP6dPYpUUaDisEKdg2MyBs3VUH4pIw";
+    let currentVideoId = null;
+    let currentVideoTitle = null;
+    let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+    let history = JSON.parse(localStorage.getItem('history')) || [];
+
+    // Initialize the app
+    document.addEventListener('DOMContentLoaded', function() {
+      // Load favorites and history from localStorage
+      loadFavorites();
+      loadHistory();
+      
+      // Add event listener for Enter key in search input
+      document.getElementById('searchInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          searchVideos();
+        }
+      });
+      
+      // Show welcome message
+      showToast('Chào mừng đến với No Ad YouTube! Tìm kiếm video để bắt đầu.');
+    });
+
+    function searchVideos() {
+      const query = document.getElementById('searchInput').value.trim();
+      if (!query) {
+        showToast('Vui lòng nhập từ khóa tìm kiếm');
+        return;
+      }
+
+      const loader = document.querySelector('.loader');
+      const videoList = document.getElementById('videoList');
+      const sectionTitle = videoList.querySelector('.section-title');
+      
+      sectionTitle.textContent = `Kết quả tìm kiếm: "${query}"`;
+      loader.style.display = 'block';
+      videoList.innerHTML = '';
+      videoList.appendChild(sectionTitle);
+      videoList.appendChild(loader);
+
+      const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=15&q=${encodeURIComponent(query)}&key=${apiKey}`;
+
+      fetch(url)
+        .then(res => res.json())
+        .then(data => {
+          loader.style.display = 'none';
+          
+          if (data.items && data.items.length > 0) {
+            data.items.forEach(item => {
+              const videoId = item.id.videoId;
+              const title = item.snippet.title;
+              const thumb = item.snippet.thumbnails.medium.url;
+              const channelTitle = item.snippet.channelTitle;
+              
+              const isFavorite = favorites.some(fav => fav.id === videoId);
+              
+              const div = document.createElement('div');
+              div.className = 'videoItem';
+              div.innerHTML = `
+                <img src="${thumb}" alt="${title}" />
+                <div class="videoInfo">
+                  <h4>${title}</h4>
+                  <p>${channelTitle}</p>
+                </div>
+                <button class="favorite-btn ${isFavorite ? 'active' : ''}" onclick="toggleFavorite(event, '${videoId}', '${title.replace(/'/g, "\\'")}', '${thumb}')">
+                  <i class="fas fa-heart"></i>
+                </button>
+              `;
+              
+              div.onclick = () => playVideo(videoId, title, item.snippet.description);
+              videoList.appendChild(div);
+            });
+            
+            // Add to search history
+            addToHistory(query);
+          } else {
+            videoList.innerHTML += '<p>Không tìm thấy video nào. Vui lòng thử từ khóa khác.</p>';
+          }
+        })
+        .catch(error => {
+          loader.style.display = 'none';
+          console.error('Error:', error);
+          showToast('Đã xảy ra lỗi khi tải video. Vui lòng thử lại.');
+        });
+    }
+
+    function playVideo(videoId, title, description) {
+      currentVideoId = videoId;
+      currentVideoTitle = title;
+      
+      const player = document.getElementById('playerIframe');
+      player.src = `https://www.youtube-nocookie.com/embed/${videoId}?rel=0&modestbranding=1&autoplay=1`;
+      
+      document.getElementById('videoTitle').textContent = title;
+      document.getElementById('videoDescription').textContent = description || 'Không có mô tả';
+      
+      // Add to history
+      addToHistory(videoId, title, true);
+      
+      // Scroll to top for better viewing experience
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function toggleFavorite(event, videoId, title, thumb) {
+      event.stopPropagation(); // Prevent triggering the video play
+      
+      const index = favorites.findIndex(fav => fav.id === videoId);
+      
+      if (index === -1) {
+        // Add to favorites
+        favorites.push({ id: videoId, title: title, thumb: thumb });
+        event.currentTarget.classList.add('active');
+        showToast('Đã thêm vào video yêu thích');
+      } else {
+        // Remove from favorites
+        favorites.splice(index, 1);
+        event.currentTarget.classList.remove('active');
+        showToast('Đã xóa khỏi video yêu thích');
+      }
+      
+      // Save to localStorage
+      localStorage.setItem('favorites', JSON.stringify(favorites));
+    }
+
+    function addToFavorites() {
+      if (!currentVideoId) {
+        showToast('Vui lòng chọn một video trước');
+        return;
+      }
+      
+      const index = favorites.findIndex(fav => fav.id === currentVideoId);
+      
+      if (index === -1) {
+        // Add to favorites
+        favorites.push({ 
+          id: currentVideoId, 
+          title: currentVideoTitle, 
+          thumb: `https://i.ytimg.com/vi/${currentVideoId}/mqdefault.jpg` 
+        });
+        showToast('Đã thêm vào video yêu thích');
+      } else {
+        // Remove from favorites
+        favorites.splice(index, 1);
+        showToast('Đã xóa khỏi video yêu thích');
+      }
+      
+      // Save to localStorage
+      localStorage.setItem('favorites', JSON.stringify(favorites));
+      
+      // Update favorite buttons
+      updateFavoriteButtons();
+    }
+
+    function updateFavoriteButtons() {
+      document.querySelectorAll('.favorite-btn').forEach(btn => {
+        const videoId = btn.getAttribute('onclick').split("'")[1];
+        if (favorites.some(fav => fav.id === videoId)) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+    }
+
+    function addToHistory(item, title = null, isVideo = false) {
+      const timestamp = new Date().toISOString();
+      
+      if (isVideo) {
+        // Add video to history
+        history.unshift({
+          type: 'video',
+          id: item,
+          title: title,
+          timestamp: timestamp
+        });
+      } else {
+        // Add search query to history
+        history.unshift({
+          type: 'search',
+          query: item,
+          timestamp: timestamp
+        });
+      }
+      
+      // Keep only the last 50 history items
+      if (history.length > 50) {
+        history = history.slice(0, 50);
+      }
+      
+      // Save to localStorage
+      localStorage.setItem('history', JSON.stringify(history));
+    }
+
+    function loadFavorites() {
+      // This would be called when showing favorites
+      // Implementation would be similar to searchVideos but using favorites array
+    }
+
+    function loadHistory() {
+      // This would be called when showing history
+      // Implementation would display history items
+    }
+
+    function showHistory() {
+      const videoList = document.getElementById('videoList');
+      videoList.innerHTML = '<h3 class="section-title">Lịch sử xem</h3>';
+      
+      if (history.length === 0) {
+        videoList.innerHTML += '<p>Chưa có lịch sử xem</p>';
+        return;
+      }
+      
+      history.forEach(item => {
+        if (item.type === 'video') {
+          const div = document.createElement('div');
+          div.className = 'videoItem';
+          div.innerHTML = `
+            <img src="https://i.ytimg.com/vi/${item.id}/mqdefault.jpg" alt="${item.title}" />
+            <div class="videoInfo">
+              <h4>${item.title}</h4>
+              <p>Đã xem: ${new Date(item.timestamp).toLocaleString()}</p>
+            </div>
+          `;
+          
+          div.onclick = () => playVideo(item.id, item.title, '');
+          videoList.appendChild(div);
+        }
+      });
+    }
+
+    function showFavorites() {
+      const videoList = document.getElementById('videoList');
+      videoList.innerHTML = '<h3 class="section-title">Video yêu thích</h3>';
+      
+      if (favorites.length === 0) {
+        videoList.innerHTML += '<p>Chưa có video yêu thích</p>';
+        return;
+      }
+      
+      favorites.forEach(fav => {
+        const div = document.createElement('div');
+        div.className = 'videoItem';
+        div.innerHTML = `
+          <img src="${fav.thumb}" alt="${fav.title}" />
+          <div class="videoInfo">
+            <h4>${fav.title}</h4>
+          </div>
+          <button class="favorite-btn active" onclick="toggleFavorite(event, '${fav.id}', '${fav.title.replace(/'/g, "\\'")}', '${fav.thumb}')">
+            <i class="fas fa-heart"></i>
+          </button>
+        `;
+        
+        div.onclick = () => playVideo(fav.id, fav.title, '');
+        videoList.appendChild(div);
+      });
+    }
+
+    function likeVideo() {
+      if (!currentVideoId) {
+        showToast('Vui lòng chọn một video trước');
+        return;
+      }
+      
+      showToast('Đã thích video');
+      // In a real app, this would send data to a backend
+    }
+
+    function shareVideo() {
+      if (!currentVideoId) {
+        showToast('Vui lòng chọn một video trước');
+        return;
+      }
+      
+      const url = `https://www.youtube.com/watch?v=${currentVideoId}`;
+      
+      if (navigator.share) {
+        navigator.share({
+          title: currentVideoTitle,
+          url: url
+        })
+        .catch(error => {
+          console.error('Error sharing:', error);
+        });
+      } else {
+        // Fallback for browsers that don't support Web Share API
+        navigator.clipboard.writeText(url)
+          .then(() => {
+            showToast('Đã sao chép liên kết vào clipboard');
+          })
+          .catch(err => {
+            console.error('Could not copy text: ', err);
+          });
+      }
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      const toastMessage = document.getElementById('toastMessage');
+      
+      toastMessage.textContent = message;
+      toast.classList.add('show');
+      
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
