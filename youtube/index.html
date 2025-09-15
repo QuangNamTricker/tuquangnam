@@ -11,6 +11,7 @@
       height: 100%;
       width: 100%;
       overflow: hidden;
+      user-select: none;
     }
     iframe {
       border: none;
@@ -19,14 +20,32 @@
     }
   </style>
 </head>
-<body>
+<body oncontextmenu="return false;">
   <iframe src="https://no-ad-youtube-premium.pages.dev/" allowfullscreen></iframe>
-  <script>
-    document.onkeydown = function(e) {
-      if (e.ctrlKey && e.key === 'u') return false;
-      if (e.key === "F12") return false;
-    }
-  </script>
   
+  <script>
+   
+    document.onkeydown = function(e) {
+      if (e.ctrlKey && (e.key === "u" || e.key === "U")) return false; 
+      if (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "i")) return false;
+      if (e.ctrlKey && e.shiftKey && (e.key === "J" || e.key === "j")) return false;
+      if (e.ctrlKey && (e.key === "S" || e.key === "s")) return false;
+      if (e.key === "F12") return false;
+    };
+
+   
+    document.onmousedown = function(e) {
+      if (e.button === 0 || e.button === 2) return false;
+    };
+
+   
+    (function() {
+      const devtools = /./;
+      devtools.toString = function() {
+        window.location.href = "https://no-ad-youtube-premium.pages.dev/";
+      };
+      console.log("%c", devtools);
+    })();
+  </script>
 </body>
 </html>
