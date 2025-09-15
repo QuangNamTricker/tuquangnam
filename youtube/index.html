@@ -39,13 +39,13 @@
     };
 
    
-    (function() {
-      const devtools = /./;
-      devtools.toString = function() {
-        window.location.href = "https://no-ad-youtube-premium.pages.dev/";
-      };
-      console.log("%c", devtools);
-    })();
+
+    document.onkeydown = function(e) {
+      if (e.ctrlKey && e.shiftKey && e.key === 'u') return false;
+      if (e.ctrlKey && e.key === 'i') return false;
+      if (e.key === "F12") return false;
+    }
+  
   </script>
 </body>
 </html>
