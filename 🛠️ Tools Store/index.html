@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tools Store - Từ Quang Nam</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #16213e 100%);
+            min-height: 100vh;
+            color: #fff;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(45deg, #00f0ff, #ff2d75);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #aaa;
+            font-size: 1.1rem;
+        }
+
+        .header .badge {
+            display: inline-block;
+            background: rgba(0, 240, 255, 0.15);
+            border: 1px solid #00f0ff;
+            color: #00f0ff;
+            padding: 5px 20px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-top: 10px;
+        }
+
+        /* Search & Filter */
+        .filter-section {
+            max-width: 1200px;
+            margin: 0 auto 30px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 30px;
+            padding: 5px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            flex: 1;
+            min-width: 250px;
+            max-width: 500px;
+            transition: all 0.3s ease;
+        }
+
+        .search-box:focus-within {
+            border-color: #00f0ff;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.1);
+        }
+
+        .search-box i {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .search-box input {
+            background: transparent;
+            border: none;
+            padding: 12px 15px;
+            color: #fff;
+            font-size: 0.95rem;
+            width: 100%;
+            outline: none;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .search-box input::placeholder {
+            color: #666;
+        }
+
+        .filter-tags {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-tag {
+            padding: 8px 20px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.05);
+            color: #aaa;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .filter-tag:hover {
+            border-color: #00f0ff;
+            color: #fff;
+        }
+
+        .filter-tag.active {
+            background: linear-gradient(45deg, #00f0ff, #ff2d75);
+            border-color: transparent;
+            color: #fff;
+        }
+
+        /* Products Grid */
+        .products-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            padding: 10px;
+        }
+
+        /* Product Card */
+        .product-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #00f0ff, #ff2d75);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(0, 240, 255, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .product-card:hover::before {
+            opacity: 1;
+        }
+
+        .product-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(45deg, #ff2d75, #ff6b6b);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .product-badge.hot {
+            background: linear-gradient(45deg, #ff6b35, #ff2d55);
+            animation: pulse-badge 2s infinite;
+        }
+
+        .product-badge.new {
+            background: linear-gradient(45deg, #00f0ff, #00d4ff);
+        }
+
+        @keyframes pulse-badge {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .product-icon {
+            font-size: 2.5rem;
+            color: #00f0ff;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .product-card h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+
+        .product-card .description {
+            color: #aaa;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            min-height: 50px;
+        }
+
+        .product-card .features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 15px;
+        }
+
+        .product-card .feature-tag {
+            background: rgba(0, 240, 255, 0.1);
+            border: 1px solid rgba(0, 240, 255, 0.15);
+            padding: 2px 12px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            color: #00f0ff;
+        }
+
+        .product-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .product-price {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #ff2d75;
+        }
+
+        .product-price .original {
+            font-size: 0.8rem;
+            color: #666;
+            text-decoration: line-through;
+            margin-left: 8px;
+            font-weight: 400;
+        }
+
+        .btn-buy {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 22px;
+            border-radius: 25px;
+            background: linear-gradient(45deg, #00f0ff, #00c8d6);
+            color: #000;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn-buy:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(0, 240, 255, 0.3);
+        }
+
+        .btn-buy i {
+            font-size: 0.9rem;
+        }
+
+        /* Stats */
+        .stats-bar {
+            max-width: 1200px;
+            margin: 30px auto 0;
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-item .number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #00f0ff;
+        }
+
+        .stat-item .label {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        /* Floating Zalo */
+        .zalo-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .zalo-float a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #0066ff, #00aaff);
+            color: #fff;
+            font-size: 2rem;
+            text-decoration: none;
+            box-shadow: 0 4px 20px rgba(0, 100, 255, 0.4);
+            transition: all 0.3s ease;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .zalo-float a:hover {
+            transform: scale(1.1);
+        }
+
+        .zalo-float .zalo-text {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 5px 12px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            color: #fff;
+            backdrop-filter: blur(5px);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* No results */
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+            grid-column: 1 / -1;
+        }
+
+        .no-results i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .filter-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                max-width: 100%;
+            }
+
+            .products-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .stats-bar {
+                gap: 20px;
+            }
+
+            .zalo-float {
+                bottom: 20px;
+                right: 20px;
+            }
+
+            .zalo-float a {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .products-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0f0f1a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(45deg, #00f0ff, #ff2d75);
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <h1>🛠️ Tools Store</h1>
+        <p>Bộ sưu tập công cụ chất lượng cao cho dân công nghệ</p>
+        <span class="badge"><i class="fas fa-bolt"></i> Đang có ưu đãi</span>
+    </div>
+
+    <!-- Filter -->
+    <div class="filter-section">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="Tìm kiếm sản phẩm...">
+        </div>
+        <div class="filter-tags">
+            <button class="filter-tag active" data-filter="all">Tất cả</button>
+            <button class="filter-tag" data-filter="tool">🔧 Tool</button>
+            <button class="filter-tag" data-filter="script">📜 Script</button>
+            <button class="filter-tag" data-filter="ai">🤖 AI</button>
+        </div>
+    </div>
+
+    <!-- Products -->
+    <div class="products-grid" id="productsGrid">
+        <!-- Products will be rendered by JavaScript -->
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-bar">
+        <div class="stat-item">
+            <div class="number" id="productCount">0</div>
+            <div class="label">Sản phẩm</div>
+        </div>
+        <div class="stat-item">
+            <div class="number" id="customerCount">0</div>
+            <div class="label">Khách hàng</div>
+        </div>
+        <div class="stat-item">
+            <div class="number" id="ratingCount">0</div>
+            <div class="label">Đánh giá ⭐</div>
+        </div>
+    </div>
+
+    <!-- Floating Zalo -->
+    <div class="zalo-float">
+        <a href="https://zalo.me/0888385536" target="_blank" title="Chat Zalo">
+            <i class="fas fa-comment-dots"></i>
+        </a>
+        <span class="zalo-text">Chat Zalo</span>
+    </div>
+
+    <script>
+        // Product Data
+        const products = [{
+            id: 1,
+            name: 'Auto TikTok Tool',
+            category: 'tool',
+            icon: 'fa-brands fa-tiktok',
+            description: 'Tự động tương tác TikTok: like, follow, comment, share. Hỗ trợ nhiều tài khoản.',
+            features: ['Tự động like', 'Follow hàng loạt', 'Comment thông minh', 'Proxy support'],
+            price: 299000,
+            originalPrice: 499000,
+            badge: 'hot',
+            badgeText: 'Hot'
+        }, {
+            id: 2,
+            name: 'SEO Spider Tool',
+            category: 'tool',
+            icon: 'fa-solid fa-spider',
+            description: 'Crawl dữ liệu website, phân tích SEO, kiểm tra backlink và từ khóa.',
+            features: ['Crawl sâu', 'Phân tích SEO', 'Báo cáo chi tiết', 'Export CSV'],
+            price: 399000,
+            originalPrice: 599000,
+            badge: 'new',
+            badgeText: 'Mới'
+        }, {
+            id: 3,
+            name: 'AI Content Generator',
+            category: 'ai',
+            icon: 'fa-solid fa-brain',
+            description: 'Tạo nội dung tự động bằng AI: viết bài, mô tả sản phẩm, quảng cáo.',
+            features: ['GPT-4 API', 'Đa ngôn ngữ', 'Tùy chỉnh style', 'Xuất bản 1 click'],
+            price: 499000,
+            originalPrice: 799000,
+            badge: '',
+            badgeText: ''
+        }, {
+            id: 4,
+            name: 'Auto Facebook Tool',
+            category: 'tool',
+            icon: 'fa-brands fa-facebook',
+            description: 'Tự động tương tác Facebook, đăng bài, gửi tin nhắn hàng loạt.',
+            features: ['Tự động tương tác', 'Đăng bài lịch', 'Spam tin nhắn', 'Quản lý group'],
+            price: 349000,
+            originalPrice: 549000,
+            badge: 'hot',
+            badgeText: 'Hot'
+        }, {
+            id: 5,
+            name: 'Data Scraper Pro',
+            category: 'script',
+            icon: 'fa-solid fa-database',
+            description: 'Cào dữ liệu từ các trang web, API, xử lý và lưu trữ thông minh.',
+            features: ['Cào dữ liệu', 'Xử lý JSON/CSV', 'Tự động schedule', 'Export đa định dạng'],
+            price: 449000,
+            originalPrice: 699000,
+            badge: '',
+            badgeText: ''
+        }, {
+            id: 6,
+            name: 'AI Image Generator',
+            category: 'ai',
+            icon: 'fa-solid fa-image',
+            description: 'Tạo hình ảnh bằng AI với hàng ngàn style và prompt tùy chỉnh.',
+            features: ['Midjourney API', 'Tùy chỉnh style', 'Tạo hàng loạt', 'Chỉnh sửa nâng cao'],
+            price: 599000,
+            originalPrice: 899000,
+            badge: 'new',
+            badgeText: 'Mới'
+        }, {
+            id: 7,
+            name: 'Zalo Auto Tool',
+            category: 'tool',
+            icon: 'fa-solid fa-comment',
+            description: 'Tự động gửi tin nhắn Zalo, tương tác với khách hàng, quản lý tin nhắn.',
+            features: ['Tự động reply', 'Gửi tin nhắn hàng loạt', 'Quản lý khách hàng', 'Báo cáo'],
+            price: 399000,
+            originalPrice: 599000,
+            badge: 'hot',
+            badgeText: 'Hot'
+        }, {
+            id: 8,
+            name: 'Premium Script Pack',
+            category: 'script',
+            icon: 'fa-solid fa-code',
+            description: 'Bộ sưu tập 50+ script chất lượng cao cho các tác vụ tự động.',
+            features: ['50+ script', 'Cập nhật thường xuyên', 'Hướng dẫn chi tiết', 'Hỗ trợ 24/7'],
+            price: 799000,
+            originalPrice: 1299000,
+            badge: '',
+            badgeText: ''
+        }];
+
+        // State
+        let currentFilter = 'all';
+        let searchQuery = '';
+
+        // DOM Elements
+        const grid = document.getElementById('productsGrid');
+        const searchInput = document.getElementById('searchInput');
+        const filterTags = document.querySelectorAll('.filter-tag');
+        const productCountEl = document.getElementById('productCount');
+
+        // Render products
+        function renderProducts() {
+            const filtered = products.filter(product => {
+                const matchFilter = currentFilter === 'all' || product.category === currentFilter;
+                const matchSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    product.description.toLowerCase().includes(searchQuery.toLowerCase());
+                return matchFilter && matchSearch;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-search" style="color: #444;"></i>
+                        <p>Không tìm thấy sản phẩm nào</p>
+                        <p style="font-size: 0.85rem; margin-top: 5px;">Thử tìm kiếm với từ khóa khác</p>
+                    </div>
+                `;
+            } else {
+                grid.innerHTML = filtered.map(product => `
+                    <div class="product-card" data-id="${product.id}">
+                        ${product.badge ? `<span class="product-badge ${product.badge}">${product.badgeText}</span>` : ''}
+                        <i class="${product.icon} product-icon"></i>
+                        <h3>${product.name}</h3>
+                        <p class="description">${product.description}</p>
+                        <div class="features">
+                            ${product.features.map(f => `<span class="feature-tag">${f}</span>`).join('')}
+                        </div>
+                        <div class="product-footer">
+                            <div class="product-price">
+                                ${formatPrice(product.price)}
+                                ${product.originalPrice ? `<span class="original">${formatPrice(product.originalPrice)}</span>` : ''}
+                            </div>
+                            <button class="btn-buy" onclick="buyProduct('${product.name}', ${product.price})">
+                                <i class="fas fa-shopping-cart"></i> Mua
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            // Update stats
+            productCountEl.textContent = filtered.length;
+            document.getElementById('customerCount').textContent = '128';
+            document.getElementById('ratingCount').textContent = '4.8';
+        }
+
+        // Format price
+        function formatPrice(price) {
+            return new Intl.NumberFormat('vi-VN', {
+                style: 'currency',
+                currency: 'VND'
+            }).format(price);
+        }
+
+        // Buy function - redirect to Zalo with message
+        function buyProduct(productName, price) {
+            const formattedPrice = formatPrice(price);
+            const message = `Mình muốn mua sản phẩm: ${productName} (${formattedPrice})`;
+            const encodedMessage = encodeURIComponent(message);
+            const zaloUrl = `https://zalo.me/0888385536?message=${encodedMessage}`;
+            
+            // Open Zalo in new tab
+            window.open(zaloUrl, '_blank');
+            
+            // Track click (optional)
+            console.log(`Buy product: ${productName} - ${formattedPrice}`);
+        }
+
+        // Event listeners
+        searchInput.addEventListener('input', (e) => {
+            searchQuery = e.target.value;
+            renderProducts();
+        });
+
+        filterTags.forEach(tag => {
+            tag.addEventListener('click', () => {
+                filterTags.forEach(t => t.classList.remove('active'));
+                tag.classList.add('active');
+                currentFilter = tag.dataset.filter;
+                renderProducts();
+            });
+        });
+
+        // Initial render
+        renderProducts();
+
+        // Simulate loading stats
+        setTimeout(() => {
+            document.getElementById('customerCount').textContent = '128';
+            document.getElementById('ratingCount').textContent = '4.8';
+        }, 500);
+
+        // Smooth scroll for mobile
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
