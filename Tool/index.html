@@ -543,7 +543,7 @@
             }
 
             grid.innerHTML = filtered.map(tool => `
-                <a href="/tool/${tool.id}/" class="tool-card" data-id="${tool.id}">
+                <a href="/Tool/${tool.id}/" class="tool-card" data-id="${tool.id}">
                     <span class="status-badge ${tool.status}">
                         ${tool.status === 'online' ? '🟢 Hoạt động' : 
                           tool.status === 'maintenance' ? '🟡 Bảo trì' : 
