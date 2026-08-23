@@ -1,0 +1,1471 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Token Facebook - Từ Quang Nam</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #00f0ff;
+            --secondary: #ff007f;
+            --accent: #7928ca;
+            --gold: #ffd700;
+            --success: #00ff88;
+            --danger: #ff4444;
+            --dark-bg: #080811;
+            --dark-card: #0d0f18;
+            --glass-bg: rgba(13, 15, 24, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.65);
+            --shadow-neon: 0 0 40px rgba(0, 240, 255, 0.08);
+            --shadow-glow: 0 0 60px rgba(24, 119, 242, 0.15);
+            --font-display: 'Orbitron', monospace;
+            --font-body: 'Poppins', sans-serif;
+            --fb-color: #1877f2;
+        }
+
+        body {
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            min-height: 100vh;
+            padding: 20px;
+            background-image: 
+                radial-gradient(ellipse at 10% 20%, rgba(24, 119, 242, 0.05) 0%, transparent 50%),
+                radial-gradient(ellipse at 90% 80%, rgba(255, 0, 127, 0.03) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(0, 240, 255, 0.02) 0%, transparent 70%);
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(2px 2px at 20% 30%, rgba(255,255,255,0.05), transparent),
+                radial-gradient(2px 2px at 40% 70%, rgba(255,255,255,0.03), transparent),
+                radial-gradient(2px 2px at 60% 20%, rgba(255,255,255,0.04), transparent),
+                radial-gradient(2px 2px at 80% 80%, rgba(255,255,255,0.03), transparent),
+                radial-gradient(1px 1px at 10% 90%, rgba(255,255,255,0.05), transparent),
+                radial-gradient(1px 1px at 90% 10%, rgba(255,255,255,0.04), transparent);
+            background-size: 200px 200px;
+            pointer-events: none;
+            z-index: 0;
+            animation: floatParticles 20s linear infinite;
+        }
+
+        @keyframes floatParticles {
+            0% { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(-100px) rotate(5deg); }
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 22px;
+            border-radius: 50px;
+            border: 1px solid var(--glass-border);
+            background: var(--glass-bg);
+            color: var(--text-secondary);
+            font-family: var(--font-body);
+            font-size: 0.8rem;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            backdrop-filter: blur(10px);
+            margin-bottom: 20px;
+        }
+
+        .back-btn:hover {
+            border-color: var(--primary);
+            color: var(--text-primary);
+            transform: translateX(-6px) scale(1.02);
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.05);
+        }
+
+        .version-badge {
+            display: inline-block;
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: 8px;
+            background: rgba(0, 240, 255, 0.08);
+            color: var(--primary);
+            border: 1px solid rgba(0, 240, 255, 0.08);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .version-badge:hover {
+            background: rgba(0, 240, 255, 0.15);
+            border-color: var(--primary);
+        }
+
+        .version-badge.updated {
+            border-color: var(--success);
+            color: var(--success);
+            background: rgba(0, 255, 136, 0.08);
+        }
+
+        .header {
+            text-align: center;
+            padding: 20px 0 30px;
+            position: relative;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40%;
+            max-width: 300px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--fb-color), var(--primary), transparent);
+            animation: glowLine 3s ease-in-out infinite;
+        }
+
+        @keyframes glowLine {
+            0%, 100% { opacity: 0.3; transform: translateX(-50%) scaleX(0.8); }
+            50% { opacity: 1; transform: translateX(-50%) scaleX(1); }
+        }
+
+        .header .icon-wrap {
+            width: 80px;
+            height: 80px;
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            margin: 0 auto 16px;
+            background: rgba(24, 119, 242, 0.08);
+            border: 1px solid rgba(24, 119, 242, 0.15);
+            color: var(--fb-color);
+            animation: pulseIcon 3s ease-in-out infinite;
+            transition: all 0.3s;
+        }
+
+        @keyframes pulseIcon {
+            0%, 100% { box-shadow: 0 0 20px rgba(24, 119, 242, 0.1); }
+            50% { box-shadow: 0 0 50px rgba(24, 119, 242, 0.2); }
+        }
+
+        .header h1 {
+            font-family: var(--font-display);
+            font-size: clamp(1.4rem, 4vw, 2.2rem);
+            font-weight: 700;
+            letter-spacing: 1px;
+            background: linear-gradient(135deg, #fff 30%, var(--primary), var(--fb-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-top: 10px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .header .badge {
+            display: inline-block;
+            background: rgba(24, 119, 242, 0.15);
+            color: var(--fb-color);
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: 8px;
+            border: 1px solid rgba(24, 119, 242, 0.1);
+        }
+
+        .header .warning {
+            display: inline-block;
+            padding: 6px 20px;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-top: 12px;
+            background: rgba(255, 215, 0, 0.08);
+            color: var(--gold);
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            animation: glowWarning 2.5s ease-in-out infinite;
+        }
+
+        @keyframes glowWarning {
+            0%, 100% { box-shadow: 0 0 10px rgba(255, 215, 0, 0.05); }
+            50% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.1); }
+        }
+
+        .input-section {
+            margin-top: 30px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px) saturate(1.2);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 28px;
+            animation: fadeInUp 0.8s ease 0.2s both;
+            transition: all 0.3s;
+        }
+
+        .input-section:hover {
+            border-color: rgba(0, 240, 255, 0.1);
+            box-shadow: var(--shadow-neon);
+        }
+
+        .input-section label {
+            display: block;
+            font-family: var(--font-display);
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .input-section .input-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .input-section input {
+            flex: 1;
+            min-width: 200px;
+            padding: 14px 18px;
+            border-radius: 14px;
+            border: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .input-section input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 40px rgba(0, 240, 255, 0.06), inset 0 0 20px rgba(0, 240, 255, 0.02);
+        }
+
+        .input-section input::placeholder {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+
+        .input-section .hint {
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 12px;
+            margin-top: 6px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .input-section .hint code {
+            background: rgba(255, 255, 255, 0.06);
+            padding: 2px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.5);
+            font-family: 'Consolas', monospace;
+        }
+
+        .input-section .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 14px;
+        }
+
+        .btn-primary {
+            padding: 12px 32px;
+            border-radius: 50px;
+            border: none;
+            background: linear-gradient(135deg, var(--fb-color), #0d4ea8);
+            color: #fff;
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1), transparent 60%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .btn-primary:hover::before {
+            opacity: 1;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 0 50px rgba(24, 119, 242, 0.25);
+        }
+
+        .btn-primary:active {
+            transform: scale(0.95);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .btn-secondary {
+            padding: 12px 24px;
+            border-radius: 50px;
+            border: 1px solid var(--glass-border);
+            background: var(--glass-bg);
+            color: var(--text-secondary);
+            font-family: var(--font-body);
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary);
+            color: var(--text-primary);
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.05);
+        }
+
+        .btn-secondary:active {
+            transform: scale(0.95);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+            margin-top: 20px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .loading .spinner {
+            width: 60px;
+            height: 60px;
+            border: 3px solid transparent;
+            border-top-color: var(--primary);
+            border-bottom-color: var(--secondary);
+            border-radius: 50%;
+            animation: spin3d 1s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+            margin: 0 auto 16px;
+            position: relative;
+        }
+
+        .loading .spinner::before {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            right: 8px;
+            bottom: 8px;
+            border: 3px solid transparent;
+            border-left-color: var(--accent);
+            border-right-color: var(--gold);
+            border-radius: 50%;
+            animation: spin3d 0.8s cubic-bezier(0.5, 0, 0.5, 1) infinite reverse;
+        }
+
+        @keyframes spin3d {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            animation: pulseText 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulseText {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        .loading .progress-bar {
+            max-width: 300px;
+            margin: 12px auto 0;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .loading .progress-bar .fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 4px;
+            animation: progressAnim 2s ease-in-out infinite;
+        }
+
+        @keyframes progressAnim {
+            0% { width: 0%; }
+            50% { width: 70%; }
+            100% { width: 100%; }
+        }
+
+        .result {
+            display: none;
+            margin-top: 30px;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .result.active {
+            display: block;
+        }
+
+        .result-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px) saturate(1.2);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 30px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .result-card:hover {
+            border-color: rgba(0, 240, 255, 0.1);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .result-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 100% 0%, rgba(24, 119, 242, 0.05), transparent 70%);
+            pointer-events: none;
+            animation: shimmerBg 8s linear infinite;
+        }
+
+        @keyframes shimmerBg {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .result-header .status-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .result-header .status-icon.success {
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(0, 255, 136, 0.1);
+        }
+
+        .result-header .status-icon.error {
+            background: rgba(255, 0, 127, 0.1);
+            color: var(--danger);
+            border: 1px solid rgba(255, 0, 127, 0.1);
+        }
+
+        .result-header .info h3 {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .result-header .info .sub {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+            padding: 12px 0;
+        }
+
+        .user-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--fb-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 700;
+            color: #0a0a1a;
+            flex-shrink: 0;
+            box-shadow: 0 0 30px rgba(24, 119, 242, 0.15);
+        }
+
+        .user-details .name {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .user-details .uid {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            font-family: 'Consolas', monospace;
+        }
+
+        .token-section {
+            margin: 12px 0;
+            padding: 14px 16px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .token-section .label {
+            color: var(--text-secondary);
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .token-section .token-display {
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.8rem;
+            line-height: 1.8;
+            word-break: break-all;
+            max-height: 120px;
+            overflow-y: auto;
+        }
+
+        .token-section .token-display::-webkit-scrollbar {
+            width: 4px;
+        }
+        .token-section .token-display::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        .token-section .token-display .prefix {
+            color: var(--gold);
+            font-weight: 700;
+        }
+
+        .token-section .token-display .body {
+            color: #8ab4f8;
+        }
+
+        .cookies-display {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            padding: 10px 14px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            margin-top: 8px;
+            font-family: 'Consolas', monospace;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            word-break: break-all;
+            max-height: 80px;
+            overflow-y: auto;
+            line-height: 1.8;
+        }
+
+        .converted-tokens {
+            margin-top: 14px;
+        }
+
+        .converted-tokens .title {
+            color: var(--text-secondary);
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .converted-tokens .title i {
+            color: var(--primary);
+        }
+
+        .token-item {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px 16px;
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            margin-bottom: 6px;
+            transition: all 0.3s;
+        }
+
+        .token-item:hover {
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .token-item .app-name {
+            font-size: 0.75rem;
+            font-weight: 600;
+            min-width: 140px;
+            color: var(--text-primary);
+        }
+
+        .token-item .app-prefix {
+            font-size: 0.65rem;
+            color: var(--gold);
+            font-family: 'Consolas', monospace;
+            padding: 2px 8px;
+            background: rgba(255, 215, 0, 0.08);
+            border-radius: 4px;
+        }
+
+        .token-item .app-token {
+            flex: 1;
+            font-size: 0.7rem;
+            font-family: 'Consolas', monospace;
+            color: #8ab4f8;
+            word-break: break-all;
+            min-width: 150px;
+        }
+
+        .token-item .copy-btn-sm {
+            padding: 4px 12px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-secondary);
+            font-size: 0.65rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .token-item .copy-btn-sm:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-primary);
+        }
+
+        .token-item .status-fail {
+            color: var(--danger);
+            font-size: 0.7rem;
+        }
+
+        .result-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 16px;
+            padding-top: 14px;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .result-actions .btn-sm {
+            padding: 8px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.04);
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .result-actions .btn-sm:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+        }
+
+        .result-actions .btn-sm.copied {
+            border-color: var(--success);
+            color: var(--success);
+        }
+
+        .error-box {
+            display: none;
+            margin-top: 20px;
+            padding: 20px 24px;
+            border-radius: 16px;
+            background: rgba(255, 0, 127, 0.06);
+            border: 1px solid rgba(255, 0, 127, 0.1);
+            color: var(--secondary);
+            animation: shake 0.5s ease;
+        }
+
+        .error-box.active {
+            display: block;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-10px); }
+            40% { transform: translateX(10px); }
+            60% { transform: translateX(-5px); }
+            80% { transform: translateX(5px); }
+        }
+
+        .error-box i {
+            margin-right: 10px;
+        }
+
+        .twofa-section {
+            display: none;
+            margin-top: 16px;
+            padding: 16px;
+            background: rgba(255, 215, 0, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 215, 0, 0.1);
+        }
+
+        .twofa-section.active {
+            display: block;
+        }
+
+        .twofa-section label {
+            color: var(--gold);
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .twofa-section input {
+            width: 100%;
+            padding: 10px 14px;
+            margin-top: 6px;
+            border-radius: 10px;
+            border: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            outline: none;
+        }
+
+        .twofa-section input:focus {
+            border-color: var(--gold);
+        }
+
+        .twofa-section .btn-2fa {
+            margin-top: 10px;
+            padding: 8px 24px;
+            border-radius: 50px;
+            border: none;
+            background: linear-gradient(135deg, var(--gold), #ff8c00);
+            color: #0a0a1a;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .twofa-section .btn-2fa:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
+        }
+
+        #toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(30px);
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            padding: 14px 32px;
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            box-shadow: var(--shadow-neon);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 999999;
+            pointer-events: none;
+            font-family: var(--font-body);
+            text-align: center;
+            max-width: 90%;
+        }
+
+        #toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .token-item {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 4px;
+            }
+            .token-item .app-name {
+                min-width: auto;
+            }
+            .token-item .app-token {
+                font-size: 0.65rem;
+            }
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 12px;
+            }
+            .input-section {
+                padding: 18px 16px;
+            }
+            .result-card {
+                padding: 18px 16px;
+            }
+            .input-section .input-group {
+                flex-direction: column;
+            }
+            .input-section input {
+                min-height: 50px;
+            }
+            .btn-group {
+                flex-direction: column;
+            }
+            .btn-primary, .btn-secondary {
+                width: 100%;
+                justify-content: center;
+            }
+            .header .icon-wrap {
+                width: 60px;
+                height: 60px;
+                font-size: 28px;
+            }
+            .result-actions {
+                flex-direction: column;
+            }
+            .result-actions .btn-sm {
+                justify-content: center;
+            }
+            .result-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            .user-info {
+                flex-direction: column;
+                text-align: center;
+            }
+            .converted-tokens .title {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .token-section .token-display {
+                font-size: 0.65rem;
+            }
+            .cookies-display {
+                font-size: 0.6rem;
+            }
+            .user-avatar {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <a href="/tool/" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Quay lại danh sách
+        </a>
+
+        <header class="header">
+            <div class="icon-wrap">
+                <i class="fa-solid fa-user-lock"></i>
+            </div>
+            <h1>Get Token Facebook</h1>
+            <p>Đăng nhập Facebook để lấy Access Token EAAAAU</p>
+            <span class="badge">🚀 Cloudflare Worker API</span>
+            <span class="version-badge" id="versionBadge" onclick="checkVersion()">
+                <i class="fas fa-code-branch"></i> v2.0.0
+            </span>
+            <span class="warning"><i class="fas fa-shield-alt"></i> Phương pháp giống Python tool - Nhập email + password</span>
+        </header>
+
+        <section class="input-section">
+            <label for="emailInput">
+                <i class="fas fa-envelope" style="color: var(--primary);"></i> 
+                Email / SĐT / UID
+            </label>
+            <div class="input-group">
+                <input type="text" id="emailInput" placeholder="Nhập email hoặc số điện thoại Facebook...">
+            </div>
+
+            <label for="passwordInput" style="margin-top:14px;">
+                <i class="fas fa-key" style="color: var(--gold);"></i> 
+                Mật khẩu
+            </label>
+            <div class="input-group">
+                <input type="password" id="passwordInput" placeholder="Nhập mật khẩu Facebook...">
+            </div>
+
+            <div class="twofa-section" id="twofaSection">
+                <label for="twofaInput">
+                    <i class="fas fa-shield-alt" style="color: var(--gold);"></i> 
+                    Mã 2FA (Google Authenticator)
+                </label>
+                <input type="text" id="twofaInput" placeholder="Nhập mã 6 số từ Google Authenticator...">
+                <button class="btn-2fa" id="submit2faBtn">Xác thực 2FA</button>
+            </div>
+
+            <div class="hint">
+                📌 Nhập email và mật khẩu để lấy token (giống Python tool)
+            </div>
+
+            <div class="btn-group">
+                <button class="btn-primary" id="loginBtn">
+                    <i class="fas fa-sign-in-alt"></i> Đăng nhập & Lấy Token
+                </button>
+                <button class="btn-secondary" id="clearBtn">
+                    <i class="fas fa-trash-alt"></i> Xóa
+                </button>
+            </div>
+        </section>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>🔄 Đang đăng nhập vào Facebook...</p>
+            <div class="progress-bar">
+                <div class="fill"></div>
+            </div>
+        </div>
+
+        <div class="error-box" id="errorBox">
+            <i class="fas fa-exclamation-circle"></i>
+            <span id="errorText">Lỗi: Không thể đăng nhập</span>
+        </div>
+
+        <div class="result" id="result">
+            <div class="result-card" id="resultCard"></div>
+        </div>
+    </div>
+
+    <div id="toast"></div>
+
+    <script>
+        // ================================================================
+        //  CONFIGURATION
+        // ================================================================
+        const API_URL = 'https://get-token-facebook.tuquangnam-facebook.workers.dev/';
+        let twofaRequired = false;
+        let loginData = {};
+
+        // ================================================================
+        //  DOM Elements
+        // ================================================================
+        const emailInput = document.getElementById('emailInput');
+        const passwordInput = document.getElementById('passwordInput');
+        const twofaInput = document.getElementById('twofaInput');
+        const loginBtn = document.getElementById('loginBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const submit2faBtn = document.getElementById('submit2faBtn');
+        const loading = document.getElementById('loading');
+        const result = document.getElementById('result');
+        const errorBox = document.getElementById('errorBox');
+        const errorText = document.getElementById('errorText');
+        const resultCard = document.getElementById('resultCard');
+        const versionBadge = document.getElementById('versionBadge');
+        const twofaSection = document.getElementById('twofaSection');
+
+        // ================================================================
+        //  Toast
+        // ================================================================
+        function showToast(msg, type = 'info') {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.add('show');
+            clearTimeout(t._hide);
+            t._hide = setTimeout(() => t.classList.remove('show'), 3000);
+        }
+
+        // ================================================================
+        //  Copy to Clipboard
+        // ================================================================
+        function copyToClipboard(text, label) {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text)
+                    .then(() => showToast(`📋 Đã copy ${label}!`, true))
+                    .catch(() => fallbackCopy(text, label));
+            } else {
+                fallbackCopy(text, label);
+            }
+        }
+
+        function fallbackCopy(text, label) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                showToast(`📋 Đã copy ${label}!`, true);
+            } catch (e) {
+                showToast(`❌ Không thể copy ${label}`, false);
+            }
+            document.body.removeChild(textarea);
+        }
+
+        // ================================================================
+        //  Check Version
+        // ================================================================
+        async function checkVersion() {
+            try {
+                const response = await fetch(API_URL + '?action=version');
+                const data = await response.json();
+                if (data.version) {
+                    versionBadge.textContent = `✅ v${data.version} (${data.date})`;
+                    versionBadge.className = 'version-badge updated';
+                    showToast(`✅ Worker v${data.version} - ${data.message}`, true);
+                }
+            } catch (error) {
+                showToast('❌ Không thể kiểm tra version', false);
+            }
+        }
+
+        // ================================================================
+        //  Render Result
+        // ================================================================
+        function renderResult(data) {
+            if (!data.success) {
+                let errorMsg = data.error || 'Lỗi không xác định';
+                
+                if (data.requires_2fa) {
+                    twofaSection.classList.add('active');
+                    showToast('🔐 Yêu cầu mã 2FA', true);
+                    return;
+                }
+
+                const html = `
+                    <div class="result-header">
+                        <div class="status-icon error">
+                            <i class="fas fa-times"></i>
+                        </div>
+                        <div class="info">
+                            <h3 style="color: var(--danger);">Đăng nhập thất bại</h3>
+                            <div class="sub">${errorMsg}</div>
+                        </div>
+                    </div>
+                `;
+                resultCard.innerHTML = html;
+                result.classList.add('active');
+                return;
+            }
+
+            // Build result HTML
+            const name = data.name || 'Unknown';
+            const uid = data.uid || 'N/A';
+            const initials = name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+
+            const originalToken = data.original_token?.token || '';
+            const originalPrefix = data.original_token?.prefix || 'EAAAAU';
+            const tokenBody = originalToken.replace(originalPrefix, '');
+
+            const cookieString = data.cookies?.string || '';
+            const converted = data.converted_tokens || {};
+            const convertedKeys = Object.keys(converted);
+
+            let html = `
+                <div class="result-header">
+                    <div class="status-icon success">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="info">
+                        <h3>✅ Đăng nhập thành công!</h3>
+                        <div class="sub">Token đã được lấy từ Facebook API</div>
+                    </div>
+                </div>
+
+                <div class="user-info">
+                    <div class="user-avatar">${initials}</div>
+                    <div class="user-details">
+                        <div class="name">${name}</div>
+                        <div class="uid"><i class="fas fa-id-card" style="color:var(--primary);"></i> UID: ${uid}</div>
+                    </div>
+                </div>
+
+                <div class="token-section">
+                    <div class="label">🎯 Token gốc (Facebook Android) - <span style="color:var(--success);font-weight:700;">HỢP LỆ</span></div>
+                    <div class="token-display">
+                        <span class="prefix">${originalPrefix}</span><span class="body">${tokenBody}</span>
+                        <div style="margin-top:4px;font-size:0.65rem;color:var(--success);">
+                            ✅ ${originalToken.length} ký tự · Prefix: ${originalPrefix}
+                        </div>
+                    </div>
+                </div>
+
+                ${cookieString ? `
+                <div style="margin-top:10px;">
+                    <div class="label" style="color:var(--text-secondary);font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;">
+                        🍪 Cookies
+                    </div>
+                    <div class="cookies-display">${cookieString}</div>
+                </div>
+                ` : ''}
+
+                <div class="converted-tokens">
+                    <div class="title">
+                        <i class="fas fa-exchange-alt"></i> Token chuyển đổi (${convertedKeys.length})
+                    </div>
+            `;
+
+            for (const key of convertedKeys) {
+                const item = converted[key];
+                if (item.success) {
+                    const token = item.token || '';
+                    const prefix = item.prefix || '';
+                    const body = token.replace(prefix, '');
+                    const platform = item.platform || '';
+                    const escapedToken = token.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+                    html += `
+                        <div class="token-item">
+                            <span class="app-name">${item.app_name || key} ${platform ? `(${platform})` : ''}</span>
+                            <span class="app-prefix">${prefix}</span>
+                            <span class="app-token">${body.substring(0, 30)}${body.length > 30 ? '...' : ''}</span>
+                            <button class="copy-btn-sm" onclick="copyToClipboard('${escapedToken}', 'Token ${item.app_name}')">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    html += `
+                        <div class="token-item">
+                            <span class="app-name">${item.app_name || key}</span>
+                            <span class="status-fail"><i class="fas fa-times"></i> ${item.error || 'Failed'}</span>
+                        </div>
+                    `;
+                }
+            }
+
+            html += `
+                </div>
+
+                <div class="result-actions">
+                    <button class="btn-sm" id="copyTokenBtn">
+                        <i class="fas fa-copy"></i> Copy Token gốc
+                    </button>
+                    <button class="btn-sm" id="copyCookieBtn">
+                        <i class="fas fa-copy"></i> Copy Cookies
+                    </button>
+                    <button class="btn-sm" id="viewJsonBtn">
+                        <i class="fas fa-code"></i> Xem JSON
+                    </button>
+                    <button class="btn-sm" id="useTokenBtn">
+                        <i class="fas fa-arrow-right"></i> Sử dụng Token
+                    </button>
+                </div>
+            `;
+
+            resultCard.innerHTML = html;
+            result.classList.add('active');
+
+            window._currentToken = originalToken;
+            window._currentCookies = cookieString;
+            window._currentData = data;
+
+            document.getElementById('copyTokenBtn').addEventListener('click', () => {
+                copyToClipboard(originalToken, 'Token');
+            });
+
+            document.getElementById('copyCookieBtn').addEventListener('click', () => {
+                copyToClipboard(cookieString, 'Cookies');
+            });
+
+            document.getElementById('viewJsonBtn').addEventListener('click', () => {
+                viewJson(data);
+            });
+
+            document.getElementById('useTokenBtn').addEventListener('click', () => {
+                useToken(originalToken);
+            });
+        }
+
+        function viewJson(data) {
+            const jsonString = JSON.stringify(data, null, 2);
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            window.open(url, '_blank');
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+            showToast('📄 Đã mở JSON trong tab mới', true);
+        }
+
+        function useToken(token) {
+            localStorage.setItem('fb_token_last', token);
+            showToast('✅ Đã lưu token, chuyển đến trang lấy thông tin...', true);
+            setTimeout(() => {
+                window.location.href = '/tool/get_thongtin_fb/';
+            }, 800);
+        }
+
+        // ================================================================
+        //  Login Function
+        // ================================================================
+        async function handleLogin(use2fa = false) {
+            const email = emailInput.value.trim();
+            const password = passwordInput.value.trim();
+            const twofa = twofaInput.value.trim();
+
+            if (!email || !password) {
+                showToast('⚠️ Vui lòng nhập email và mật khẩu!', false);
+                return;
+            }
+
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang đăng nhập...';
+            loading.classList.add('active');
+            result.classList.remove('active');
+            errorBox.classList.remove('active');
+            twofaSection.classList.remove('active');
+
+            try {
+                const payload = { email, password };
+                if (use2fa && twofa) {
+                    payload.twofa = twofa;
+                }
+
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || `HTTP ${response.status}`);
+                }
+
+                if (data.requires_2fa) {
+                    twofaRequired = true;
+                    twofaSection.classList.add('active');
+                    showToast('🔐 Yêu cầu nhập mã 2FA', true);
+                    loginBtn.disabled = false;
+                    loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Đăng nhập & Lấy Token';
+                    loading.classList.remove('active');
+                    return;
+                }
+
+                renderResult(data);
+
+                if (data.success) {
+                    showToast(`✅ Đăng nhập thành công! UID: ${data.uid}`, true);
+                    localStorage.setItem('fb_email_last', email);
+                }
+
+            } catch (error) {
+                errorText.textContent = `❌ Lỗi: ${error.message}`;
+                errorBox.classList.add('active');
+                showToast(`❌ ${error.message}`, false);
+
+                resultCard.innerHTML = `
+                    <div class="result-header">
+                        <div class="status-icon error">
+                            <i class="fas fa-times"></i>
+                        </div>
+                        <div class="info">
+                            <h3 style="color: var(--danger);">Lỗi kết nối</h3>
+                            <div class="sub">${error.message}</div>
+                        </div>
+                    </div>
+                `;
+                result.classList.add('active');
+            } finally {
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Đăng nhập & Lấy Token';
+                loading.classList.remove('active');
+            }
+        }
+
+        // ================================================================
+        //  Clear
+        // ================================================================
+        function clearAll() {
+            emailInput.value = '';
+            passwordInput.value = '';
+            twofaInput.value = '';
+            result.classList.remove('active');
+            errorBox.classList.remove('active');
+            loading.classList.remove('active');
+            twofaSection.classList.remove('active');
+            twofaRequired = false;
+            showToast('🗑️ Đã xóa dữ liệu', true);
+            emailInput.focus();
+        }
+
+        // ================================================================
+        //  Event Listeners
+        // ================================================================
+
+        loginBtn.addEventListener('click', () => handleLogin(false));
+        submit2faBtn.addEventListener('click', () => handleLogin(true));
+
+        // Enter key support
+        emailInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') passwordInput.focus();
+        });
+
+        passwordInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                if (twofaSection.classList.contains('active')) {
+                    twofaInput.focus();
+                } else {
+                    handleLogin(false);
+                }
+            }
+        });
+
+        twofaInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') handleLogin(true);
+        });
+
+        clearBtn.addEventListener('click', clearAll);
+
+        // ================================================================
+        //  Keyboard Shortcut: Ctrl+Shift+L
+        // ================================================================
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.shiftKey && e.key === 'L') {
+                e.preventDefault();
+                emailInput.focus();
+                showToast('🔍 Đã focus vào ô email', true);
+            }
+        });
+
+        // ================================================================
+        //  Init
+        // ================================================================
+        document.addEventListener('DOMContentLoaded', () => {
+            const saved = localStorage.getItem('fb_email_last');
+            if (saved) {
+                emailInput.value = saved;
+                showToast('📋 Đã load email đã lưu', true);
+            }
+
+            setTimeout(checkVersion, 1000);
+        });
+
+        console.log('🔐 Get Token Facebook - Từ Quang Nam (v2.0.0)');
+        console.log('📡 API:', API_URL);
+        console.log('💡 Hướng dẫn:');
+        console.log('  - Nhập email và mật khẩu Facebook');
+        console.log('  - Nhấn Ctrl+Shift+L để focus vào email');
+        console.log('  - Token lấy từ Facebook API thật, giống Python tool');
+        console.log('  - Nhấn badge v2.0.0 để kiểm tra version Worker');
+    </script>
+
+</body>
+</html>

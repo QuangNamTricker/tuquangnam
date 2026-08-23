@@ -1,0 +1,1454 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Thông Tin Facebook - Từ Quang Nam</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+    <style>
+        /* =============================================
+           RESET & ROOT
+           ============================================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #00f0ff;
+            --secondary: #ff007f;
+            --accent: #7928ca;
+            --gold: #ffd700;
+            --success: #00ff88;
+            --danger: #ff4444;
+            --dark-bg: #080811;
+            --dark-card: #0d0f18;
+            --glass-bg: rgba(13, 15, 24, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.65);
+            --shadow-neon: 0 0 40px rgba(0, 240, 255, 0.08);
+            --shadow-glow: 0 0 60px rgba(24, 119, 242, 0.15);
+            --font-display: 'Orbitron', monospace;
+            --font-body: 'Poppins', sans-serif;
+            --fb-color: #1877f2;
+        }
+
+        body {
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            min-height: 100vh;
+            padding: 20px;
+            background-image: 
+                radial-gradient(ellipse at 10% 20%, rgba(24, 119, 242, 0.05) 0%, transparent 50%),
+                radial-gradient(ellipse at 90% 80%, rgba(255, 0, 127, 0.03) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(0, 240, 255, 0.02) 0%, transparent 70%);
+            overflow-x: hidden;
+        }
+
+        /* Floating particles */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(2px 2px at 20% 30%, rgba(255,255,255,0.05), transparent),
+                radial-gradient(2px 2px at 40% 70%, rgba(255,255,255,0.03), transparent),
+                radial-gradient(2px 2px at 60% 20%, rgba(255,255,255,0.04), transparent),
+                radial-gradient(2px 2px at 80% 80%, rgba(255,255,255,0.03), transparent),
+                radial-gradient(1px 1px at 10% 90%, rgba(255,255,255,0.05), transparent),
+                radial-gradient(1px 1px at 90% 10%, rgba(255,255,255,0.04), transparent);
+            background-size: 200px 200px;
+            pointer-events: none;
+            z-index: 0;
+            animation: floatParticles 20s linear infinite;
+        }
+
+        @keyframes floatParticles {
+            0% { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(-100px) rotate(5deg); }
+        }
+
+        .container {
+            max-width: 950px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* =============================================
+           BACK BUTTON
+           ============================================= */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 22px;
+            border-radius: 50px;
+            border: 1px solid var(--glass-border);
+            background: var(--glass-bg);
+            color: var(--text-secondary);
+            font-family: var(--font-body);
+            font-size: 0.8rem;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            backdrop-filter: blur(10px);
+            margin-bottom: 20px;
+        }
+
+        .back-btn:hover {
+            border-color: var(--primary);
+            color: var(--text-primary);
+            transform: translateX(-6px) scale(1.02);
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.05);
+        }
+
+        /* =============================================
+           HEADER
+           ============================================= */
+        .header {
+            text-align: center;
+            padding: 20px 0 30px;
+            position: relative;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40%;
+            max-width: 300px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--fb-color), var(--primary), transparent);
+            animation: glowLine 3s ease-in-out infinite;
+        }
+
+        @keyframes glowLine {
+            0%, 100% { opacity: 0.3; transform: translateX(-50%) scaleX(0.8); }
+            50% { opacity: 1; transform: translateX(-50%) scaleX(1); }
+        }
+
+        .header .icon-wrap {
+            width: 80px;
+            height: 80px;
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            margin: 0 auto 16px;
+            background: rgba(24, 119, 242, 0.08);
+            border: 1px solid rgba(24, 119, 242, 0.15);
+            color: var(--fb-color);
+            animation: pulseIcon 3s ease-in-out infinite;
+            transition: all 0.3s;
+        }
+
+        @keyframes pulseIcon {
+            0%, 100% { box-shadow: 0 0 20px rgba(24, 119, 242, 0.1); }
+            50% { box-shadow: 0 0 50px rgba(24, 119, 242, 0.2); }
+        }
+
+        .header h1 {
+            font-family: var(--font-display);
+            font-size: clamp(1.4rem, 4vw, 2.2rem);
+            font-weight: 700;
+            letter-spacing: 1px;
+            background: linear-gradient(135deg, #fff 30%, var(--primary), var(--fb-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-top: 10px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .header .warning {
+            display: inline-block;
+            padding: 6px 20px;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-top: 12px;
+            background: rgba(255, 215, 0, 0.08);
+            color: var(--gold);
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            animation: glowWarning 2.5s ease-in-out infinite;
+        }
+
+        @keyframes glowWarning {
+            0%, 100% { box-shadow: 0 0 10px rgba(255, 215, 0, 0.05); }
+            50% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.1); }
+        }
+
+        /* =============================================
+           INPUT SECTION
+           ============================================= */
+        .input-section {
+            margin-top: 30px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px) saturate(1.2);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 28px;
+            animation: fadeInUp 0.8s ease 0.2s both;
+            transition: all 0.3s;
+        }
+
+        .input-section:hover {
+            border-color: rgba(0, 240, 255, 0.1);
+            box-shadow: var(--shadow-neon);
+        }
+
+        .input-section label {
+            display: block;
+            font-family: var(--font-display);
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .input-section .input-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .input-section textarea {
+            flex: 1;
+            min-width: 200px;
+            padding: 14px 18px;
+            border-radius: 14px;
+            border: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            outline: none;
+            transition: all 0.3s;
+            resize: vertical;
+            min-height: 80px;
+            line-height: 1.6;
+        }
+
+        .input-section textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 40px rgba(0, 240, 255, 0.06), inset 0 0 20px rgba(0, 240, 255, 0.02);
+        }
+
+        .input-section textarea::placeholder {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+
+        .input-section .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 14px;
+        }
+
+        .btn-primary {
+            padding: 12px 32px;
+            border-radius: 50px;
+            border: none;
+            background: linear-gradient(135deg, var(--fb-color), #0d4ea8);
+            color: #fff;
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1), transparent 60%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .btn-primary:hover::before {
+            opacity: 1;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 0 50px rgba(24, 119, 242, 0.25);
+        }
+
+        .btn-primary:active {
+            transform: scale(0.95);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .btn-secondary {
+            padding: 12px 24px;
+            border-radius: 50px;
+            border: 1px solid var(--glass-border);
+            background: var(--glass-bg);
+            color: var(--text-secondary);
+            font-family: var(--font-body);
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary);
+            color: var(--text-primary);
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.05);
+        }
+
+        .btn-secondary:active {
+            transform: scale(0.95);
+        }
+
+        .btn-success {
+            padding: 12px 24px;
+            border-radius: 50px;
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            background: rgba(0, 255, 136, 0.05);
+            color: var(--success);
+            font-family: var(--font-body);
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-success:hover {
+            background: rgba(0, 255, 136, 0.1);
+            border-color: var(--success);
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.1);
+        }
+
+        .proxy-info {
+            margin-top: 14px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            background: rgba(255, 215, 0, 0.04);
+            border: 1px solid rgba(255, 215, 0, 0.06);
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            animation: fadeIn 0.8s ease;
+        }
+
+        .proxy-info strong {
+            color: var(--gold);
+        }
+
+        /* =============================================
+           LOADING
+           ============================================= */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+            margin-top: 20px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .loading .spinner {
+            width: 60px;
+            height: 60px;
+            border: 3px solid transparent;
+            border-top-color: var(--primary);
+            border-bottom-color: var(--secondary);
+            border-radius: 50%;
+            animation: spin3d 1s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+            margin: 0 auto 16px;
+            position: relative;
+        }
+
+        .loading .spinner::before {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            right: 8px;
+            bottom: 8px;
+            border: 3px solid transparent;
+            border-left-color: var(--accent);
+            border-right-color: var(--gold);
+            border-radius: 50%;
+            animation: spin3d 0.8s cubic-bezier(0.5, 0, 0.5, 1) infinite reverse;
+        }
+
+        @keyframes spin3d {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            animation: pulseText 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulseText {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        .loading .progress-bar {
+            max-width: 300px;
+            margin: 12px auto 0;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .loading .progress-bar .fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 4px;
+            animation: progressAnim 2s ease-in-out infinite;
+        }
+
+        @keyframes progressAnim {
+            0% { width: 0%; }
+            50% { width: 70%; }
+            100% { width: 100%; }
+        }
+
+        /* =============================================
+           RESULT
+           ============================================= */
+        .result {
+            display: none;
+            margin-top: 30px;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .result.active {
+            display: block;
+        }
+
+        /* Profile Card */
+        .profile-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px) saturate(1.2);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 30px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .profile-card:hover {
+            border-color: rgba(0, 240, 255, 0.1);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .profile-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 100% 0%, rgba(24, 119, 242, 0.05), transparent 70%);
+            pointer-events: none;
+            animation: shimmerBg 8s linear infinite;
+        }
+
+        @keyframes shimmerBg {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .profile-avatar-wrap {
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid rgba(0, 240, 255, 0.15);
+            background: var(--dark-card);
+            box-shadow: 0 0 40px rgba(24, 119, 242, 0.15);
+            transition: all 0.3s;
+        }
+
+        .profile-avatar:hover {
+            transform: scale(1.05);
+            border-color: var(--primary);
+            box-shadow: 0 0 60px rgba(0, 240, 255, 0.2);
+        }
+
+        .profile-avatar-placeholder {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--fb-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            font-weight: 700;
+            color: #0a0a1a;
+            box-shadow: 0 0 40px rgba(24, 119, 242, 0.15);
+        }
+
+        .profile-avatar-ring {
+            position: absolute;
+            top: -6px;
+            left: -6px;
+            width: calc(100% + 12px);
+            height: calc(100% + 12px);
+            border-radius: 50%;
+            border: 2px solid transparent;
+            border-top-color: var(--primary);
+            border-bottom-color: var(--secondary);
+            animation: ringSpin 4s linear infinite;
+            pointer-events: none;
+        }
+
+        .profile-avatar-ring::before {
+            content: '';
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            right: 6px;
+            bottom: 6px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            border-left-color: var(--accent);
+            border-right-color: var(--gold);
+            animation: ringSpin 3s linear infinite reverse;
+            pointer-events: none;
+        }
+
+        @keyframes ringSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .profile-info h2 {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff 30%, var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .profile-info .profile-id {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 2px;
+        }
+
+        .profile-info .profile-id i {
+            color: var(--primary);
+        }
+
+        .profile-info .verified-badge {
+            display: inline-block;
+            padding: 2px 14px;
+            border-radius: 50px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(0, 255, 136, 0.1);
+            margin-top: 6px;
+            animation: glowBadge 2s ease-in-out infinite;
+        }
+
+        @keyframes glowBadge {
+            0%, 100% { box-shadow: 0 0 10px rgba(0, 255, 136, 0.05); }
+            50% { box-shadow: 0 0 30px rgba(0, 255, 136, 0.15); }
+        }
+
+        .profile-stats {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin: 14px 0 0;
+            padding: 14px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .profile-stats .stat {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .profile-stats .stat i {
+            color: var(--primary);
+            font-size: 0.8rem;
+        }
+
+        .profile-stats .stat strong {
+            color: var(--text-primary);
+        }
+
+        /* Details Grid */
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .detail-item {
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            transition: all 0.3s;
+        }
+
+        .detail-item:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(0, 240, 255, 0.05);
+            transform: translateX(4px);
+        }
+
+        .detail-item .label {
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .detail-item .label i {
+            color: var(--primary);
+            font-size: 0.6rem;
+        }
+
+        .detail-item .value {
+            font-size: 0.9rem;
+            margin-top: 4px;
+            font-weight: 500;
+            word-break: break-all;
+        }
+
+        .detail-item .value a {
+            color: var(--primary);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .detail-item .value a:hover {
+            color: var(--gold);
+            text-decoration: underline;
+        }
+
+        /* List Sections */
+        .list-section {
+            margin-top: 16px;
+        }
+
+        .list-section .section-title {
+            font-family: var(--font-display);
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .list-section .section-title i {
+            color: var(--primary);
+        }
+
+        .list-section .section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, var(--glass-border), transparent);
+        }
+
+        .list-item {
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            margin-bottom: 8px;
+            transition: all 0.3s;
+        }
+
+        .list-item:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(0, 240, 255, 0.05);
+            transform: translateX(4px);
+        }
+
+        .list-item .title {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .list-item .sub {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* =============================================
+           ERROR
+           ============================================= */
+        .error-box {
+            display: none;
+            margin-top: 20px;
+            padding: 20px 24px;
+            border-radius: 16px;
+            background: rgba(255, 0, 127, 0.06);
+            border: 1px solid rgba(255, 0, 127, 0.1);
+            color: var(--secondary);
+            animation: shake 0.5s ease;
+        }
+
+        .error-box.active {
+            display: block;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-10px); }
+            40% { transform: translateX(10px); }
+            60% { transform: translateX(-5px); }
+            80% { transform: translateX(5px); }
+        }
+
+        .error-box i {
+            margin-right: 10px;
+        }
+
+        /* =============================================
+           RAW JSON
+           ============================================= */
+        .raw-json {
+            margin-top: 20px;
+        }
+
+        .raw-json summary {
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            padding: 10px 0;
+            font-family: var(--font-display);
+            letter-spacing: 0.5px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .raw-json summary:hover {
+            color: var(--text-primary);
+        }
+
+        .raw-json summary::-webkit-details-marker {
+            color: var(--primary);
+        }
+
+        .raw-json pre {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 16px;
+            border-radius: 12px;
+            overflow-x: auto;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            border: 1px solid var(--glass-border);
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            transition: all 0.3s;
+        }
+
+        .raw-json pre:hover {
+            border-color: rgba(0, 240, 255, 0.05);
+        }
+
+        .raw-json pre::-webkit-scrollbar {
+            width: 4px;
+        }
+        .raw-json pre::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        /* =============================================
+           TOAST
+           ============================================= */
+        #toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(30px);
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            padding: 14px 32px;
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            box-shadow: var(--shadow-neon);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 999999;
+            pointer-events: none;
+            font-family: var(--font-body);
+            text-align: center;
+            max-width: 90%;
+        }
+
+        #toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* =============================================
+           ANIMATIONS
+           ============================================= */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* =============================================
+           RESPONSIVE
+           ============================================= */
+        @media (max-width: 640px) {
+            body {
+                padding: 12px;
+            }
+            .input-section {
+                padding: 18px 16px;
+            }
+            .profile-card {
+                padding: 18px 16px;
+            }
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            .profile-avatar, .profile-avatar-placeholder {
+                width: 80px;
+                height: 80px;
+                font-size: 32px;
+            }
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+            .input-section .input-group {
+                flex-direction: column;
+            }
+            .input-section textarea {
+                min-height: 100px;
+            }
+            .btn-group {
+                flex-direction: column;
+            }
+            .btn-primary, .btn-secondary, .btn-success {
+                width: 100%;
+                justify-content: center;
+            }
+            .header .icon-wrap {
+                width: 60px;
+                height: 60px;
+                font-size: 28px;
+            }
+            .profile-stats {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .profile-avatar, .profile-avatar-placeholder {
+                width: 70px;
+                height: 70px;
+                font-size: 28px;
+            }
+            .profile-info h2 {
+                font-size: 1.2rem;
+            }
+            .detail-item {
+                padding: 10px 12px;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Back Button -->
+        <a href="/tool/" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Quay lại danh sách
+        </a>
+
+        <!-- Header -->
+        <header class="header">
+            <div class="icon-wrap">
+                <i class="fa-brands fa-facebook"></i>
+            </div>
+            <h1>Get Thông Tin Facebook</h1>
+            <p>Nhập token Facebook (EAAAAU...) để lấy thông tin tài khoản người dùng</p>
+            <span class="warning"><i class="fas fa-shield-alt"></i> Token chỉ được xử lý trên trình duyệt của bạn</span>
+        </header>
+
+        <!-- Input Section -->
+        <section class="input-section">
+            <label for="tokenInput">
+                <i class="fas fa-key" style="color: var(--primary);"></i> 
+                Facebook Access Token
+            </label>
+            <div class="input-group">
+                <textarea id="tokenInput" placeholder="Paste token Facebook vào đây...&#10;Ví dụ: EAAAAUa"></textarea>
+            </div>
+            <div class="btn-group">
+                <button class="btn-primary" id="fetchBtn">
+                    <i class="fas fa-search"></i> Lấy thông tin
+                </button>
+                <button class="btn-secondary" id="refreshBtn">
+                    <i class="fas fa-sync-alt"></i> Làm mới
+                </button>
+                <button class="btn-secondary" id="clearBtn">
+                    <i class="fas fa-trash-alt"></i> Xóa
+                </button>
+                <button class="btn-secondary" id="pasteBtn">
+                    <i class="fas fa-paste"></i> Dán
+                </button>
+            </div>
+            <div class="proxy-info">
+                <i class="fas fa-info-circle" style="color: var(--primary);"></i>
+                <strong>Lưu ý:</strong> Sử dụng CORS proxy để gọi API Facebook. 
+                Token của bạn <strong>không bị gửi lên server</strong>, mọi thứ đều xử lý trên trình duyệt.
+            </div>
+        </section>
+
+        <!-- Loading -->
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>🔄 Đang lấy thông tin từ Facebook API...</p>
+            <div class="progress-bar">
+                <div class="fill"></div>
+            </div>
+        </div>
+
+        <!-- Error -->
+        <div class="error-box" id="errorBox">
+            <i class="fas fa-exclamation-circle"></i>
+            <span id="errorText">Lỗi: Token không hợp lệ hoặc đã hết hạn</span>
+        </div>
+
+        <!-- Result -->
+        <div class="result" id="result">
+            <!-- Profile Card -->
+            <div class="profile-card" id="profileCard">
+                <!-- Render by JavaScript -->
+            </div>
+
+            <!-- Raw JSON -->
+            <div class="raw-json">
+                <details>
+                    <summary><i class="fas fa-code"></i> Xem dữ liệu JSON thô</summary>
+                    <pre id="rawJson">{} </pre>
+                </details>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast"></div>
+
+    <!-- ============================================
+    SCRIPTS
+    ============================================ -->
+    <script>
+        // ================================================================
+        //  DOM Elements
+        // ================================================================
+        const tokenInput = document.getElementById('tokenInput');
+        const fetchBtn = document.getElementById('fetchBtn');
+        const refreshBtn = document.getElementById('refreshBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const pasteBtn = document.getElementById('pasteBtn');
+        const loading = document.getElementById('loading');
+        const result = document.getElementById('result');
+        const errorBox = document.getElementById('errorBox');
+        const errorText = document.getElementById('errorText');
+        const profileCard = document.getElementById('profileCard');
+        const rawJson = document.getElementById('rawJson');
+
+        // ================================================================
+        //  State
+        // ================================================================
+        let cachedData = null;
+        let cachedAvatar = null;
+        let isFetching = false;
+
+        // ================================================================
+        //  Toast
+        // ================================================================
+        function showToast(msg, type = 'info') {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.add('show');
+            clearTimeout(t._hide);
+            t._hide = setTimeout(() => t.classList.remove('show'), 3000);
+        }
+
+        // ================================================================
+        //  Render Profile from Cache
+        // ================================================================
+        function renderFromCache() {
+            if (cachedData) {
+                renderProfile(cachedData, cachedAvatar);
+                result.classList.add('active');
+                errorBox.classList.remove('active');
+                showToast('📋 Hiển thị dữ liệu đã lưu');
+            }
+        }
+
+        // ================================================================
+        //  Fetch Facebook Data
+        // ================================================================
+        async function fetchFacebookData(showLoading = true) {
+            const token = tokenInput.value.trim();
+
+            if (!token) {
+                showToast('⚠️ Vui lòng nhập token Facebook!');
+                tokenInput.focus();
+                return;
+            }
+
+            if (!token.startsWith('EAAAAU') && !token.startsWith('EAAG')) {
+                showToast('⚠️ Token không đúng định dạng! Phải bắt đầu bằng EAAAAU hoặc EAAG');
+                return;
+            }
+
+            if (isFetching) return;
+            isFetching = true;
+
+            // UI States
+            fetchBtn.disabled = true;
+            refreshBtn.disabled = true;
+            fetchBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tải...';
+            
+            if (showLoading) {
+                loading.classList.add('active');
+                result.classList.remove('active');
+                errorBox.classList.remove('active');
+            }
+
+            try {
+                const fields = [
+                    'id', 'name', 'first_name', 'last_name', 'email', 'birthday',
+                    'gender', 'locale', 'timezone', 'verified', 'updated_time',
+                    'link', 'relationship_status', 'hometown{name,id}',
+                    'location{name,id}', 'education{school{name,id},type}',
+                    'work{employer{name,id},start_date,end_date}'
+                ].join(',');
+
+                const apiUrl = `https://graph.facebook.com/me?access_token=${encodeURIComponent(token)}&fields=${fields}`;
+
+                let data = null;
+                let lastError = null;
+
+                const methods = [
+                    { name: 'Direct', fn: () => fetch(apiUrl) },
+                    { name: 'corsproxy.io', fn: () => fetch(`https://corsproxy.io/?${encodeURIComponent(apiUrl)}`) },
+                    { name: 'thingproxy', fn: () => fetch(`https://thingproxy.freeboard.io/fetch/${apiUrl}`) },
+                    { name: 'allorigins', fn: () => fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(apiUrl)}`) }
+                ];
+
+                for (const method of methods) {
+                    try {
+                        const response = await method.fn();
+                        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                        const text = await response.text();
+                        try {
+                            data = JSON.parse(text);
+                            if (data && !data.error) break;
+                        } catch (e) {
+                            throw new Error('Invalid JSON response');
+                        }
+                    } catch (error) {
+                        lastError = error;
+                    }
+                }
+
+                if (!data || data.error) {
+                    throw new Error(data?.error?.message || 'Không thể lấy dữ liệu. Token có thể không hợp lệ.');
+                }
+
+                if (!data.id) {
+                    throw new Error('Token không hợp lệ hoặc đã hết hạn.');
+                }
+
+                // Fetch avatar
+                let avatarUrl = null;
+                try {
+                    const avatarApi = `https://graph.facebook.com/me/picture?type=large&access_token=${encodeURIComponent(token)}&redirect=false`;
+                    const avatarResponse = await fetch(`https://corsproxy.io/?${encodeURIComponent(avatarApi)}`);
+                    if (avatarResponse.ok) {
+                        const avatarData = await avatarResponse.json();
+                        if (avatarData.data && avatarData.data.url) {
+                            avatarUrl = avatarData.data.url;
+                        }
+                    }
+                } catch (e) {
+                    console.warn('⚠️ Could not fetch avatar:', e.message);
+                }
+
+                // Cache data
+                cachedData = data;
+                cachedAvatar = avatarUrl;
+                localStorage.setItem('fb_token_last', token);
+                localStorage.setItem('fb_data_last', JSON.stringify({ data, avatar: avatarUrl }));
+
+                // Render
+                renderProfile(data, avatarUrl);
+                result.classList.add('active');
+                errorBox.classList.remove('active');
+                showToast('✅ Lấy thông tin thành công!');
+
+            } catch (error) {
+                errorText.textContent = `❌ Lỗi: ${error.message}`;
+                errorBox.classList.add('active');
+                result.classList.remove('active');
+                showToast(`❌ ${error.message}`);
+                console.error('❌ Error:', error);
+            } finally {
+                isFetching = false;
+                fetchBtn.disabled = false;
+                refreshBtn.disabled = false;
+                fetchBtn.innerHTML = '<i class="fas fa-search"></i> Lấy thông tin';
+                loading.classList.remove('active');
+            }
+        }
+
+        // ================================================================
+        //  Render Profile
+        // ================================================================
+        function renderProfile(data, avatarUrl) {
+            const name = data.name || 'Unknown';
+            const initials = name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+
+            let avatarHtml = '';
+            if (avatarUrl) {
+                avatarHtml = `
+                    <img src="${avatarUrl}" alt="${name}" class="profile-avatar" 
+                         onerror="this.style.display='none'; this.parentElement.querySelector('.profile-avatar-placeholder').style.display='flex';">
+                    <div class="profile-avatar-placeholder" style="display:none;">${initials}</div>
+                `;
+            } else {
+                avatarHtml = `<div class="profile-avatar-placeholder">${initials}</div>`;
+            }
+
+            let html = `
+                <div class="profile-header">
+                    <div class="profile-avatar-wrap">
+                        ${avatarHtml}
+                        <div class="profile-avatar-ring"></div>
+                    </div>
+                    <div class="profile-info">
+                        <h2>${name}</h2>
+                        <div class="profile-id">
+                            <i class="fas fa-id-card"></i> ID: ${data.id || 'N/A'}
+                        </div>
+                        ${data.verified ? '<div class="verified-badge"><i class="fas fa-check-circle"></i> Đã xác minh</div>' : ''}
+                    </div>
+                </div>
+            `;
+
+            const stats = [
+                { icon: 'fa-envelope', label: 'Email', value: data.email },
+                { icon: 'fa-calendar', label: 'Ngày sinh', value: data.birthday },
+                { icon: 'fa-venus-mars', label: 'Giới tính', value: data.gender },
+                { icon: 'fa-language', label: 'Ngôn ngữ', value: data.locale }
+            ].filter(s => s.value);
+
+            if (stats.length > 0) {
+                html += `<div class="profile-stats">`;
+                stats.forEach(s => {
+                    html += `
+                        <div class="stat">
+                            <i class="fas ${s.icon}"></i>
+                            <strong>${s.value}</strong>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+            }
+
+            html += `<div class="details-grid">`;
+
+            const fields = [
+                { label: 'Tên', value: data.first_name, icon: 'fa-user' },
+                { label: 'Họ', value: data.last_name, icon: 'fa-user' },
+                { label: 'Nơi ở', value: data.location?.name, icon: 'fa-location-dot' },
+                { label: 'Quê quán', value: data.hometown?.name, icon: 'fa-house' },
+                { label: 'Tình trạng', value: data.relationship_status, icon: 'fa-heart' },
+                { label: 'Múi giờ', value: data.timezone ? `UTC+${data.timezone}` : 'N/A', icon: 'fa-clock' },
+                { label: 'Cập nhật', value: data.updated_time ? new Date(data.updated_time).toLocaleString('vi-VN') : 'N/A',
+                    icon: 'fa-clock' },
+                { label: 'Link', value: data.link ? `<a href="${data.link}" target="_blank">Xem profile</a>` : 'N/A',
+                    icon: 'fa-link' }
+            ];
+
+            fields.forEach(f => {
+                if (f.value) {
+                    html += `
+                        <div class="detail-item">
+                            <div class="label"><i class="fas ${f.icon}"></i> ${f.label}</div>
+                            <div class="value">${f.value}</div>
+                        </div>
+                    `;
+                }
+            });
+
+            html += `</div>`;
+
+            if (data.work && data.work.length > 0) {
+                html += `
+                    <div class="list-section">
+                        <div class="section-title">
+                            <i class="fas fa-briefcase"></i> Công việc
+                        </div>
+                `;
+                data.work.forEach(w => {
+                    html += `
+                        <div class="list-item">
+                            <div class="title">${w.employer?.name || 'N/A'}</div>
+                            <div class="sub">${w.start_date && w.start_date !== '0000-00' ? `Từ ${w.start_date}` : ''} ${w.end_date && w.end_date !== '0000-00' ? `đến ${w.end_date}` : ''}</div>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+            }
+
+            if (data.education && data.education.length > 0) {
+                html += `
+                    <div class="list-section">
+                        <div class="section-title">
+                            <i class="fas fa-graduation-cap"></i> Học vấn
+                        </div>
+                `;
+                data.education.forEach(e => {
+                    html += `
+                        <div class="list-item">
+                            <div class="title">${e.school?.name || 'N/A'}</div>
+                            <div class="sub">${e.type || ''}</div>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+            }
+
+            profileCard.innerHTML = html;
+            rawJson.textContent = JSON.stringify(data, null, 2);
+        }
+
+        // ================================================================
+        //  Event Listeners
+        // ================================================================
+
+        // Fetch
+        fetchBtn.addEventListener('click', () => fetchFacebookData(true));
+
+        // Refresh - chỉ refresh nếu có token, không hiện loading xấu
+        refreshBtn.addEventListener('click', () => {
+            if (tokenInput.value.trim()) {
+                fetchFacebookData(true);
+            } else {
+                showToast('⚠️ Vui lòng nhập token trước');
+            }
+        });
+
+        // Ctrl+Enter
+        tokenInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+                e.preventDefault();
+                fetchFacebookData(true);
+            }
+        });
+
+        // Clear
+        clearBtn.addEventListener('click', () => {
+            tokenInput.value = '';
+            cachedData = null;
+            cachedAvatar = null;
+            localStorage.removeItem('fb_token_last');
+            localStorage.removeItem('fb_data_last');
+            result.classList.remove('active');
+            errorBox.classList.remove('active');
+            profileCard.innerHTML = '';
+            rawJson.textContent = '{}';
+            showToast('🗑️ Đã xóa token và dữ liệu');
+        });
+
+        // Paste
+        pasteBtn.addEventListener('click', async () => {
+            try {
+                const text = await navigator.clipboard.readText();
+                if (text) {
+                    tokenInput.value = text;
+                    showToast('✅ Đã dán từ clipboard');
+                }
+            } catch (err) {
+                showToast('⚠️ Không thể đọc clipboard. Vui lòng dán thủ công (Ctrl+V)');
+            }
+        });
+
+        // ================================================================
+        //  Auto-load saved data (KHÔNG tự động fetch)
+        // ================================================================
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load token
+            const savedToken = localStorage.getItem('fb_token_last');
+            if (savedToken) {
+                tokenInput.value = savedToken;
+            }
+
+            // Load cached data
+            const savedData = localStorage.getItem('fb_data_last');
+            if (savedData) {
+                try {
+                    const parsed = JSON.parse(savedData);
+                    if (parsed.data) {
+                        cachedData = parsed.data;
+                        cachedAvatar = parsed.avatar || null;
+                        renderFromCache();
+                    }
+                } catch (e) {
+                    console.warn('Could not load cached data');
+                }
+            }
+        });
+
+        // ================================================================
+        //  Keyboard Shortcut: Ctrl+Shift+F
+        // ================================================================
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.shiftKey && e.key === 'F') {
+                e.preventDefault();
+                tokenInput.focus();
+                tokenInput.select();
+                showToast('🔍 Đã focus vào ô nhập token');
+            }
+        });
+
+        // ================================================================
+        //  Console
+        // ================================================================
+        console.log('🚀 Get Thông Tin Facebook - Từ Quang Nam');
+        console.log('📱 Zalo: 0888385536');
+        console.log('💡 Hướng dẫn:');
+        console.log('  - Nhập token bắt đầu bằng EAAAAU hoặc EAAG');
+        console.log('  - Nhấn Ctrl+Enter để lấy thông tin');
+        console.log('  - Nhấn Ctrl+Shift+F để focus vào ô nhập');
+        console.log('  - Dữ liệu được cache, F5 không tự động gọi API');
+        console.log('  - Nhấn "Làm mới" để cập nhật dữ liệu mới');
+    </script>
+
+</body>
+</html>
