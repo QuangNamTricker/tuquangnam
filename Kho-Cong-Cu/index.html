@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tools & Extensions - Từ Quang Nam</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    
+    <style>
+        /* =============================================
+           RESET & ROOT
+           ============================================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #00f0ff;
+            --secondary: #ff007f;
+            --accent: #7928ca;
+            --gold: #ffd700;
+            --dark-bg: #080811;
+            --dark-card: #0d0f18;
+            --glass-bg: rgba(13, 15, 24, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.65);
+            --shadow-neon: 0 0 40px rgba(0, 240, 255, 0.08);
+            --font-display: 'Orbitron', monospace;
+            --font-body: 'Poppins', sans-serif;
+            --transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        body {
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            min-height: 100vh;
+            padding: 20px;
+            background-image: 
+                radial-gradient(ellipse at 10% 20%, rgba(0, 240, 255, 0.03) 0%, transparent 50%),
+                radial-gradient(ellipse at 90% 80%, rgba(255, 0, 127, 0.03) 0%, transparent 50%);
+            position: relative;
+        }
+
+        /* Loading spinner */
+        .loading-spinner {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(8, 8, 17, 0.9);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .loading-spinner.active {
+            display: flex;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 3px solid transparent;
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .spinner::before {
+            content: '';
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            right: 5px;
+            bottom: 5px;
+            border: 3px solid transparent;
+            border-bottom: 3px solid var(--secondary);
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite reverse;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* =============================================
+           HEADER
+           ============================================= */
+        .header {
+            text-align: center;
+            padding: 30px 20px 20px;
+            position: relative;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            max-width: 400px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary), var(--secondary), transparent);
+        }
+
+        .header-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: #0a0a1a;
+            font-family: var(--font-display);
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 6px 20px;
+            border-radius: 50px;
+            letter-spacing: 3px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        .header h1 {
+            font-family: var(--font-display);
+            font-size: clamp(1.6rem, 5vw, 3rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff 20%, var(--primary), var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 2px;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: clamp(0.85rem, 1.5vw, 1.1rem);
+            margin-top: 8px;
+            letter-spacing: 1px;
+        }
+
+        .header .sub-info {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 14px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .header .sub-info span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .header .sub-info i {
+            color: var(--primary);
+        }
+
+        /* =============================================
+           FILTER / SEARCH
+           ============================================= */
+        .filter-section {
+            max-width: 1100px;
+            margin: 24px auto 28px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 20px 12px 46px;
+            border-radius: 50px;
+            border: 1px solid var(--glass-border);
+            background: var(--glass-bg);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            outline: none;
+            transition: var(--transition);
+            backdrop-filter: blur(10px);
+        }
+
+        .search-box input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.06);
+        }
+
+        .search-box input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+        .filter-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .filter-btn {
+            padding: 8px 20px;
+            border-radius: 50px;
+            border: 1px solid var(--glass-border);
+            background: transparent;
+            color: var(--text-secondary);
+            font-family: var(--font-body);
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: var(--transition);
+            letter-spacing: 0.5px;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--primary);
+            color: var(--text-primary);
+            transform: translateY(-2px);
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: #0a0a1a;
+            border-color: transparent;
+            font-weight: 600;
+        }
+
+        /* =============================================
+           TOOLS GRID
+           ============================================= */
+        .tools-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            padding: 10px 0 40px;
+        }
+
+        /* =============================================
+           TOOL CARD - Nâng cấp
+           ============================================= */
+        .tool-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px) saturate(1.2);
+            -webkit-backdrop-filter: blur(20px) saturate(1.2);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 24px 22px 22px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .tool-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 100% 0%, rgba(0, 240, 255, 0.04), transparent 70%);
+            pointer-events: none;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: rgba(0, 240, 255, 0.2);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), var(--shadow-neon);
+        }
+
+        .tool-card:active {
+            transform: scale(0.97);
+        }
+
+        .tool-card .icon-wrap {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 14px;
+            background: rgba(0, 240, 255, 0.06);
+            border: 1px solid rgba(0, 240, 255, 0.06);
+            flex-shrink: 0;
+            transition: var(--transition);
+        }
+
+        .tool-card:hover .icon-wrap {
+            background: rgba(0, 240, 255, 0.12);
+            border-color: rgba(0, 240, 255, 0.15);
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.05);
+            transform: scale(1.05) rotate(-5deg);
+        }
+
+        .tool-card .icon-wrap i {
+            color: var(--primary);
+        }
+
+        .tool-card .tool-name {
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+            transition: var(--transition);
+        }
+
+        .tool-card:hover .tool-name {
+            color: var(--primary);
+        }
+
+        .tool-card .tool-desc {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            flex: 1;
+            margin: 6px 0 12px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .tool-card .tool-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 14px;
+        }
+
+        .tool-card .tool-tags span {
+            font-size: 0.6rem;
+            padding: 3px 12px;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: var(--transition);
+        }
+
+        .tool-card:hover .tool-tags span {
+            border-color: rgba(0, 240, 255, 0.1);
+            color: var(--text-primary);
+        }
+
+        .tool-card .tool-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 4px;
+            padding-top: 14px;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .tool-card .price {
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--gold), #ff6b00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .tool-card .price.free {
+            background: linear-gradient(135deg, #00ff88, #00cc66);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .tool-card .btn-detail {
+            padding: 8px 18px;
+            border-radius: 50px;
+            border: none;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: #0a0a1a;
+            font-family: var(--font-body);
+            font-size: 0.7rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+        }
+
+        .tool-card .btn-detail:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.25);
+        }
+
+        .tool-card .btn-detail:active {
+            transform: scale(0.93);
+        }
+
+        .tool-card .status-badge {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            font-size: 0.55rem;
+            padding: 3px 12px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-badge.available {
+            background: rgba(0, 255, 136, 0.12);
+            color: #00ff88;
+            border: 1px solid rgba(0, 255, 136, 0.1);
+        }
+
+        .status-badge.coming {
+            background: rgba(255, 215, 0, 0.12);
+            color: var(--gold);
+            border: 1px solid rgba(255, 215, 0, 0.1);
+        }
+
+        .status-badge.maintenance {
+            background: rgba(255, 0, 127, 0.12);
+            color: var(--secondary);
+            border: 1px solid rgba(255, 0, 127, 0.1);
+        }
+
+        /* =============================================
+           POPUP - Nâng cấp đẹp hơn
+           ============================================= */
+        .popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(8, 8, 17, 0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .popup-overlay.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .popup-content {
+            background: linear-gradient(145deg, rgba(13, 15, 24, 0.98), rgba(8, 8, 17, 0.98));
+            border: 1px solid var(--glass-border);
+            border-radius: 28px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 0;
+            position: relative;
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.8), 0 0 60px rgba(0, 240, 255, 0.05);
+            animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes slideUp {
+            from { 
+                opacity: 0;
+                transform: translateY(40px) scale(0.95);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .popup-header {
+            padding: 28px 30px 20px;
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            position: sticky;
+            top: 0;
+            background: rgba(8, 8, 17, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 10;
+            border-radius: 28px 28px 0 0;
+        }
+
+        .popup-header .popup-title-group {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex: 1;
+        }
+
+        .popup-header .popup-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            background: rgba(0, 240, 255, 0.08);
+            border: 1px solid rgba(0, 240, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: var(--primary);
+            flex-shrink: 0;
+        }
+
+        .popup-header h2 {
+            font-family: var(--font-display);
+            font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+            font-weight: 700;
+            margin: 0;
+            background: linear-gradient(135deg, #fff 20%, var(--primary), var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .popup-header .popup-status {
+            font-size: 0.7rem;
+            padding: 4px 16px;
+            border-radius: 50px;
+            font-weight: 600;
+            margin-top: 4px;
+            display: inline-block;
+        }
+
+        .popup-close {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-secondary);
+            font-size: 18px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-left: 16px;
+        }
+
+        .popup-close:hover {
+            background: rgba(255, 0, 127, 0.15);
+            border-color: var(--secondary);
+            color: var(--secondary);
+            transform: rotate(90deg);
+        }
+
+        .popup-body {
+            padding: 24px 30px 30px;
+            color: var(--text-primary);
+        }
+
+        .popup-body .detail-content {
+            font-size: 0.95rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+        }
+
+        .popup-body .detail-content h3 {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            margin: 24px 0 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .popup-body .detail-content h3:first-child {
+            margin-top: 0;
+        }
+
+        .popup-body .detail-content p {
+            margin-bottom: 12px;
+        }
+
+        .popup-body .detail-content ul {
+            list-style: none;
+            padding: 0;
+            margin: 12px 0;
+        }
+
+        .popup-body .detail-content ul li {
+            padding: 8px 0 8px 28px;
+            position: relative;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .popup-body .detail-content ul li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .popup-body .detail-content .highlight-box {
+            background: rgba(0, 240, 255, 0.04);
+            border: 1px solid rgba(0, 240, 255, 0.06);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin: 16px 0;
+        }
+
+        .popup-body .detail-content .highlight-box strong {
+            color: var(--primary);
+        }
+
+        .popup-footer {
+            padding: 16px 30px 24px;
+            border-top: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .popup-footer .popup-price {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--gold), #ff6b00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .popup-footer .popup-price.free {
+            background: linear-gradient(135deg, #00ff88, #00cc66);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .popup-footer .popup-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .popup-footer .btn-popup-contact {
+            padding: 10px 28px;
+            border-radius: 50px;
+            border: none;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: #0a0a1a;
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .popup-footer .btn-popup-contact:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 40px rgba(0, 240, 255, 0.3);
+        }
+
+        .popup-footer .btn-popup-contact:active {
+            transform: scale(0.95);
+        }
+
+        .popup-footer .btn-popup-close {
+            padding: 10px 24px;
+            border-radius: 50px;
+            border: 1px solid var(--glass-border);
+            background: transparent;
+            color: var(--text-secondary);
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .popup-footer .btn-popup-close:hover {
+            border-color: var(--text-primary);
+            color: var(--text-primary);
+        }
+
+        /* =============================================
+           TOAST
+           ============================================= */
+        #toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(30px);
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            padding: 14px 32px;
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            box-shadow: var(--shadow-neon);
+            opacity: 0;
+            transition: all 0.4s ease;
+            z-index: 999999;
+            pointer-events: none;
+            font-family: var(--font-body);
+            text-align: center;
+            max-width: 90%;
+        }
+
+        #toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* =============================================
+           RESPONSIVE
+           ============================================= */
+        @media (max-width: 640px) {
+            body { padding: 12px; }
+            .tools-grid { grid-template-columns: 1fr; gap: 16px; }
+            .filter-section { flex-direction: column; align-items: stretch; }
+            .search-box { max-width: 100%; }
+            .filter-buttons { justify-content: center; }
+            .filter-btn { font-size: 0.7rem; padding: 6px 14px; }
+            .tool-card { padding: 18px 16px 18px; }
+            .header h1 { font-size: 1.4rem; }
+            .header .sub-info { font-size: 0.7rem; gap: 12px; }
+            
+            .popup-content { max-height: 95vh; }
+            .popup-header { padding: 20px 18px 16px; flex-wrap: wrap; }
+            .popup-header .popup-title-group { flex-wrap: wrap; }
+            .popup-body { padding: 18px 18px 20px; }
+            .popup-footer { flex-direction: column; align-items: stretch; padding: 16px 18px 20px; }
+            .popup-footer .popup-actions { justify-content: stretch; }
+            .popup-footer .btn-popup-contact,
+            .popup-footer .btn-popup-close { flex: 1; justify-content: center; }
+        }
+
+        @media (max-width: 400px) {
+            .tool-card .tool-footer { flex-direction: column; gap: 10px; align-items: stretch; }
+            .tool-card .btn-detail { justify-content: center; }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+
+        .popup-content::-webkit-scrollbar { width: 3px; }
+        .popup-content::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 3px; }
+    </style>
+</head>
+<body>
+
+    <!-- Loading Spinner -->
+    <div class="loading-spinner" id="loadingSpinner">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- ============================================
+    HEADER
+    ============================================ -->
+    <header class="header">
+        <div class="header-badge">
+            <i class="fas fa-cubes"></i> TOOLS &amp; EXTENSIONS
+        </div>
+        <h1>⚡ Kho Công Cụ 5D</h1>
+        <p>Tổng hợp các tool, extension &amp; giải pháp công nghệ của <strong>Từ Quang Nam</strong></p>
+        <div class="sub-info">
+            <span><i class="fas fa-box"></i> <span id="totalTools">0</span> công cụ</span>
+            <span><i class="fas fa-tag"></i> <span id="totalCategories">0</span> danh mục</span>
+            <span><i class="fas fa-clock"></i> Cập nhật liên tục</span>
+        </div>
+    </header>
+
+    <!-- ============================================
+    FILTER / SEARCH
+    ============================================ -->
+    <section class="filter-section">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="🔍 Tìm kiếm công cụ...">
+        </div>
+        <div class="filter-buttons" id="filterButtons">
+            <button class="filter-btn active" data-filter="all">📋 Tất cả</button>
+        </div>
+    </section>
+
+    <!-- ============================================
+    TOOLS GRID
+    ============================================ -->
+    <section class="tools-grid" id="toolsGrid">
+        <!-- Render by JavaScript -->
+    </section>
+
+    <!-- ============================================
+    POPUP
+    ============================================ -->
+    <div class="popup-overlay" id="popupOverlay">
+        <div class="popup-content" id="popupContent">
+            <div class="popup-header">
+                <div class="popup-title-group">
+                    <div class="popup-icon" id="popupIcon">
+                        <i class="fas fa-cube"></i>
+                    </div>
+                    <div>
+                        <h2 id="popupTitle">Tool Name</h2>
+                        <span class="popup-status" id="popupStatus">✅ Sẵn sàng</span>
+                    </div>
+                </div>
+                <button class="popup-close" id="popupClose" aria-label="Đóng">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="popup-body">
+                <div class="detail-content" id="popupDetail">
+                    <!-- Nội dung chi tiết từ file HTML -->
+                </div>
+            </div>
+            <div class="popup-footer">
+                <span class="popup-price" id="popupPrice">0₫</span>
+                <div class="popup-actions">
+                    <button class="btn-popup-close" id="popupCloseBtn">Đóng</button>
+                    <button class="btn-popup-contact" id="popupContactBtn">
+                        <i class="fas fa-paper-plane"></i> Liên hệ Zalo
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================
+    TOAST
+    ============================================ -->
+    <div id="toast">✅ Đã sao chép!</div>
+
+    <!-- ============================================
+    SCRIPTS
+    ============================================ -->
+    <script>
+        // ================================================================
+        //  GLOBAL STATE
+        // ================================================================
+        let TOOLS_DATA = { tools: [] };
+        let currentFilter = 'all';
+        let currentSearch = '';
+        let currentTool = null;
+
+        // ================================================================
+        //  LOAD DATA FROM JSON
+        // ================================================================
+        async function loadData() {
+            try {
+                const response = await fetch('data.json');
+                if (!response.ok) throw new Error('Không thể tải data.json');
+                const data = await response.json();
+                TOOLS_DATA = data;
+                return true;
+            } catch (error) {
+                console.error('❌ Lỗi load data:', error);
+                // Fallback: dùng dữ liệu mẫu
+                TOOLS_DATA = {
+                    tools: [
+                        {
+                            id: 1,
+                            name: "SEO Analyzer Pro",
+                            slug: "seo-analyzer-pro",
+                            description: "Phân tích SEO toàn diện, đề xuất từ khóa, kiểm tra backlink và tốc độ tải trang.",
+                            category: "SEO",
+                            price: "1.200.000₫",
+                            status: "available",
+                            icon: "fa-solid fa-chart-line",
+                            tags: ["SEO", "Analytics", "Keyword"],
+                            detailFile: "seo-analyzer-pro.html"
+                        }
+                    ]
+                };
+                return false;
+            }
+        }
+
+        // ================================================================
+        //  RENDER TOOLS
+        // ================================================================
+        function renderTools() {
+            const grid = document.getElementById('toolsGrid');
+            const filtered = getFilteredTools();
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state" style="text-align:center;padding:60px 20px;color:var(--text-secondary);grid-column:1/-1;">
+                        <i class="fas fa-search" style="font-size:4rem;color:var(--primary);opacity:0.2;margin-bottom:16px;"></i>
+                        <h3 style="font-family:var(--font-display);font-size:1.2rem;color:var(--text-primary);">Không tìm thấy công cụ nào</h3>
+                        <p style="font-size:0.9rem;">Thử thay đổi từ khóa hoặc bộ lọc nhé!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(tool => `
+                <div class="tool-card" data-id="${tool.id}" onclick="openPopup(${tool.id})">
+                    <span class="status-badge ${tool.status}">
+                        ${tool.status === 'available' ? '✅ Sẵn sàng' : 
+                          tool.status === 'coming' ? '🚀 Sắp ra mắt' : 
+                          '🔧 Bảo trì'}
+                    </span>
+                    <div class="icon-wrap">
+                        <i class="${tool.icon}"></i>
+                    </div>
+                    <h3 class="tool-name">${tool.name}</h3>
+                    <p class="tool-desc">${tool.description}</p>
+                    <div class="tool-tags">
+                        ${tool.tags.map(tag => `<span>#${tag}</span>`).join('')}
+                    </div>
+                    <div class="tool-footer">
+                        <span class="price ${tool.price === '0₫' || tool.price === 'Miễn phí' ? 'free' : ''}">
+                            ${tool.price}
+                        </span>
+                        <button class="btn-detail" onclick="event.stopPropagation(); openPopup(${tool.id})">
+                            <i class="fas fa-eye"></i> Chi tiết
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            // Update stats
+            document.getElementById('totalTools').textContent = TOOLS_DATA.tools.length;
+            const categories = new Set(TOOLS_DATA.tools.map(t => t.category));
+            document.getElementById('totalCategories').textContent = categories.size;
+        }
+
+        // ================================================================
+        //  FILTER / SEARCH LOGIC
+        // ================================================================
+        function getFilteredTools() {
+            return TOOLS_DATA.tools.filter(tool => {
+                const matchFilter = currentFilter === 'all' || tool.category === currentFilter;
+                const search = currentSearch.toLowerCase().trim();
+                const matchSearch = !search ||
+                    tool.name.toLowerCase().includes(search) ||
+                    tool.description.toLowerCase().includes(search) ||
+                    tool.tags.some(t => t.toLowerCase().includes(search)) ||
+                    tool.category.toLowerCase().includes(search);
+                return matchFilter && matchSearch;
+            });
+        }
+
+        // ================================================================
+        //  FILTER BUTTONS
+        // ================================================================
+        function initFilters() {
+            const container = document.getElementById('filterButtons');
+            const categories = ['all', ...new Set(TOOLS_DATA.tools.map(t => t.category))];
+
+            container.innerHTML = '';
+
+            categories.forEach(cat => {
+                const btn = document.createElement('button');
+                btn.className = `filter-btn ${cat === 'all' ? 'active' : ''}`;
+                btn.dataset.filter = cat;
+                btn.textContent = cat === 'all' ? '📋 Tất cả' : cat;
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentFilter = cat;
+                    renderTools();
+                });
+                container.appendChild(btn);
+            });
+        }
+
+        // ================================================================
+        //  POPUP - Mở popup và load nội dung từ file HTML
+        // ================================================================
+        async function openPopup(toolId) {
+            const tool = TOOLS_DATA.tools.find(t => t.id === toolId);
+            if (!tool) {
+                showToast('❌ Không tìm thấy thông tin công cụ');
+                return;
+            }
+
+            currentTool = tool;
+            const overlay = document.getElementById('popupOverlay');
+            const spinner = document.getElementById('loadingSpinner');
+
+            // Hiển thị loading
+            spinner.classList.add('active');
+
+            // Cập nhật thông tin cơ bản
+            document.getElementById('popupIcon').innerHTML = `<i class="${tool.icon}"></i>`;
+            document.getElementById('popupTitle').textContent = tool.name;
+            
+            const statusMap = {
+                'available': '✅ Sẵn sàng',
+                'coming': '🚀 Sắp ra mắt',
+                'maintenance': '🔧 Bảo trì'
+            };
+            const statusEl = document.getElementById('popupStatus');
+            statusEl.textContent = statusMap[tool.status] || tool.status;
+            statusEl.className = `popup-status ${tool.status}`;
+
+            const priceEl = document.getElementById('popupPrice');
+            priceEl.textContent = tool.price;
+            priceEl.className = `popup-price ${tool.price === '0₫' || tool.price === 'Miễn phí' ? 'free' : ''}`;
+
+            // Load nội dung chi tiết từ file HTML
+            try {
+                let detailContent = '';
+                if (tool.detailFile) {
+                    const response = await fetch(tool.detailFile);
+                    if (response.ok) {
+                        detailContent = await response.text();
+                    } else {
+                        detailContent = generateFallbackContent(tool);
+                    }
+                } else {
+                    detailContent = generateFallbackContent(tool);
+                }
+                document.getElementById('popupDetail').innerHTML = detailContent;
+            } catch (error) {
+                console.error('❌ Lỗi load detail:', error);
+                document.getElementById('popupDetail').innerHTML = generateFallbackContent(tool);
+            }
+
+            // Ẩn loading và hiển thị popup
+            spinner.classList.remove('active');
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // ================================================================
+        //  FALLBACK CONTENT - Nếu không load được file HTML
+        // ================================================================
+        function generateFallbackContent(tool) {
+            return `
+                <h3>📌 Giới thiệu</h3>
+                <p>${tool.description}</p>
+                
+                <h3>🏷️ Danh mục</h3>
+                <p><strong>${tool.category}</strong></p>
+                
+                <h3>🔖 Tags</h3>
+                <div style="display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 16px;">
+                    ${tool.tags.map(tag => `<span style="padding:4px 14px;background:rgba(0,240,255,0.06);border:1px solid rgba(0,240,255,0.06);border-radius:50px;font-size:0.75rem;color:var(--text-secondary);">#${tag}</span>`).join('')}
+                </div>
+                
+                <div class="highlight-box">
+                    <strong>💰 Giá:</strong> ${tool.price}
+                </div>
+                
+                <div class="highlight-box">
+                    <strong>📱 Liên hệ:</strong> Từ Quang Nam - Zalo: 0888385536
+                </div>
+                
+                <h3>✨ Tính năng nổi bật</h3>
+                <ul>
+                    <li>Giao diện thân thiện, dễ sử dụng</li>
+                    <li>Hiệu suất cao, tối ưu hóa</li>
+                    <li>Hỗ trợ khách hàng 24/7</li>
+                    <li>Cập nhật tính năng mới thường xuyên</li>
+                </ul>
+            `;
+        }
+
+        // ================================================================
+        //  CLOSE POPUP
+        // ================================================================
+        function closePopup() {
+            document.getElementById('popupOverlay').classList.remove('active');
+            document.body.style.overflow = '';
+            currentTool = null;
+        }
+
+        // ================================================================
+        //  CONTACT ZALO
+        // ================================================================
+        function contactZalo(toolName, price) {
+            const phone = '0888385536';
+            const name = 'Từ Quang Nam';
+            const message = `Xin chào anh/chị! Em quan tâm đến tool: "${toolName}" - Giá: ${price}. Anh/chị tư vấn giúp em với ạ.`;
+
+            const zaloUrl = `https://zalo.me/${phone}`;
+            const info = `📌 Công cụ: ${toolName}\n💰 Giá: ${price}\n📱 Zalo: ${phone}\n👤 Từ Quang Nam`;
+
+            window.open(zaloUrl, '_blank');
+
+            navigator.clipboard.writeText(info).then(() => {
+                showToast(`✅ Đã sao chép thông tin liên hệ!\n📱 Zalo: ${phone}`);
+            }).catch(() => {
+                showToast(`📱 Liên hệ Zalo: ${phone}`);
+            });
+        }
+
+        // ================================================================
+        //  TOAST
+        // ================================================================
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.add('show');
+            clearTimeout(t._hide);
+            t._hide = setTimeout(() => t.classList.remove('show'), 3500);
+        }
+
+        // ================================================================
+        //  EVENT LISTENERS
+        // ================================================================
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            currentSearch = e.target.value;
+            renderTools();
+        });
+
+        document.getElementById('popupClose').addEventListener('click', closePopup);
+        document.getElementById('popupCloseBtn').addEventListener('click', closePopup);
+
+        document.getElementById('popupOverlay').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) closePopup();
+        });
+
+        document.getElementById('popupContactBtn').addEventListener('click', () => {
+            if (currentTool) {
+                contactZalo(currentTool.name, currentTool.price);
+            }
+        });
+
+        // ESC to close popup and clear search
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                if (document.getElementById('popupOverlay').classList.contains('active')) {
+                    closePopup();
+                } else {
+                    const input = document.getElementById('searchInput');
+                    if (input.value) {
+                        input.value = '';
+                        currentSearch = '';
+                        renderTools();
+                    }
+                }
+            }
+        });
+
+        // ================================================================
+        //  INIT
+        // ================================================================
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadData();
+            initFilters();
+            renderTools();
+            console.log('🚀 Tools & Extensions - Từ Quang Nam');
+            console.log(`📦 ${TOOLS_DATA.tools.length} tools loaded`);
+            console.log('📱 Zalo: 0888385536');
+            console.log('💡 Nhấn ESC để đóng popup hoặc xóa tìm kiếm');
+        });
+    </script>
+
+</body>
+</html>

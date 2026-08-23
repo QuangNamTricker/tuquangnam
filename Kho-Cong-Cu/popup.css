@@ -1,0 +1,43 @@
+/* File popup.css - Có thể dùng để mở rộng style popup */
+.popup-content {
+    scroll-behavior: smooth;
+}
+
+.popup-content .detail-content img {
+    max-width: 100%;
+    border-radius: 12px;
+    margin: 12px 0;
+}
+
+.popup-content .detail-content .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    margin: 12px 0;
+}
+
+.popup-content .detail-content .feature-item {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.04);
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+}
+
+.popup-content .detail-content .feature-item i {
+    font-size: 24px;
+    color: var(--primary);
+    margin-bottom: 8px;
+}
+
+.popup-content .detail-content .feature-item h4 {
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.popup-content .detail-content .feature-item p {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin: 0;
+}

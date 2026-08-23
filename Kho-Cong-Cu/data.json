@@ -1,0 +1,16 @@
+{
+  "tools": [
+    {
+      "id": 1,
+      "name": "Garena Auto Register Pro",
+      "slug": "garena-auto-register-pro",
+      "description": "Tool tự động đăng ký tài khoản Garena với xác thực email ảo, hỗ trợ proxy, lưu trữ Firebase và tích hợp Kill Switch từ xa.",
+      "category": "Tool",
+      "price": "200.000₫",
+      "status": "available",
+      "icon": "fa-solid fa-gamepad",
+      "tags": ["Garena", "Auto Register", "AI", "Proxy", "Email Ảo"],
+      "detailFile": "garena-auto-register-pro.html"
+    }
+  ]
+}
