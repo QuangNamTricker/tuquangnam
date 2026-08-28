@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thời khóa biểu</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f0f2f5;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .main-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+            width: 100%;
+            max-width: 1300px;
+            overflow: hidden;
+            padding: 8px 0;
+        }
+
+        .scroll-wrapper {
+            overflow: auto;
+            padding: 0 8px;
+            max-height: 750px;
+            position: relative;
+        }
+
+        .tkb-table {
+            border-collapse: collapse;
+            width: 100%;
+            font-size: 12px;
+            min-width: 950px;
+        }
+
+        .tkb-table th,
+        .tkb-table td {
+            border: 1px solid #e0e0e0;
+            padding: 0;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .tkb-shift-header {
+            background: #f8f9fa;
+            font-weight: 600;
+            border-right: 2px solid #ccc !important;
+            width: 70px;
+            min-width: 70px;
+            padding: 8px 4px;
+            font-size: 13px;
+        }
+
+        .tkb-day-header {
+            background: #f8f9fa;
+            padding: 6px 4px;
+            width: 130px;
+            min-width: 130px;
+            font-weight: normal;
+            font-size: 13px;
+        }
+
+        .tkb-day-name {
+            font-weight: 600;
+            display: block;
+            font-size: 14px;
+        }
+
+        .tkb-day-date {
+            display: block;
+            font-size: 11px;
+            color: #888;
+            font-weight: normal;
+            margin-top: 2px;
+        }
+
+        .tkb-shift-cell {
+            padding: 0;
+            width: 70px;
+            min-width: 70px;
+            border-right: 1px solid #ccc;
+            vertical-align: top;
+            background: #fafbfc;
+        }
+
+        .tkb-shift-cell .shift-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .tkb-shift-cell .shift-table td {
+            border: none;
+            border-bottom: 1px solid #eee;
+            padding: 2px 4px;
+            font-size: 11px;
+            height: 40px;
+            background: transparent;
+        }
+
+        .tkb-shift-cell .shift-table .shift-label {
+            background: #f0f4f8;
+            font-weight: 600;
+            font-size: 11px;
+            width: 45%;
+            color: #555;
+        }
+
+        .tkb-shift-cell .shift-table .shift-number {
+            background: white;
+            font-size: 11px;
+            color: #666;
+        }
+
+        .tkb-day-cell {
+            padding: 0;
+            vertical-align: top;
+            background: white;
+            position: relative;
+        }
+
+        .tkb-day-cell .day-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .tkb-day-cell .day-table td {
+            border: none;
+            border-bottom: 1px solid #f0f0f0;
+            height: 40px;
+            padding: 3px;
+            font-size: 11px;
+            background: white;
+            transition: background 0.15s;
+            cursor: pointer;
+            text-align: left;
+            vertical-align: middle;
+            position: relative;
+        }
+
+        .tkb-day-cell .day-table td:hover {
+            background: #f5f7fa;
+        }
+
+        .tkb-day-cell .day-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .tkb-afternoon-table td,
+        .tkb-evening-table td {
+            border-bottom: 1px solid #e0e0e0 !important;
+        }
+
+        .tkb-afternoon-table tr:first-child td {
+            border-top: 2px solid #ccc !important;
+        }
+
+        .tkb-evening-table tr:first-child td {
+            border-top: 2px solid #ccc !important;
+        }
+
+        /* Style cho môn học */
+        .subject-item {
+            font-size: 10px;
+            line-height: 1.3;
+            padding: 2px 4px;
+            border-radius: 3px;
+            background: #e8f0fe;
+            color: #1a5c9e;
+            width: 100%;
+            display: block;
+            cursor: pointer;
+        }
+
+        .subject-item .subject-code {
+            font-weight: 600;
+            font-size: 10px;
+            display: block;
+        }
+
+        .subject-item .subject-name {
+            font-size: 9px;
+            display: block;
+            color: #333;
+        }
+
+        .subject-item .subject-room {
+            font-size: 9px;
+            display: block;
+            color: #666;
+        }
+
+        .subject-item .subject-teacher {
+            font-size: 8px;
+            display: block;
+            color: #888;
+        }
+
+        .week-selector {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px 8px 16px;
+            border-top: 1px solid #e8e8e8;
+            margin: 0 8px;
+            flex-wrap: wrap;
+            background: #fafbfc;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .week-selector .label {
+            font-size: 13px;
+            font-weight: 500;
+            color: #333;
+            white-space: nowrap;
+        }
+
+        .week-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        .week-list .week-item {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            color: #333;
+            border: 1px solid transparent;
+            transition: all 0.15s;
+            user-select: none;
+        }
+
+        .week-list .week-item:hover {
+            background: #e8f0fe;
+            border-color: #d0d7de;
+        }
+
+        .week-list .week-item.active {
+            background: #1a73e8;
+            color: white;
+            font-weight: 600;
+            border-color: #1a73e8;
+        }
+
+        .week-list .week-item.active:hover {
+            background: #1557b0;
+            border-color: #1557b0;
+        }
+
+        .scroll-wrapper::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        .scroll-wrapper::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        .scroll-wrapper::-webkit-scrollbar-thumb {
+            background: #c1c7cd;
+            border-radius: 4px;
+        }
+
+        .scroll-wrapper::-webkit-scrollbar-thumb:hover {
+            background: #a0a8b0;
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: absolute;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 10px 14px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1000;
+            min-width: 250px;
+            max-width: 350px;
+            display: none;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .tooltip.show {
+            display: block;
+        }
+
+        .tooltip .tt-title {
+            font-weight: 600;
+            font-size: 13px;
+            color: #1a73e8;
+            margin-bottom: 4px;
+        }
+
+        .tooltip .tt-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 2px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .tooltip .tt-row:last-child {
+            border-bottom: none;
+        }
+
+        .tooltip .tt-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .tooltip .tt-value {
+            color: #333;
+            text-align: right;
+        }
+
+        @media (max-width: 768px) {
+            .tkb-table {
+                font-size: 10px;
+                min-width: 700px;
+            }
+
+            .tkb-shift-header {
+                width: 50px;
+                min-width: 50px;
+                font-size: 10px;
+            }
+
+            .tkb-day-header {
+                width: 90px;
+                min-width: 90px;
+                font-size: 10px;
+            }
+
+            .tkb-shift-cell {
+                width: 50px;
+                min-width: 50px;
+            }
+
+            .tkb-shift-cell .shift-table td {
+                height: 35px;
+                font-size: 9px;
+            }
+
+            .tkb-day-cell .day-table td {
+                height: 35px;
+                font-size: 9px;
+                padding: 2px;
+            }
+
+            .subject-item {
+                font-size: 8px;
+            }
+            .subject-item .subject-code { font-size: 8px; }
+            .subject-item .subject-name { font-size: 7px; }
+            .subject-item .subject-room { font-size: 7px; }
+            .subject-item .subject-teacher { font-size: 7px; }
+
+            .week-selector {
+                padding: 8px 10px;
+                gap: 8px;
+            }
+
+            .week-list .week-item {
+                width: 28px;
+                height: 28px;
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="scroll-wrapper">
+            <table class="tkb-table">
+                <colgroup>
+                    <col style="width:70px; min-width:70px;">
+                    <col style="width:130px; min-width:130px;">
+                    <col style="width:130px; min-width:130px;">
+                    <col style="width:130px; min-width:130px;">
+                    <col style="width:130px; min-width:130px;">
+                    <col style="width:130px; min-width:130px;">
+                    <col style="width:130px; min-width:130px;">
+                    <col style="width:130px; min-width:130px;">
+                </colgroup>
+                <tbody>
+                    <!-- Header -->
+                    <tr>
+                        <th class="tkb-shift-header" style="border-right: 2px solid #ccc">Tiết</th>
+                        <th class="tkb-day-header">
+                            <span class="tkb-day-name">Thứ 2</span>
+                            <span class="tkb-day-date">07/09</span>
+                        </th>
+                        <th class="tkb-day-header">
+                            <span class="tkb-day-name">Thứ 3</span>
+                            <span class="tkb-day-date">08/09</span>
+                        </th>
+                        <th class="tkb-day-header">
+                            <span class="tkb-day-name">Thứ 4</span>
+                            <span class="tkb-day-date">09/09</span>
+                        </th>
+                        <th class="tkb-day-header">
+                            <span class="tkb-day-name">Thứ 5</span>
+                            <span class="tkb-day-date">10/09</span>
+                        </th>
+                        <th class="tkb-day-header">
+                            <span class="tkb-day-name">Thứ 6</span>
+                            <span class="tkb-day-date">11/09</span>
+                        </th>
+                        <th class="tkb-day-header">
+                            <span class="tkb-day-name">Thứ 7</span>
+                            <span class="tkb-day-date">12/09</span>
+                        </th>
+                        <th class="tkb-day-header">
+                            <span class="tkb-day-name">CN</span>
+                            <span class="tkb-day-date">13/09</span>
+                        </th>
+                    </tr>
+
+                    <!-- Nội dung -->
+                    <tr>
+                        <!-- Cột Tiết -->
+                        <td class="tkb-shift-cell">
+                            <table class="shift-table">
+                                <tbody>
+                                    <tr><td class="shift-label" rowspan="5">Sáng</td><td class="shift-number">1</td></tr>
+                                    <tr><td class="shift-number">2</td></tr>
+                                    <tr><td class="shift-number">3</td></tr>
+                                    <tr><td class="shift-number">4</td></tr>
+                                    <tr><td class="shift-number">5</td></tr>
+                                </tbody>
+                            </table>
+                            <table class="shift-table">
+                                <tbody>
+                                    <tr><td class="shift-label" rowspan="5">Chiều</td><td class="shift-number">6</td></tr>
+                                    <tr><td class="shift-number">7</td></tr>
+                                    <tr><td class="shift-number">8</td></tr>
+                                    <tr><td class="shift-number">9</td></tr>
+                                    <tr><td class="shift-number">10</td></tr>
+                                </tbody>
+                            </table>
+                            <table class="shift-table">
+                                <tbody>
+                                    <tr><td class="shift-label" rowspan="5">Tối</td><td class="shift-number">11</td></tr>
+                                    <tr><td class="shift-number">12</td></tr>
+                                    <tr><td class="shift-number">13</td></tr>
+                                    <tr><td class="shift-number">14</td></tr>
+                                    <tr><td class="shift-number">15</td></tr>
+                                </tbody>
+                            </table>
+                        </td>
+
+                        <!-- Thứ 2 -->
+                        <td class="tkb-day-cell">
+                            <table class="day-table">
+                                <tbody>
+                                    <tr><td data-day="2" data-period="1"></td></tr>
+                                    <tr><td data-day="2" data-period="2"></td></tr>
+                                    <tr><td data-day="2" data-period="3">
+                                        <div class="subject-item" data-subject="10">
+                                            <span class="subject-code">INFa73301</span>
+                                            <span class="subject-name">Lập trình Web</span>
+                                            <span class="subject-room">A2 405</span>
+                                            <span class="subject-teacher">Lê Quốc Anh</span>
+                                        </div>
+                                    </td></tr>
+                                    <tr><td data-day="2" data-period="4">
+                                        <div class="subject-item" data-subject="10">
+                                            <span class="subject-code">INFa73301</span>
+                                            <span class="subject-name">Lập trình Web</span>
+                                            <span class="subject-room">A2 405</span>
+                                            <span class="subject-teacher">Lê Quốc Anh</span>
+                                        </div>
+                                    </td></tr>
+                                    <tr><td data-day="2" data-period="5">
+                                        <div class="subject-item" data-subject="10">
+                                            <span class="subject-code">INFa73301</span>
+                                            <span class="subject-name">Lập trình Web</span>
+                                            <span class="subject-room">A2 405</span>
+                                            <span class="subject-teacher">Lê Quốc Anh</span>
+                                        </div>
+                                    </td></tr>
+                                </tbody>
+                            </table>
+                            <table class="day-table">
+                                <tbody>
+                                    <tr><td data-day="2" data-period="6"></td></tr>
+                                    <tr><td data-day="2" data-period="7">
+                                        <div class="subject-item" data-subject="9">
+                                            <span class="subject-code">INFa72304</span>
+                                            <span class="subject-name">Cơ sở dữ liệu</span>
+                                            <span class="subject-room">B1 204</span>
+                                            <span class="subject-teacher">Phan Anh Phong</span>
+                                        </div>
+                                    </td></tr>
+                                    <tr><td data-day="2" data-period="8">
+                                        <div class="subject-item" data-subject="9">
+                                            <span class="subject-code">INFa72304</span>
+                                            <span class="subject-name">Cơ sở dữ liệu</span>
+                                            <span class="subject-room">B1 204</span>
+                                            <span class="subject-teacher">Phan Anh Phong</span>
+                                        </div>
+                                    </td></tr>
+                                    <tr><td data-day="2" data-period="9">
+                                        <div class="subject-item" data-subject="9">
+                                            <span class="subject-code">INFa72304</span>
+                                            <span class="subject-name">Cơ sở dữ liệu</span>
+                                            <span class="subject-room">B1 204</span>
+                                            <span class="subject-teacher">Phan Anh Phong</span>
+                                        </div>
+                                    </td></tr>
+                                    <tr><td data-day="2" data-period="10">
+                                        <div class="subject-item" data-subject="9">
+                                            <span class="subject-code">INFa72304</span>
+                                            <span class="subject-name">Cơ sở dữ liệu</span>
+                                            <span class="subject-room">B1 204</span>
+                                            <span class="subject-teacher">Phan Anh Phong</span>
+                                        </div>
+                                    </td></tr>
+                                </tbody>
+                            </table>
+                            <table class="day-table">
+                                <tbody>
+                                    <tr><td data-day="2" data-period="11"></td></tr>
+                                    <tr><td data-day="2" data-period="12">
+                                        <div class="subject-item" data-subject="10">
+                                            <span class="subject-code">INFa73301</span>
+                                            <span class="subject-name">Lập trình Web</span>
+                                            <span class="subject-room">P. Đồ án 4</span>
+                                            <span class="subject-teacher">Lê Quốc Anh</span>
+                                        </div>
+                                    </td></tr>
+                                    <tr><td data-day="2" data-period="13"></td></tr>
+                                    <tr><td data-day="2" data-period="14"></td></tr>
+                                    <tr><td data-day="2" data-period="15"></td></tr>
+                                </tbody>
+                            </table>
+                        </td>
+
+                        <!-- Thứ 3 -->
+                        <td class="tkb-day-cell">
+                            <table class="day-table">
+                                <tbody>
+                                    <tr><td data-day="3" data-period="1"></td></tr>
+                                    <tr><td data-day="3" data-period="2"></td></tr>
+                                    <tr><td data-day="3" data-period="3"></td></tr>
+                                    <tr><td data-day="3" data-period="4"></td></tr>
+                                    <tr><td data-day="3" data-period="5"></td></tr>
+                                </tbody>
+                            </table>
+                            <table class="day-table">
+                                <tbody>
+                                    <tr><td data-day="3" data-period="6"></td></tr>
+                                    <tr><td data-day="3" data-period="7"></td></tr>
+                                    <tr><td data-day="3" data-period="8"></td></tr>
+                                    <tr><td data-day="3" data-period="9"></td></tr>
+                                    <tr><td data-day="3" data-period="10"></td></tr>
+                                </tbody>
+                            </table>
+                            <table class="day-table">
+                                <tbody>
+                                    <tr><td data-day="3" data-period="11"></td></tr>
+                                    <tr><td data-day="3" data-period="12"></td></tr>
+                                    <tr><td data-day="3" data-period="13"></td></tr>
+                                    <tr><td data-day="3" data-period="14"></td></tr>
+                                    <tr><td data-day="3" data-period="15"></td></tr>
+                                </tbody>
+                            </table>
+                        </td>
+
+                        <!-- Thứ 4 -->
+                        <td class="tkb-day-cell">
+                            <table class="day-table">
+                                <tbody>
+                                    <tr><td data-day="4" data-period="1"></td></tr>
+                                    <tr><td data-day="4" data-period="2">
+                                        <div class="subject-item" data-subject="12">
+                                            <span class="subject-code">MATa71314</span>
+                                            <span class="subject-name">Xác suất và thống kê</span>
+                                            <span class="subject-room">B2 205</span>
+                                            <span class="subject-teacher">Võ Thị Hồng Vân</span>
+                                        </div>
+                                    </td></tr>
+                                    <tr><td data-day="4" data-period="3">
+                                        <div class="subject-item" data-subject="12">
+                                            <span class="subject-code">MATa71314</span>
+                                            <span class="subject-name">Xác suất và thống kê</span>
+                                            <span class="subject-room">B2 205</span>
+                                            <span class="subject-teacher">Võ Thị Hồng Vân</span>
+                                        </div>
+                                    </td></tr>
+                                    <tr><td data-day="4" data-period="4">
+                                        <div class="subject-item" data-subject="12">
+                                            <span class="subject-code">MATa71314</span>
+                                            <span class="subject-name">Xác suất và thống kê</span>
+                                            <span class="subject-room">B2 205</span>
+                                            <span class="subject-teacher">Võ Thị Hồng Vân</span>
+                                        </div>
+                                    </td></tr>
+                                    <tr><td data-day="4" data-period="5">
+                                        <div class="subject-item" data-subject="12">
+                                            <span class="subject-code">MATa71314</span>
+                                            <span class="subject-name">Xác suất và thống kê</span>
+                                            <span class="subject-room">B2 205</span>
+                                            <span class="subject-teacher">Võ Thị Hồng Vân</span>
+                                        </div>
+                                    </td></tr>
+                                </tbody>
+                            </table>
+                            <table class="day-table">
+                                <tbody>
+                                    <tr><td data-day="4" data-period="6">
+                                        <div class="subject-item" data-subject="7">
+                                            <span class="subject-code">INFa72305</span>
+                                            <span class="subject-name">Cấu trúc dữ liệu và giải thuật</span>
+                                            <span class="subject-room">A2 404</span>
+                                            <span class="subject-teacher">Nguyễn Thị Uyên</span>
+                                        </div>
+                                    </td></tr>
+                                    <tr><td data-day="4" data-period="7">
+                                        <div class="subject-item" data-subject="7">
+                                            <span class="subject-code">INFa72305</span>
+                                            <span class="subject-name">Cấu trúc dữ liệu và giải thuật</span>
+                                            <span class="subject-room">A2 404</span>
+                                            <span class="subject-teacher">Nguyễn Thị Uyên</span>
+                                        </div>
+                                    </td></tr>
+                                    <tr><td data-day="4" data-period="8">
+                                        <div class="subject-item" data-subject="7">
+                                            <span class="subject-code">INFa72305</span>
+                                            <span class="subject-name">Cấu trúc dữ liệu và giải thuật</span>
+                                            <span class="subject-room">A2 404</span>
+                                            <span class="subject-teacher">Nguyễn Thị Uyên</span>
+                                        </div>
+                                    </td></tr>
+                                    <tr><td data-day="4" data-period="9">
+                                        <div class="subject-item" data-subject="7">
+                                            <span class="subject-code">INFa72305</span>
+                                            <span class="subject-name">Cấu trúc dữ liệu và giải thuật</span>
+                                            <span class="subject-room">A2 404</span>
+                                            <span class="subject-teacher">Nguyễn Thị Uyên</span>
+                                        </div>
+                                    </td></tr>
+                                    <tr><td data-day="4" data-period="10"></td></tr>
+                                </tbody>
+                            </table>
+                            <table class="day-table">
+                                <tbody>
+                                    <tr><td data-day="4" data-period="11"></td></tr>
+                                    <tr><td data-day="4" data-period="12"></td></tr>
+                                    <tr><td data-day="4" data-period="13"></td></tr>
+                                    <tr><td data-day="4" data-period="14"></td></tr>
+                                    <tr><td data-day="4" data-period="15"></td></tr>
+                                </tbody>
+                            </table>
+                        </td>
+
+                        <!-- Thứ 5 -->
+                        <td class="tkb-day-cell">
+                            <table class="day-table">
+                                <tbody>
+                                    <tr><td data-day="5" data-period="1">
+                                        <div class="subject-item" data-subject="8">
+                                            <span class="subject-code">POEa71302</span>
+                                            <span class="subject-name">Kinh tế chính trị Mác - Lênin</span>
+                                            <span class="subject-room">B1 202</span>
+                                            <span class="subject-teacher">Nguyễn Thị Hải Yến</span>
+                                        </div>
+                                    </td></tr>
+                                    <tr><td data-day="5" data-period="2">
+                                        <div class="subject-item" data-subject="8">
+                                            <span class="subject-code">POEa71302</span>
+                                            <span class="subject-name">Kinh tế chính trị Mác - Lênin</span>
+                                            <span class="subject-room">B1 202</span>
+                                            <span class="subject-teacher">Nguyễn Thị Hải Yến</span>
+                                        </div>
+                                    </td></tr>
+                                    <tr><td data-day="5" data-period="3">
+                                        <div class="subject-item" data-subject="8">
+                                            <span class="subject-code">POEa71302</span>
+                                            <span class="subject-name">Kinh tế chính trị Mác - Lênin</span>
+                                            <span class="subject-room">B1 202</span>
+                                            <span class="subject-teacher">Nguyễn Thị Hải Yến</span>
+                                        </div>
+                                    </td></tr>
+                                    <tr><td data-day="5" data-period="4"></td></tr>
+                                    <tr><td data-day="5" data-period="5"></td></tr>
+                                </tbody>
+                            </table>
+                            <table class="day-table">
+                                <tbody>
+                                    <tr><td data-day="5" data-period="6"></td></tr>
+                                    <tr><td data-day="5" data-period="7"></td></tr>
+                                    <tr><td data-day="5" data-period="8"></td></tr>
+                                    <tr><td data-day="5" data-period="9"></td></tr>
+                                    <tr><td data-day="5" data-period="10"></td></tr>
+                                </tbody>
+                            </table>
+                            <table class="day-table">
+                                <tbody>
+                                    <tr><td data-day="5" data-period="11"></td></tr>
+                                    <tr><td data-day="5" data-period="12"></td></tr>
+                                    <tr><td data-day="5" data-period="13"></td></tr>
+                                    <tr><td data-day="5" data-period="14"></td></tr>
+                                    <tr><td data-day="5" data-period="15"></td></tr>
+                                </tbody>
+                            </table>
+                        </td>
+
+                        <!-- Thứ 6 -->
+                        <td class="tkb-day-cell">
+                            <table class="day-table">
+                                <tbody>
+                                    <tr><td data-day="6" data-period="1"></td></tr>
+                                    <tr><td data-day="6" data-period="2"></td></tr>
+                                    <tr><td data-day="6" data-period="3"></td></tr>
+                                    <tr><td data-day="6" data-period="4"></td></tr>
+                                    <tr><td data-day="6" data-period="5"></td></tr>
+                                </tbody>
+                            </table>
+                            <table class="day-table">
+                                <tbody>
+                                    <tr><td data-day="6" data-period="6"></td></tr>
+                                    <tr><td data-day="6" data-period="7"></td></tr>
+                                    <tr><td data-day="6" data-period="8"></td></tr>
+                                    <tr><td data-day="6" data-period="9"></td></tr>
+                                    <tr><td data-day="6" data-period="10"></td></tr>
+                                </tbody>
+                            </table>
+                            <table class="day-table">
+                                <tbody>
+                                    <tr><td data-day="6" data-period="11"></td></tr>
+                                    <tr><td data-day="6" data-period="12"></td></tr>
+                                    <tr><td data-day="6" data-period="13"></td></tr>
+                                    <tr><td data-day="6" data-period="14"></td></tr>
+                                    <tr><td data-day="6" data-period="15"></td></tr>
+                                </tbody>
+                            </table>
+                        </td>
+
+                        <!-- Thứ 7 -->
+                        <td class="tkb-day-cell">
+                            <table class="day-table">
+                                <tbody>
+                                    <tr><td data-day="7" data-period="1"></td></tr>
+                                    <tr><td data-day="7" data-period="2"></td></tr>
+                                    <tr><td data-day="7" data-period="3"></td></tr>
+                                    <tr><td data-day="7" data-period="4"></td></tr>
+                                    <tr><td data-day="7" data-period="5"></td></tr>
+                                </tbody>
+                            </table>
+                            <table class="day-table">
+                                <tbody>
+                                    <tr><td data-day="7" data-period="6"></td></tr>
+                                    <tr><td data-day="7" data-period="7"></td></tr>
+                                    <tr><td data-day="7" data-period="8"></td></tr>
+                                    <tr><td data-day="7" data-period="9"></td></tr>
+                                    <tr><td data-day="7" data-period="10"></td></tr>
+                                </tbody>
+                            </table>
+                            <table class="day-table">
+                                <tbody>
+                                    <tr><td data-day="7" data-period="11"></td></tr>
+                                    <tr><td data-day="7" data-period="12"></td></tr>
+                                    <tr><td data-day="7" data-period="13"></td></tr>
+                                    <tr><td data-day="7" data-period="14"></td></tr>
+                                    <tr><td data-day="7" data-period="15"></td></tr>
+                                </tbody>
+                            </table>
+                        </td>
+
+                        <!-- CN -->
+                        <td class="tkb-day-cell">
+                            <table class="day-table">
+                                <tbody>
+                                    <tr><td data-day="8" data-period="1"></td></tr>
+                                    <tr><td data-day="8" data-period="2"></td></tr>
+                                    <tr><td data-day="8" data-period="3"></td></tr>
+                                    <tr><td data-day="8" data-period="4">
+                                        <div class="subject-item" data-subject="11">
+                                            <span class="subject-code">INFa73301</span>
+                                            <span class="subject-name">Lập trình Web (TH)</span>
+                                            <span class="subject-room">P. Máy KT. 505</span>
+                                            <span class="subject-teacher">Nguyễn Hải Yến</span>
+                                        </div>
+                                    </td></tr>
+                                    <tr><td data-day="8" data-period="5">
+                                        <div class="subject-item" data-subject="11">
+                                            <span class="subject-code">INFa73301</span>
+                                            <span class="subject-name">Lập trình Web (TH)</span>
+                                            <span class="subject-room">P. Máy KT. 505</span>
+                                            <span class="subject-teacher">Nguyễn Hải Yến</span>
+                                        </div>
+                                    </td></tr>
+                                </tbody>
+                            </table>
+                            <table class="day-table">
+                                <tbody>
+                                    <tr><td data-day="8" data-period="6"></td></tr>
+                                    <tr><td data-day="8" data-period="7"></td></tr>
+                                    <tr><td data-day="8" data-period="8"></td></tr>
+                                    <tr><td data-day="8" data-period="9"></td></tr>
+                                    <tr><td data-day="8" data-period="10"></td></tr>
+                                </tbody>
+                            </table>
+                            <table class="day-table">
+                                <tbody>
+                                    <tr><td data-day="8" data-period="11"></td></tr>
+                                    <tr><td data-day="8" data-period="12"></td></tr>
+                                    <tr><td data-day="8" data-period="13"></td></tr>
+                                    <tr><td data-day="8" data-period="14"></td></tr>
+                                    <tr><td data-day="8" data-period="15"></td></tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Thanh chọn tuần -->
+        <div class="week-selector">
+            <span class="label">Tuần hiển thị</span>
+            <div class="week-list">
+                <div class="week-item active">1</div>
+                <div class="week-item">2</div>
+                <div class="week-item">3</div>
+                <div class="week-item">4</div>
+                <div class="week-item">5</div>
+                <div class="week-item">6</div>
+                <div class="week-item">7</div>
+                <div class="week-item">8</div>
+                <div class="week-item">9</div>
+                <div class="week-item">10</div>
+                <div class="week-item">11</div>
+                <div class="week-item">12</div>
+                <div class="week-item">13</div>
+                <div class="week-item">14</div>
+                <div class="week-item">15</div>
+                <div class="week-item">16</div>
+                <div class="week-item">17</div>
+                <div class="week-item">18</div>
+                <div class="week-item">19</div>
+                <div class="week-item">20</div>
+                <div class="week-item">21</div>
+                <div class="week-item">22</div>
+                <div class="week-item">23</div>
+                <div class="week-item">24</div>
+                <div class="week-item">25</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tooltip data
+        const subjectData = {
+            7: {
+                code: 'INFa72305 (v1)',
+                name: 'Cấu trúc dữ liệu và giải thuật',
+                credits: 3,
+                fee: '1.854.000',
+                teacher: 'Nguyễn Thị Uyên',
+                room: 'A2 404',
+                schedule: '1 -> 4, 9, 10, 12 -> 16',
+                day: 'T4 (6,7,8,9)',
+                status: 'Đăng ký tạm - Chờ xác nhận thanh toán'
+            },
+            8: {
+                code: 'POEa71302 (v1)',
+                name: 'Kinh tế chính trị Mác - Lênin',
+                credits: 2,
+                fee: '1.236.000',
+                teacher: 'Nguyễn Thị Hải Yến',
+                room: 'B1 202',
+                schedule: '1 -> 4, 9, 10, 12 -> 15',
+                day: 'T5 (1,2,3)',
+                status: 'Đăng ký tạm - Chờ xác nhận thanh toán'
+            },
+            9: {
+                code: 'INFa72304 (v1)',
+                name: 'Cơ sở dữ liệu',
+                credits: 3,
+                fee: '1.854.000',
+                teacher: 'Phan Anh Phong',
+                room: 'B1 204',
+                schedule: '1 -> 4, 9, 10, 12 -> 16',
+                day: 'T2 (7,8,9,10)',
+                status: 'Đăng ký tạm - Chờ xác nhận thanh toán'
+            },
+            10: {
+                code: 'INFa73301 (v1)',
+                name: 'Lập trình Web',
+                credits: 4,
+                fee: '3.213.600',
+                teacher: 'Lê Quốc Anh',
+                room: 'A2 405, Phòng Đồ án 4',
+                schedule: '1 -> 4, 9, 10, 12 -> 15',
+                day: 'T2 (3,4,5); T2 (12)',
+                status: 'Đăng ký tạm - Chờ xác nhận thanh toán'
+            },
+            11: {
+                code: 'INFa73301 (v1)',
+                name: 'Lập trình Web (TH)',
+                credits: 4,
+                fee: '0',
+                teacher: 'Nguyễn Hải Yến',
+                room: 'P. Máy KT. 506, P. Máy KT. 505',
+                schedule: '18, 1 -> 4, 9, 10, 12 -> 17',
+                day: 'T2 (1,2,3,4,5); CN (4,5)',
+                status: 'Đăng ký tạm - Chờ xác nhận thanh toán'
+            },
+            12: {
+                code: 'MATa71314 (v1)',
+                name: 'Xác suất và thống kê',
+                credits: 3,
+                fee: '1.854.000',
+                teacher: 'Võ Thị Hồng Vân',
+                room: 'B2 205',
+                schedule: '1 -> 4, 9, 10, 12 -> 16',
+                day: 'T4 (2,3,4,5)',
+                status: 'Đăng ký tạm - Chờ xác nhận thanh toán'
+            }
+        };
+
+        // Tạo tooltip
+        const tooltip = document.createElement('div');
+        tooltip.className = 'tooltip';
+        document.body.appendChild(tooltip);
+
+        // Xử lý hover
+        document.querySelectorAll('.subject-item').forEach(item => {
+            item.addEventListener('mouseenter', function(e) {
+                const id = this.dataset.subject;
+                const data = subjectData[id];
+                if (!data) return;
+
+                tooltip.innerHTML = `
+                    <div class="tt-title">${data.code}</div>
+                    <div class="tt-row"><span class="tt-label">Tên môn</span><span class="tt-value">${data.name}</span></div>
+                    <div class="tt-row"><span class="tt-label">Số tín chỉ</span><span class="tt-value">${data.credits}</span></div>
+                    <div class="tt-row"><span class="tt-label">Học phí</span><span class="tt-value">${data.fee}đ</span></div>
+                    <div class="tt-row"><span class="tt-label">Giảng viên</span><span class="tt-value">${data.teacher}</span></div>
+                    <div class="tt-row"><span class="tt-label">Phòng</span><span class="tt-value">${data.room}</span></div>
+                    <div class="tt-row"><span class="tt-label">Lịch</span><span class="tt-value">${data.schedule}</span></div>
+                    <div class="tt-row"><span class="tt-label">Ngày học</span><span class="tt-value">${data.day}</span></div>
+                    <div class="tt-row"><span class="tt-label">Trạng thái</span><span class="tt-value" style="color:#e67e22;">${data.status}</span></div>
+                `;
+
+                const rect = this.getBoundingClientRect();
+                let left = rect.left + window.scrollX;
+                let top = rect.bottom + window.scrollY + 5;
+
+                // Đảm bảo tooltip không tràn màn hình
+                if (left + 350 > window.innerWidth) {
+                    left = window.innerWidth - 360;
+                }
+                if (top + 300 > window.innerHeight + window.scrollY) {
+                    top = rect.top + window.scrollY - 300;
+                }
+
+                tooltip.style.left = left + 'px';
+                tooltip.style.top = top + 'px';
+                tooltip.classList.add('show');
+            });
+
+            item.addEventListener('mouseleave', function() {
+                tooltip.classList.remove('show');
+            });
+        });
+
+        // Chọn tuần
+        document.querySelectorAll('.week-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.week-item').forEach(el => el.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Click vào ô trống để thêm môn
+        document.querySelectorAll('.day-table td:empty').forEach(cell => {
+            cell.addEventListener('click', function() {
+                const day = this.dataset.day;
+                const period = this.dataset.period;
+                const content = prompt(`Nhập nội dung cho ô (Thứ ${day}, Tiết ${period}):`, '');
+                if (content !== null && content.trim() !== '') {
+                    const div = document.createElement('div');
+                    div.className = 'subject-item';
+                    div.style.background = '#f0f4f8';
+                    div.style.color = '#333';
+                    div.textContent = content;
+                    this.appendChild(div);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

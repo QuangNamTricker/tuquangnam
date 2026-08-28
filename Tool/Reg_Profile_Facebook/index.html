@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRO5 Profile Creator - Web Version</title>
+    <style>
+        /* ========== CSS ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            min-height: 100vh;
+            padding: 20px;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Banner */
+        .banner {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .banner h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(to right, #f7971e, #ffd200);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: none;
+        }
+
+        .banner p {
+            color: #fff;
+            opacity: 0.9;
+            margin-top: 10px;
+            font-size: 1.1rem;
+        }
+
+        .banner .version {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        /* Cards */
+        .card {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(255,255,255,0.2);
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title .icon {
+            font-size: 1.5rem;
+        }
+
+        /* Grid layout */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Form */
+        textarea, input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 10px;
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        textarea:focus, input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.2);
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+        }
+
+        textarea::placeholder, input::placeholder {
+            color: rgba(255,255,255,0.4);
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: rgba(255,255,255,0.7);
+            font-size: 0.9rem;
+        }
+
+        .input-group .hint {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.4);
+            margin-top: 4px;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            color: #fff;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(56, 239, 125, 0.3);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #eb3349, #f45c43);
+            color: #fff;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(235, 51, 73, 0.3);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #fff;
+        }
+
+        .btn-outline:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .btn-sm {
+            padding: 6px 15px;
+            font-size: 0.85rem;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        /* Table */
+        .table-wrapper {
+            overflow-x: auto;
+            margin-top: 15px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        th {
+            text-align: left;
+            padding: 12px 15px;
+            background: rgba(255,255,255,0.05);
+            border-bottom: 2px solid rgba(255,255,255,0.1);
+            font-weight: 600;
+            color: rgba(255,255,255,0.7);
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        tr:hover td {
+            background: rgba(255,255,255,0.03);
+        }
+
+        .status-live {
+            color: #38ef7d;
+            font-weight: 600;
+        }
+
+        .status-die {
+            color: #f45c43;
+            font-weight: 600;
+        }
+
+        /* Stats */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-item {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .stat-item .number {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #f7971e, #ffd200);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-item .label {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.5);
+            margin-top: 4px;
+        }
+
+        /* Log */
+        .log-area {
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            padding: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+
+        .log-area .log-success {
+            color: #38ef7d;
+        }
+
+        .log-area .log-error {
+            color: #f45c43;
+        }
+
+        .log-area .log-info {
+            color: #667eea;
+        }
+
+        .log-area .log-warning {
+            color: #ffd200;
+        }
+
+        /* Scrollbar */
+        .log-area::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .log-area::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+        }
+
+        .log-area::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .banner h1 {
+                font-size: 1.5rem;
+            }
+            .card {
+                padding: 15px;
+            }
+            .btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Animation */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .loading {
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        /* Cookie list badges */
+        .badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-live {
+            background: rgba(56, 239, 125, 0.2);
+            color: #38ef7d;
+        }
+
+        .badge-die {
+            background: rgba(244, 92, 67, 0.2);
+            color: #f45c43;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- BANNER -->
+        <div class="banner">
+            <h1>🔥 PRO5 Profile Creator</h1>
+            <p>Tool tạo Page Facebook tự động - Phiên bản Web</p>
+            <span class="version">📌 Version 2.1 | Bởi Từ Quang Nam</span>
+        </div>
+
+        <!-- STATS -->
+        <div class="stats" id="stats">
+            <div class="stat-item">
+                <div class="number" id="cookieCount">0</div>
+                <div class="label">🍪 Cookie hợp lệ</div>
+            </div>
+            <div class="stat-item">
+                <div class="number" id="pageCount">0</div>
+                <div class="label">📄 Page đã tạo</div>
+            </div>
+            <div class="stat-item">
+                <div class="number" id="targetCount">0</div>
+                <div class="label">🎯 Mục tiêu</div>
+            </div>
+        </div>
+
+        <!-- MAIN CONTENT -->
+        <div class="grid-2">
+            <!-- LEFT: Cookie Manager -->
+            <div class="card">
+                <div class="card-title">
+                    <span class="icon">🍪</span>
+                    Quản lý Cookie
+                </div>
+                <div class="input-group">
+                    <label>Nhập cookie Facebook</label>
+                    <textarea id="cookieInput" placeholder="Nhập cookie, mỗi dòng 1 cookie..."></textarea>
+                    <div class="hint">💡 Nhấn Enter để thêm cookie, để trống và Enter để dừng</div>
+                </div>
+                <div class="btn-group">
+                    <button class="btn btn-success" onclick="addCookies()">➕ Thêm cookie</button>
+                    <button class="btn btn-danger" onclick="clearCookies()">🗑️ Xóa tất cả</button>
+                    <button class="btn btn-outline" onclick="checkCookies()">🔍 Kiểm tra</button>
+                </div>
+                <div style="margin-top:15px;">
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>UID</th>
+                                    <th>Name</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cookieTableBody">
+                                <tr>
+                                    <td colspan="5" style="text-align:center;color:rgba(255,255,255,0.3);padding:30px;">
+                                        Chưa có cookie nào
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT: Settings & Control -->
+            <div>
+                <div class="card">
+                    <div class="card-title">
+                        <span class="icon">⚙️</span>
+                        Cài đặt
+                    </div>
+                    <div class="input-group">
+                        <label>Số lượng page cần tạo</label>
+                        <input type="number" id="pageTarget" value="10" min="1">
+                    </div>
+                    <div class="input-group">
+                        <label>Thời gian delay (giây)</label>
+                        <input type="number" id="delayTime" value="10" min="1">
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="startCreation()" id="startBtn">
+                            🚀 Bắt đầu tạo
+                        </button>
+                        <button class="btn btn-danger" onclick="stopCreation()" id="stopBtn" style="display:none;">
+                            ⏹️ Dừng
+                        </button>
+                        <button class="btn btn-outline" onclick="exportData()">💾 Xuất JSON</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">
+                        <span class="icon">📋</span>
+                        Log hoạt động
+                        <span style="margin-left:auto;font-size:0.8rem;">
+                            <button class="btn btn-sm btn-outline" onclick="clearLog()">Xóa log</button>
+                        </span>
+                    </div>
+                    <div class="log-area" id="logArea">
+                        <div class="log-info">📌 Sẵn sàng...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGES CREATED -->
+        <div class="card">
+            <div class="card-title">
+                <span class="icon">📄</span>
+                Danh sách Page đã tạo
+                <span style="margin-left:auto;font-size:0.8rem;color:rgba(255,255,255,0.4);">
+                    Tổng: <span id="totalPages">0</span>
+                </span>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Page Name</th>
+                            <th>Page ID</th>
+                            <th>UID Facebook</th>
+                            <th>Thời gian</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pageTableBody">
+                        <tr>
+                            <td colspan="5" style="text-align:center;color:rgba(255,255,255,0.3);padding:30px;">
+                                Chưa có page nào được tạo
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        // JAVASCRIPT - Phần xử lý chính
+        // ============================================================
+
+        // State
+        const state = {
+            cookies: [],           // [{uid, name, fb_dtsg, jazoest, cookie, status}]
+            pages: [],            // [{pageId, pageName, uid, name, time}]
+            isRunning: false,
+            createdCount: 0,
+            targetCount: 0,
+            logInterval: null,
+        };
+
+        // DOM refs
+        const $ = id => document.getElementById(id);
+        const cookieInput = $('cookieInput');
+        const cookieTableBody = $('cookieTableBody');
+        const pageTableBody = $('pageTableBody');
+        const logArea = $('logArea');
+        const cookieCount = $('cookieCount');
+        const pageCount = $('pageCount');
+        const targetCount = $('targetCount');
+        const totalPages = $('totalPages');
+        const startBtn = $('startBtn');
+        const stopBtn = $('stopBtn');
+
+        // ========== LOG FUNCTIONS ==========
+        function addLog(message, type = 'info') {
+            const div = document.createElement('div');
+            div.className = `log-${type}`;
+            const time = new Date().toLocaleTimeString();
+            div.textContent = `[${time}] ${message}`;
+            logArea.appendChild(div);
+            logArea.scrollTop = logArea.scrollHeight;
+        }
+
+        function clearLog() {
+            logArea.innerHTML = '<div class="log-info">📌 Log đã được xóa</div>';
+        }
+
+        // ========== COOKIE FUNCTIONS ==========
+        function parseCookie(cookieStr) {
+            try {
+                const uid = cookieStr.match(/c_user=(\d+)/);
+                if (!uid) return null;
+                return { uid: uid[1], cookie: cookieStr };
+            } catch {
+                return null;
+            }
+        }
+
+        function addCookies() {
+            const text = cookieInput.value.trim();
+            if (!text) {
+                addLog('⚠️ Vui lòng nhập cookie!', 'warning');
+                return;
+            }
+
+            const lines = text.split('\n').filter(line => line.trim());
+            let added = 0;
+
+            for (const line of lines) {
+                const parsed = parseCookie(line.trim());
+                if (parsed) {
+                    // Check duplicate
+                    if (!state.cookies.some(c => c.uid === parsed.uid)) {
+                        state.cookies.push({
+                            uid: parsed.uid,
+                            cookie: parsed.cookie,
+                            name: 'Đang kiểm tra...',
+                            fb_dtsg: '',
+                            jazoest: '',
+                            status: 'pending'
+                        });
+                        added++;
+                    }
+                }
+            }
+
+            cookieInput.value = '';
+            addLog(`✅ Đã thêm ${added} cookie mới`, 'success');
+            updateCookieTable();
+            updateStats();
+
+            // Auto check cookies
+            if (added > 0) {
+                setTimeout(() => checkCookies(), 500);
+            }
+        }
+
+        function clearCookies() {
+            if (!confirm('Xóa tất cả cookie?')) return;
+            state.cookies = [];
+            updateCookieTable();
+            updateStats();
+            addLog('🗑️ Đã xóa tất cả cookie', 'info');
+        }
+
+        // Giả lập kiểm tra cookie (trên web thuần không thể check thực tế)
+        function checkCookies() {
+            if (state.cookies.length === 0) {
+                addLog('⚠️ Không có cookie nào để kiểm tra', 'warning');
+                return;
+            }
+
+            addLog('🔍 Đang kiểm tra cookie...', 'info');
+
+            state.cookies.forEach((c, index) => {
+                // Giả lập: random live/die để demo
+                setTimeout(() => {
+                    const isLive = Math.random() > 0.3;
+                    c.status = isLive ? 'live' : 'die';
+                    c.name = isLive ? `User ${c.uid.slice(-4)}` : 'Unknown';
+                    c.fb_dtsg = isLive ? 'fb_dtsg_demo_' + Math.random().toString(36).substr(2, 8) : '';
+                    c.jazoest = isLive ? 'jazoest_demo_' + Math.random().toString(36).substr(2, 8) : '';
+                    updateCookieTable();
+                    updateStats();
+                    
+                    if (index === state.cookies.length - 1) {
+                        const live = state.cookies.filter(c => c.status === 'live').length;
+                        addLog(`✅ Kiểm tra hoàn tất: ${live}/${state.cookies.length} cookie live`, 'success');
+                    }
+                }, index * 300);
+            });
+        }
+
+        // ========== TABLE RENDER ==========
+        function updateCookieTable() {
+            if (state.cookies.length === 0) {
+                cookieTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align:center;color:rgba(255,255,255,0.3);padding:30px;">
+                            Chưa có cookie nào
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            let html = '';
+            state.cookies.forEach((c, i) => {
+                const statusHtml = c.status === 'live' 
+                    ? `<span class="status-live">🟢 Live</span>`
+                    : c.status === 'die'
+                    ? `<span class="status-die">🔴 Die</span>`
+                    : `<span style="color:rgba(255,255,255,0.3);">⏳ Đang check...</span>`;
+
+                html += `
+                    <tr>
+                        <td>${i + 1}</td>
+                        <td style="font-size:0.8rem;color:rgba(255,255,255,0.5);">${c.uid}</td>
+                        <td style="font-size:0.85rem;">${c.name}</td>
+                        <td>${statusHtml}</td>
+                        <td>
+                            <button class="btn btn-sm btn-danger" onclick="removeCookie(${i})">🗑️</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            cookieTableBody.innerHTML = html;
+        }
+
+        function removeCookie(index) {
+            state.cookies.splice(index, 1);
+            updateCookieTable();
+            updateStats();
+            addLog(`🗑️ Đã xóa cookie #${index + 1}`, 'info');
+        }
+
+        function updateStats() {
+            const live = state.cookies.filter(c => c.status === 'live').length;
+            cookieCount.textContent = live;
+            pageCount.textContent = state.pages.length;
+            targetCount.textContent = state.targetCount || 0;
+            totalPages.textContent = state.pages.length;
+
+            // Update page table
+            if (state.pages.length === 0) {
+                pageTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align:center;color:rgba(255,255,255,0.3);padding:30px;">
+                            Chưa có page nào được tạo
+                        </td>
+                    </tr>
+                `;
+            } else {
+                let html = '';
+                state.pages.forEach((p, i) => {
+                    html += `
+                        <tr>
+                            <td>${i + 1}</td>
+                            <td style="color:#ffd200;">${p.pageName}</td>
+                            <td style="color:#667eea;">${p.pageId}</td>
+                            <td style="font-size:0.8rem;color:rgba(255,255,255,0.5);">${p.uid}</td>
+                            <td style="font-size:0.8rem;color:rgba(255,255,255,0.4);">${p.time}</td>
+                        </tr>
+                    `;
+                });
+                pageTableBody.innerHTML = html;
+            }
+        }
+
+        // ========== MAIN CREATE FUNCTION ==========
+        function startCreation() {
+            const liveCookies = state.cookies.filter(c => c.status === 'live');
+            if (liveCookies.length === 0) {
+                addLog('❌ Không có cookie live nào! Vui lòng kiểm tra lại.', 'error');
+                return;
+            }
+
+            const target = parseInt($('pageTarget').value) || 10;
+            state.targetCount = target;
+            state.createdCount = 0;
+            state.isRunning = true;
+
+            startBtn.style.display = 'none';
+            stopBtn.style.display = 'inline-flex';
+
+            addLog(`🚀 Bắt đầu tạo ${target} page với ${liveCookies.length} cookie`, 'info');
+
+            // Gọi hàm tạo page (demo)
+            createPagesLoop(target, liveCookies);
+        }
+
+        function stopCreation() {
+            state.isRunning = false;
+            startBtn.style.display = 'inline-flex';
+            stopBtn.style.display = 'none';
+            addLog('⏹️ Đã dừng quá trình tạo', 'warning');
+        }
+
+        // Hàm tạo page - GIẢ LẬP (vì không thể gọi API Facebook thật từ browser)
+        function createPagesLoop(target, liveCookies) {
+            if (!state.isRunning || state.createdCount >= target) {
+                finishCreation();
+                return;
+            }
+
+            // Lấy cookie hiện tại (round-robin)
+            const cookieIndex = state.createdCount % liveCookies.length;
+            const cookie = liveCookies[cookieIndex];
+
+            // Giả lập tạo page
+            addLog(`⏳ Đang tạo page #${state.createdCount + 1} với UID ${cookie.uid}...`, 'info');
+
+            // Giả lập delay và kết quả
+            const delay = parseInt($('delayTime').value) || 10;
+
+            setTimeout(() => {
+                if (!state.isRunning) return;
+
+                // Random thành công (90%)
+                const success = Math.random() > 0.1;
+
+                if (success) {
+                    const pageId = '100' + Math.floor(Math.random() * 900000000) + Date.now().toString().slice(-6);
+                    const pageName = generateVietnameseName();
+                    
+                    state.pages.push({
+                        pageId: pageId,
+                        pageName: pageName,
+                        uid: cookie.uid,
+                        name: cookie.name,
+                        time: new Date().toLocaleString()
+                    });
+
+                    state.createdCount++;
+                    addLog(`✅ #${state.createdCount} THÀNH CÔNG | Page: ${pageName} (ID: ${pageId})`, 'success');
+                    updateStats();
+                } else {
+                    addLog(`❌ #${state.createdCount + 1} THẤT BẠI (lỗi random)`, 'error');
+                }
+
+                // Cập nhật progress và tiếp tục
+                if (state.isRunning && state.createdCount < target) {
+                    setTimeout(() => createPagesLoop(target, liveCookies), 100);
+                } else {
+                    finishCreation();
+                }
+            }, delay * 1000);
+        }
+
+        function finishCreation() {
+            state.isRunning = false;
+            startBtn.style.display = 'inline-flex';
+            stopBtn.style.display = 'none';
+            addLog(`🎉 HOÀN THÀNH! Đã tạo ${state.createdCount}/${state.targetCount} page`, 'success');
+            updateStats();
+        }
+
+        // ========== UTILITY FUNCTIONS ==========
+        function generateVietnameseName() {
+            const first = ['Nguyễn', 'Trần', 'Lê', 'Phạm', 'Hoàng', 'Huỳnh', 'Phan', 'Vũ', 'Đặng', 'Bùi'];
+            const middle = ['Văn', 'Thị', 'Hữu', 'Công', 'Minh', 'Quốc', 'Đức', 'Anh', 'Tuấn', 'Hải'];
+            const last = ['An', 'Bình', 'Cường', 'Dũng', 'Giang', 'Hạnh', 'Khang', 'Long', 'Nam', 'Phúc'];
+            return `${randomItem(first)} ${randomItem(middle)} ${randomItem(last)}`;
+        }
+
+        function randomItem(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        // ========== EXPORT DATA ==========
+        function exportData() {
+            if (state.pages.length === 0) {
+                addLog('⚠️ Không có dữ liệu để xuất', 'warning');
+                return;
+            }
+
+            const data = {
+                export_time: new Date().toISOString(),
+                total_pages: state.pages.length,
+                pages: state.pages,
+                tool_info: {
+                    name: 'PRO5 Profile Creator',
+                    version: '2.1',
+                    developer: 'Từ Quang Nam'
+                }
+            };
+
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `created_pages_${new Date().toISOString().slice(0,10)}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+
+            addLog(`💾 Đã xuất file JSON với ${state.pages.length} page`, 'success');
+        }
+
+        // ========== INIT ==========
+        addLog('🔥 PRO5 Profile Creator Web đã sẵn sàng!', 'info');
+        addLog('💡 Hướng dẫn: Nhập cookie → Kiểm tra → Bắt đầu tạo', 'info');
+        updateStats();
+
+        // Hỗ trợ Enter để thêm cookie
+        cookieInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                addCookies();
+            }
+        });
+
+        console.log('🔥 PRO5 Profile Creator Web loaded!');
+        console.log('📌 Lưu ý: Đây là phiên bản demo, không gọi API Facebook thật.');
+        console.log('💡 Để chạy thật, cần có backend server.');
+    </script>
+</body>
+</html>

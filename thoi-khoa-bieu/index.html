@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thời khóa biểu</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f0f2f5;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .main-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+            width: 100%;
+            max-width: 1200px;
+            overflow: hidden;
+            padding: 8px 0;
+        }
+
+        .scroll-wrapper {
+            overflow: auto;
+            padding: 0 8px;
+            max-height: 700px;
+            position: relative;
+        }
+
+        /* Bảng chính */
+        .tkb-table {
+            border-collapse: collapse;
+            width: 100%;
+            font-size: 13px;
+            min-width: 850px;
+        }
+
+        .tkb-table th,
+        .tkb-table td {
+            border: 1px solid #e0e0e0;
+            padding: 0;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        /* Header - cột Tiết */
+        .tkb-shift-header {
+            background: #f8f9fa;
+            font-weight: 600;
+            border-right: 2px solid #ccc !important;
+            width: 75px;
+            min-width: 75px;
+            padding: 8px 4px;
+            font-size: 13px;
+        }
+
+        /* Header - ngày */
+        .tkb-day-header {
+            background: #f8f9fa;
+            padding: 6px 4px;
+            width: 120px;
+            min-width: 120px;
+            font-weight: normal;
+            font-size: 13px;
+        }
+
+        .tkb-day-name {
+            font-weight: 600;
+            display: block;
+            font-size: 14px;
+        }
+
+        .tkb-day-date {
+            display: block;
+            font-size: 11px;
+            color: #888;
+            font-weight: normal;
+            margin-top: 2px;
+        }
+
+        /* Cột Tiết bên trái */
+        .tkb-shift-cell {
+            padding: 0;
+            width: 75px;
+            min-width: 75px;
+            border-right: 1px solid #ccc;
+            vertical-align: top;
+            background: #fafbfc;
+        }
+
+        .tkb-shift-cell .shift-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .tkb-shift-cell .shift-table td {
+            border: none;
+            border-bottom: 1px solid #eee;
+            padding: 2px 4px;
+            font-size: 12px;
+            height: 40px;
+            background: transparent;
+        }
+
+        .tkb-shift-cell .shift-table .shift-label {
+            background: #f0f4f8;
+            font-weight: 600;
+            font-size: 11px;
+            width: 50%;
+            color: #555;
+        }
+
+        .tkb-shift-cell .shift-table .shift-number {
+            background: white;
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* Các ô ngày */
+        .tkb-day-cell {
+            padding: 0;
+            vertical-align: top;
+            background: white;
+        }
+
+        .tkb-day-cell .day-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .tkb-day-cell .day-table td {
+            border: none;
+            border-bottom: 1px solid #f0f0f0;
+            height: 40px;
+            padding: 2px;
+            font-size: 12px;
+            background: white;
+            transition: background 0.15s;
+            cursor: pointer;
+        }
+
+        .tkb-day-cell .day-table td:hover {
+            background: #e8f0fe;
+        }
+
+        .tkb-day-cell .day-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Phân cách giữa các buổi */
+        .tkb-afternoon-table td,
+        .tkb-evening-table td {
+            border-bottom: 1px solid #e0e0e0 !important;
+        }
+
+        .tkb-afternoon-table tr:first-child td {
+            border-top: 2px solid #ccc !important;
+        }
+
+        .tkb-evening-table tr:first-child td {
+            border-top: 2px solid #ccc !important;
+        }
+
+        /* Thanh chọn tuần */
+        .week-selector {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px 8px 16px;
+            border-top: 1px solid #e8e8e8;
+            margin: 0 8px;
+            flex-wrap: wrap;
+            background: #fafbfc;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .week-selector .label {
+            font-size: 13px;
+            font-weight: 500;
+            color: #333;
+            white-space: nowrap;
+        }
+
+        .week-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        .week-list .week-item {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            color: #333;
+            border: 1px solid transparent;
+            transition: all 0.15s;
+            user-select: none;
+        }
+
+        .week-list .week-item:hover {
+            background: #e8f0fe;
+            border-color: #d0d7de;
+        }
+
+        .week-list .week-item.active {
+            background: #1a73e8;
+            color: white;
+            font-weight: 600;
+            border-color: #1a73e8;
+        }
+
+        .week-list .week-item.active:hover {
+            background: #1557b0;
+            border-color: #1557b0;
+        }
+
+        /* Scrollbar tùy chỉnh */
+        .scroll-wrapper::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        .scroll-wrapper::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        .scroll-wrapper::-webkit-scrollbar-thumb {
+            background: #c1c7cd;
+            border-radius: 4px;
+        }
+
+        .scroll-wrapper::-webkit-scrollbar-thumb:hover {
+            background: #a0a8b0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .tkb-table {
+                font-size: 11px;
+                min-width: 650px;
+            }
+
+            .tkb-shift-header {
+                width: 50px;
+                min-width: 50px;
+                font-size: 11px;
+            }
+
+            .tkb-day-header {
+                width: 80px;
+                min-width: 80px;
+                font-size: 11px;
+            }
+
+            .tkb-shift-cell {
+                width: 50px;
+                min-width: 50px;
+            }
+
+            .tkb-shift-cell .shift-table td {
+                height: 35px;
+                font-size: 10px;
+            }
+
+            .tkb-day-cell .day-table td {
+                height: 35px;
+                font-size: 10px;
+            }
+
+            .week-selector {
+                padding: 8px 10px;
+                gap: 8px;
+            }
+
+            .week-list .week-item {
+                width: 28px;
+                height: 28px;
+                font-size: 11px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .tkb-table {
+                font-size: 10px;
+                min-width: 550px;
+            }
+
+            .tkb-day-header {
+                width: 60px;
+                min-width: 60px;
+            }
+
+            .tkb-shift-header {
+                width: 40px;
+                min-width: 40px;
+            }
+
+            .tkb-shift-cell {
+                width: 40px;
+                min-width: 40px;
+            }
+
+            .tkb-shift-cell .shift-table td {
+                height: 30px;
+                font-size: 9px;
+            }
+
+            .tkb-day-cell .day-table td {
+                height: 30px;
+                font-size: 9px;
+            }
+
+            .week-list .week-item {
+                width: 24px;
+                height: 24px;
+                font-size: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="scroll-wrapper">
+            <table class="tkb-table">
+                <colgroup>
+                    <col style="width:75px; min-width:75px;">
+                    <col style="width:120px; min-width:120px;">
+                    <col style="width:120px; min-width:120px;">
+                    <col style="width:120px; min-width:120px;">
+                    <col style="width:120px; min-width:120px;">
+                    <col style="width:120px; min-width:120px;">
+                    <col style="width:120px; min-width:120px;">
+                    <col style="width:120px; min-width:120px;">
+                </colgroup>
+                <tbody>
+                    <!-- Hàng tiêu đề -->
+                    <tr>
+                        <th class="tkb-shift-header" style="border-right: 2px solid #ccc">Tiết</th>
+                        <th class="tkb-day-header">
+                            <span class="tkb-day-name">Thứ 2</span>
+                            <span class="tkb-day-date">07/09</span>
+                        </th>
+                        <th class="tkb-day-header">
+                            <span class="tkb-day-name">Thứ 3</span>
+                            <span class="tkb-day-date">08/09</span>
+                        </th>
+                        <th class="tkb-day-header">
+                            <span class="tkb-day-name">Thứ 4</span>
+                            <span class="tkb-day-date">09/09</span>
+                        </th>
+                        <th class="tkb-day-header">
+                            <span class="tkb-day-name">Thứ 5</span>
+                            <span class="tkb-day-date">10/09</span>
+                        </th>
+                        <th class="tkb-day-header">
+                            <span class="tkb-day-name">Thứ 6</span>
+                            <span class="tkb-day-date">11/09</span>
+                        </th>
+                        <th class="tkb-day-header">
+                            <span class="tkb-day-name">Thứ 7</span>
+                            <span class="tkb-day-date">12/09</span>
+                        </th>
+                        <th class="tkb-day-header">
+                            <span class="tkb-day-name">CN</span>
+                            <span class="tkb-day-date">13/09</span>
+                        </th>
+                    </tr>
+
+                    <!-- Hàng nội dung -->
+                    <tr>
+                        <!-- Cột Tiết -->
+                        <td class="tkb-shift-cell">
+                            <!-- Sáng -->
+                            <table class="shift-table tkb-morning-table">
+                                <tbody>
+                                    <tr><td class="shift-label" rowspan="5">Sáng</td><td class="shift-number">1</td></tr>
+                                    <tr><td class="shift-number">2</td></tr>
+                                    <tr><td class="shift-number">3</td></tr>
+                                    <tr><td class="shift-number">4</td></tr>
+                                    <tr><td class="shift-number">5</td></tr>
+                                </tbody>
+                            </table>
+                            <!-- Chiều -->
+                            <table class="shift-table tkb-afternoon-table">
+                                <tbody>
+                                    <tr><td class="shift-label" rowspan="5">Chiều</td><td class="shift-number">6</td></tr>
+                                    <tr><td class="shift-number">7</td></tr>
+                                    <tr><td class="shift-number">8</td></tr>
+                                    <tr><td class="shift-number">9</td></tr>
+                                    <tr><td class="shift-number">10</td></tr>
+                                </tbody>
+                            </table>
+                            <!-- Tối -->
+                            <table class="shift-table tkb-evening-table">
+                                <tbody>
+                                    <tr><td class="shift-label" rowspan="5">Tối</td><td class="shift-number">11</td></tr>
+                                    <tr><td class="shift-number">12</td></tr>
+                                    <tr><td class="shift-number">13</td></tr>
+                                    <tr><td class="shift-number">14</td></tr>
+                                    <tr><td class="shift-number">15</td></tr>
+                                </tbody>
+                            </table>
+                        </td>
+
+                        <!-- Thứ 2 -->
+                        <td class="tkb-day-cell">
+                            <table class="day-table"><tbody>
+                                <tr><td></td></tr><tr><td></td></tr><tr><td></td></tr><tr><td></td></tr><tr><td></td></tr>
+                            </tbody></table>
+                            <table class="day-table tkb-afternoon-table"><tbody>
+                                <tr><td></td></tr><tr><td></td></tr><tr><td></td></tr><tr><td></td></tr><tr><td></td></tr>
+                            </tbody></table>
+                            <table class="day-table tkb-evening-table"><tbody>
+                                <tr><td></td></tr><tr><td></td></tr><tr><td></td></tr><tr><td></td></tr><tr><td></td></tr>
+                            </tbody></table>
+                        </td>
+
+                        <!-- Thứ 3 -->
+                        <td class="tkb-day-cell">
+                            <table class="day-table"><tbody>
+                                <tr><td></td></tr><tr><td></td></tr><tr><td></td></tr><tr><td></td></tr><tr><td></td></tr>
+                            </tbody></table>
+                            <table class="day-table tkb-afternoon-table"><tbody>
+                                <tr><td></td></tr><tr><td></td></tr><tr><td></td></tr><tr><td></td></tr><tr><td></td></tr>
+                            </tbody></table>
+                            <table class="day-table tkb-evening-table"><tbody>
+                                <tr><td></td></tr><tr><td></td></tr><tr><td></td></tr><tr><td></td></tr><tr><td></td></tr>
+                            </tbody></table>
+                        </td>
+
+                        <!-- Thứ 4 -->
+                        <td class="tkb-day-cell">
+                            <table class="day-table"><tbody>
+                                <tr><td></td></tr><tr><td></td></tr><tr><td></td></tr><tr><td></td></tr><tr><td></td></tr>
+                            </tbody></table>
+                            <table class="day-table tkb-afternoon-table"><tbody>
+                                <tr><td></td></tr><tr><td></td></tr><tr><td></td></tr><tr><td></td></tr><tr><td></td></tr>
+                            </tbody></table>
+                            <table class="day-table tkb-evening-table"><tbody>
+                                <tr><td></td></tr><tr><td></td></tr><tr><td></td></tr><tr><td></td></tr><tr><td></td></tr>
+                            </tbody></table>
+                        </td>
+
+                        <!-- Thứ 5 -->
+                        <td class="tkb-day-cell">
+                            <table class="day-table"><tbody>
+                                <tr><td></td></tr><tr><td></td></tr><tr><td></td></tr><tr><td></td></tr><tr><td></td></tr>
+                            </tbody></table>
+                            <table class="day-table tkb-afternoon-table"><tbody>
+                                <tr><td></td></tr><tr><td></td></tr><tr><td></td></tr><tr><td></td></tr><tr><td></td></tr>
+                            </tbody></table>
+                            <table class="day-table tkb-evening-table"><tbody>
+                                <tr><td></td></tr><tr><td></td></tr><tr><td></td></tr><tr><td></td></tr><tr><td></td></tr>
+                            </tbody></table>
+                        </td>
+
+                        <!-- Thứ 6 -->
+                        <td class="tkb-day-cell">
+                            <table class="day-table"><tbody>
+                                <tr><td></td></tr><tr><td></td></tr><tr><td></td></tr><tr><td></td></tr><tr><td></td></tr>
+                            </tbody></table>
+                            <table class="day-table tkb-afternoon-table"><tbody>
+                                <tr><td></td></tr><tr><td></td></tr><tr><td></td></tr><tr><td></td></tr><tr><td></td></tr>
+                            </tbody></table>
+                            <table class="day-table tkb-evening-table"><tbody>
+                                <tr><td></td></tr><tr><td></td></tr><tr><td></td></tr><tr><td></td></tr><tr><td></td></tr>
+                            </tbody></table>
+                        </td>
+
+                        <!-- Thứ 7 -->
+                        <td class="tkb-day-cell">
+                            <table class="day-table"><tbody>
+                                <tr><td></td></tr><tr><td></td></tr><tr><td></td></tr><tr><td></td></tr><tr><td></td></tr>
+                            </tbody></table>
+                            <table class="day-table tkb-afternoon-table"><tbody>
+                                <tr><td></td></tr><tr><td></td></tr><tr><td></td></tr><tr><td></td></tr><tr><td></td></tr>
+                            </tbody></table>
+                            <table class="day-table tkb-evening-table"><tbody>
+                                <tr><td></td></tr><tr><td></td></tr><tr><td></td></tr><tr><td></td></tr><tr><td></td></tr>
+                            </tbody></table>
+                        </td>
+
+                        <!-- CN -->
+                        <td class="tkb-day-cell">
+                            <table class="day-table"><tbody>
+                                <tr><td></td></tr><tr><td></td></tr><tr><td></td></tr><tr><td></td></tr><tr><td></td></tr>
+                            </tbody></table>
+                            <table class="day-table tkb-afternoon-table"><tbody>
+                                <tr><td></td></tr><tr><td></td></tr><tr><td></td></tr><tr><td></td></tr><tr><td></td></tr>
+                            </tbody></table>
+                            <table class="day-table tkb-evening-table"><tbody>
+                                <tr><td></td></tr><tr><td></td></tr><tr><td></td></tr><tr><td></td></tr><tr><td></td></tr>
+                            </tbody></table>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Thanh chọn tuần -->
+        <div class="week-selector">
+            <span class="label">Tuần hiển thị</span>
+            <div class="week-list">
+                <div class="week-item active">1</div>
+                <div class="week-item">2</div>
+                <div class="week-item">3</div>
+                <div class="week-item">4</div>
+                <div class="week-item">5</div>
+                <div class="week-item">6</div>
+                <div class="week-item">7</div>
+                <div class="week-item">8</div>
+                <div class="week-item">9</div>
+                <div class="week-item">10</div>
+                <div class="week-item">11</div>
+                <div class="week-item">12</div>
+                <div class="week-item">13</div>
+                <div class="week-item">14</div>
+                <div class="week-item">15</div>
+                <div class="week-item">16</div>
+                <div class="week-item">17</div>
+                <div class="week-item">18</div>
+                <div class="week-item">19</div>
+                <div class="week-item">20</div>
+                <div class="week-item">21</div>
+                <div class="week-item">22</div>
+                <div class="week-item">23</div>
+                <div class="week-item">24</div>
+                <div class="week-item">25</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Chọn tuần
+        document.querySelectorAll('.week-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.week-item').forEach(el => el.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Click vào ô thời khóa biểu
+        document.querySelectorAll('.day-table td').forEach(cell => {
+            cell.addEventListener('click', function() {
+                const content = prompt('Nhập nội dung cho ô này:', this.textContent);
+                if (content !== null) {
+                    this.textContent = content;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

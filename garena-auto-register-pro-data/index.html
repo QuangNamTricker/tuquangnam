@@ -1,0 +1,2559 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 Garena Auto Register Premium Z v1.0.0</title>
+    <style>
+        /* ===== ROOT VARIABLES ===== */
+        :root {
+            --bg-primary: #0a0e1a;
+            --bg-secondary: #0d1528;
+            --bg-card: rgba(22, 27, 34, 0.92);
+            --bg-input: rgba(13, 17, 23, 0.8);
+            --bg-hover: rgba(240, 136, 62, 0.08);
+            --border-color: rgba(48, 54, 61, 0.4);
+            --text-primary: #e6edf3;
+            --text-secondary: #8b949e;
+            --text-muted: #484f58;
+            --accent: #f0883e;
+            --accent-hover: #e06b2a;
+            --accent-glow: rgba(240, 136, 62, 0.25);
+            --success: #3fb950;
+            --danger: #f85149;
+            --warning: #d29922;
+            --info: #58a6ff;
+            --purple: #a371f7;
+            --pink: #f472b6;
+            --cyan: #22d3ee;
+            --gradient-main: linear-gradient(135deg, #f0883e 0%, #e06b2a 30%, #c084fc 60%, #a371f7 100%);
+            --gradient-secondary: linear-gradient(135deg, #f472b6 0%, #a371f7 50%, #22d3ee 100%);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            --shadow-glow: 0 0 60px rgba(240, 136, 62, 0.08);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .light-mode {
+            --bg-primary: #f0f4f8;
+            --bg-secondary: #e8edf5;
+            --bg-card: rgba(255, 255, 255, 0.92);
+            --bg-input: rgba(246, 248, 250, 0.8);
+            --bg-hover: rgba(240, 136, 62, 0.06);
+            --border-color: rgba(208, 215, 222, 0.5);
+            --text-primary: #1a2332;
+            --text-secondary: #57606a;
+            --text-muted: #8b949e;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+            --shadow-glow: 0 0 40px rgba(240, 136, 62, 0.06);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            transition: background 0.5s ease;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* ===== ANIMATED BACKGROUND ===== */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        .bg-animation .gradient-bg {
+            position: absolute;
+            inset: 0;
+            background: 
+                radial-gradient(ellipse at 20% 50%, rgba(240, 136, 62, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(163, 113, 247, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 80%, rgba(34, 211, 238, 0.05) 0%, transparent 50%);
+            animation: bgPulse 8s ease-in-out infinite alternate;
+        }
+        @keyframes bgPulse {
+            0% { opacity: 0.5; transform: scale(1); }
+            100% { opacity: 1; transform: scale(1.05); }
+        }
+
+        .floating-orbs {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+        }
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.12;
+            animation: floatOrb 20s ease-in-out infinite;
+        }
+        .orb-1 {
+            width: 400px;
+            height: 400px;
+            background: var(--accent);
+            top: -100px;
+            right: -100px;
+            animation-delay: 0s;
+        }
+        .orb-2 {
+            width: 350px;
+            height: 350px;
+            background: var(--purple);
+            bottom: -80px;
+            left: -80px;
+            animation-delay: -7s;
+        }
+        .orb-3 {
+            width: 250px;
+            height: 250px;
+            background: var(--cyan);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: -14s;
+        }
+        @keyframes floatOrb {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(30px, -40px) scale(1.1); }
+            50% { transform: translate(-20px, 20px) scale(0.9); }
+            75% { transform: translate(40px, 30px) scale(1.05); }
+        }
+
+        .particles {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+        }
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--accent);
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: particleFloat 15s linear infinite;
+        }
+        @keyframes particleFloat {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.3; }
+            90% { opacity: 0.3; }
+            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+        }
+
+        /* ===== LOGIN PAGE ===== */
+        .login-page {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: var(--bg-card);
+            backdrop-filter: blur(40px);
+            padding: 48px 40px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            width: 100%;
+            max-width: 440px;
+            animation: slideUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            z-index: 2;
+            box-shadow: var(--shadow), var(--shadow-glow);
+            transition: var(--transition);
+        }
+        .login-container::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: var(--radius);
+            padding: 2px;
+            background: var(--gradient-main);
+            background-size: 300% 300%;
+            animation: gradientMove 4s ease infinite;
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .login-container .logo { text-align: center; margin-bottom: 32px; }
+        .login-container .logo .icon {
+            font-size: 72px;
+            display: block;
+            margin-bottom: 8px;
+            animation: bounceIcon 3s ease-in-out infinite;
+        }
+        @keyframes bounceIcon {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-10px) scale(1.05); }
+        }
+        .login-container .logo h1 {
+            background: var(--gradient-main);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 300% 300%;
+            animation: gradientMove 4s ease infinite;
+            font-size: 30px;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+        }
+        .login-container .logo .subtitle {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-top: 4px;
+            -webkit-text-fill-color: var(--text-secondary);
+        }
+        .login-container .logo .version {
+            display: inline-block;
+            background: var(--gradient-main);
+            background-size: 300% 300%;
+            animation: gradientMove 4s ease infinite;
+            color: #fff;
+            font-size: 11px;
+            padding: 3px 16px;
+            border-radius: 12px;
+            margin-top: 8px;
+            font-weight: 700;
+            -webkit-text-fill-color: #fff;
+        }
+
+        .form-group { margin-bottom: 18px; }
+        .form-group label {
+            display: block;
+            color: var(--text-primary);
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--bg-input);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px var(--accent-glow);
+            transform: scale(1.01);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            background: var(--gradient-main);
+            background-size: 300% 300%;
+            animation: gradientMove 4s ease infinite;
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 6px;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-login:hover { 
+            transform: translateY(-2px) scale(1.01);
+            box-shadow: 0 8px 30px var(--accent-glow);
+        }
+        .btn-login:active { transform: translateY(0) scale(0.98); }
+        .btn-login:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .btn-login.loading { color: transparent; }
+        .btn-login.loading::after {
+            content: '';
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 3px solid #fff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
+
+        .login-options {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 14px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .login-options a {
+            color: var(--info);
+            text-decoration: none;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            -webkit-text-fill-color: var(--info);
+        }
+        .login-options a:hover { 
+            color: var(--accent); 
+            -webkit-text-fill-color: var(--accent);
+            transform: translateX(3px);
+        }
+
+        .error-message {
+            color: var(--danger);
+            font-size: 14px;
+            text-align: center;
+            margin-top: 12px;
+            padding: 12px;
+            background: rgba(248, 81, 73, 0.1);
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(248, 81, 73, 0.2);
+            display: none;
+            animation: shake 0.5s ease;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        .error-message.show { display: block; }
+
+        .footer-text {
+            text-align: center;
+            margin-top: 24px;
+            color: var(--text-muted);
+            font-size: 12px;
+            line-height: 1.8;
+        }
+        .footer-text .brand { 
+            background: var(--gradient-main);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+        .footer-text .author { 
+            color: var(--accent);
+            font-weight: 600;
+            -webkit-text-fill-color: var(--accent);
+        }
+        .footer-text .contact {
+            color: var(--info);
+            -webkit-text-fill-color: var(--info);
+        }
+
+        /* ===== DASHBOARD ===== */
+        .dashboard {
+            display: none;
+            padding: 16px;
+            max-width: 1600px;
+            margin: 0 auto;
+            animation: fadeIn 0.6s ease;
+            position: relative;
+            z-index: 1;
+        }
+        .dashboard.active { display: block; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(40px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* ===== HEADER ===== */
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 18px 24px;
+            background: var(--bg-card);
+            backdrop-filter: blur(40px);
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            margin-bottom: 16px;
+            animation: slideUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: var(--shadow), var(--shadow-glow);
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+        .dashboard-header::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: var(--radius);
+            padding: 2px;
+            background: var(--gradient-main);
+            background-size: 300% 300%;
+            animation: gradientMove 4s ease infinite;
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+            opacity: 0.4;
+        }
+        .dashboard-header .left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .dashboard-header .left .brand {
+            font-size: 20px;
+            font-weight: 900;
+            background: var(--gradient-main);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 300% 300%;
+            animation: gradientMove 4s ease infinite;
+        }
+        .dashboard-header .left .user-email {
+            color: var(--info);
+            font-size: 13px;
+            background: var(--bg-input);
+            padding: 4px 14px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            font-weight: 500;
+            -webkit-text-fill-color: var(--info);
+        }
+        .dashboard-header .right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .dashboard-header .right .stats {
+            display: flex;
+            gap: 14px;
+            font-size: 12px;
+            background: var(--bg-input);
+            padding: 4px 16px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+        .dashboard-header .right .stats .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
+        }
+        .dashboard-header .right .stats .stat-item .num {
+            font-weight: 700;
+            color: var(--accent);
+            -webkit-text-fill-color: var(--accent);
+            transition: all 0.3s ease;
+        }
+        .dashboard-header .right .stats .stat-item .num.pending {
+            color: var(--warning);
+            -webkit-text-fill-color: var(--warning);
+        }
+        .dashboard-header .right .stats .stat-item .num:hover {
+            transform: scale(1.2);
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn {
+            padding: 7px 16px;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 12px;
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(255,255,255,0.1);
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+        .btn:hover::after { transform: translateX(0); }
+        .btn:hover { transform: translateY(-2px); }
+        .btn:active { transform: translateY(0) scale(0.95); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .btn:disabled::after { display: none; }
+
+        .btn-danger { background: linear-gradient(135deg, #da3633, var(--danger)); }
+        .btn-danger:hover { box-shadow: 0 4px 20px rgba(248, 81, 73, 0.4); }
+        .btn-primary { background: linear-gradient(135deg, #1f6feb, var(--info)); }
+        .btn-primary:hover { box-shadow: 0 4px 20px rgba(88, 166, 255, 0.4); }
+        .btn-success { background: linear-gradient(135deg, #238636, var(--success)); }
+        .btn-success:hover { box-shadow: 0 4px 20px rgba(63, 185, 80, 0.4); }
+        .btn-refresh { background: linear-gradient(135deg, #1f6feb, var(--info)); }
+        .btn-refresh:hover { box-shadow: 0 4px 20px rgba(88, 166, 255, 0.4); }
+        .btn-export { background: linear-gradient(135deg, #238636, var(--success)); }
+        .btn-export:hover { box-shadow: 0 4px 20px rgba(63, 185, 80, 0.4); }
+        .btn-logout { background: linear-gradient(135deg, #da3633, var(--danger)); }
+        .btn-logout:hover { box-shadow: 0 4px 20px rgba(248, 81, 73, 0.4); }
+        .btn-theme {
+            background: var(--bg-input);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            -webkit-text-fill-color: var(--text-primary);
+        }
+        .btn-theme:hover { background: var(--border-color); }
+        .btn-sm { padding: 4px 10px; font-size: 11px; border-radius: 6px; }
+        .btn-archive {
+            background: var(--gradient-main);
+            background-size: 300% 300%;
+            animation: gradientMove 4s ease infinite;
+        }
+        .btn-archive:hover { box-shadow: 0 4px 20px var(--accent-glow); }
+
+        /* ===== ARCHIVE INFO ===== */
+        .archive-info {
+            display: none;
+            padding: 14px 20px;
+            background: var(--bg-card);
+            backdrop-filter: blur(40px);
+            border-radius: var(--radius);
+            border: 1px solid var(--accent-glow);
+            margin-bottom: 16px;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            animation: slideUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: var(--shadow), var(--shadow-glow);
+            transition: var(--transition);
+        }
+        .archive-info.show { display: flex; }
+        .archive-info .info-text {
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+        .archive-info .info-text strong {
+            color: var(--accent);
+            font-weight: 700;
+            -webkit-text-fill-color: var(--accent);
+        }
+        .archive-info .info-text .archived {
+            color: var(--warning);
+            font-weight: 700;
+            -webkit-text-fill-color: var(--warning);
+        }
+        .archive-info .status-badge {
+            padding: 3px 14px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+        .archive-info .status-badge.done {
+            background: var(--success);
+            color: #fff;
+            animation: pulseBadge 2s ease-in-out infinite;
+        }
+        .archive-info .status-badge.none {
+            background: var(--text-muted);
+            color: #fff;
+        }
+        .archive-info .status-badge.waiting {
+            background: var(--warning);
+            color: #fff;
+            animation: pulseBadge 1.5s ease-in-out infinite;
+        }
+        .archive-info .status-badge.archiving {
+            background: var(--gradient-main);
+            background-size: 300% 300%;
+            animation: gradientMove 1.5s ease infinite;
+            color: #fff;
+        }
+        @keyframes pulseBadge {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* ===== FILTER BAR ===== */
+        .filter-bar {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            padding: 12px 16px;
+            background: var(--bg-card);
+            backdrop-filter: blur(40px);
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            margin-bottom: 16px;
+            align-items: center;
+            animation: slideUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both;
+            box-shadow: var(--shadow), var(--shadow-glow);
+            transition: var(--transition);
+        }
+        .filter-bar .filter-label {
+            color: var(--text-secondary);
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .filter-bar input {
+            padding: 8px 14px;
+            background: var(--bg-input);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-size: 13px;
+            flex: 1;
+            min-width: 140px;
+            transition: all 0.3s ease;
+        }
+        .filter-bar input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+            transform: scale(1.02);
+        }
+
+        /* ===== TABLE ===== */
+        .table-container {
+            background: var(--bg-card);
+            backdrop-filter: blur(40px);
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            animation: slideUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
+            box-shadow: var(--shadow), var(--shadow-glow);
+            transition: var(--transition);
+        }
+        .table-wrapper {
+            overflow-x: auto;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        thead {
+            background: var(--bg-input);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            backdrop-filter: blur(10px);
+        }
+        th {
+            padding: 10px 14px;
+            text-align: left;
+            color: var(--text-secondary);
+            font-weight: 700;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid var(--border-color);
+            white-space: nowrap;
+        }
+        td {
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+            transition: background 0.2s ease;
+        }
+        tr { transition: all 0.2s ease; }
+        tr:hover td { background: var(--bg-hover); }
+        tr:last-child td { border-bottom: none; }
+
+        .file-name-cell { 
+            color: var(--accent); 
+            font-weight: 600;
+            -webkit-text-fill-color: var(--accent);
+        }
+        .file-count-cell { 
+            color: var(--success); 
+            font-weight: 700;
+            -webkit-text-fill-color: var(--success);
+        }
+
+        .row-checkbox {
+            cursor: pointer;
+            width: 16px;
+            height: 16px;
+            accent-color: var(--accent);
+            transition: transform 0.2s ease;
+        }
+        .row-checkbox:hover { transform: scale(1.2); }
+
+        .action-btns { display: flex; gap: 4px; flex-wrap: wrap; }
+        .action-btns .btn { padding: 3px 8px; font-size: 10px; border-radius: 4px; }
+
+        .empty-row td {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        /* ===== PAGINATION ===== */
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 12px 16px;
+            background: var(--bg-input);
+            border-top: 1px solid var(--border-color);
+        }
+        .pagination .info {
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+        .pagination .info span { color: var(--text-primary); font-weight: 700; }
+        .pagination .controls {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+        .pagination .controls button {
+            padding: 6px 14px;
+            background: var(--bg-input);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 12px;
+            font-weight: 600;
+            -webkit-text-fill-color: var(--text-primary);
+        }
+        .pagination .controls button:hover:not(:disabled) { 
+            background: var(--border-color);
+            transform: scale(1.05);
+        }
+        .pagination .controls button:disabled { 
+            opacity: 0.3; 
+            cursor: not-allowed;
+            transform: none;
+        }
+        .pagination .controls button.active {
+            background: var(--gradient-main);
+            background-size: 300% 300%;
+            animation: gradientMove 4s ease infinite;
+            color: #fff;
+            border-color: var(--accent);
+            -webkit-text-fill-color: #fff;
+        }
+        .pagination .controls .page-info {
+            padding: 4px 12px;
+            color: var(--text-secondary);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* ===== MODAL ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(16px);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+            padding: 20px;
+        }
+        .modal-overlay.show { display: flex; }
+        .modal {
+            background: var(--bg-card);
+            backdrop-filter: blur(40px);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 32px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: var(--shadow), var(--shadow-glow);
+            position: relative;
+        }
+        .modal::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: var(--radius);
+            padding: 2px;
+            background: var(--gradient-main);
+            background-size: 300% 300%;
+            animation: gradientMove 4s ease infinite;
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+            opacity: 0.4;
+        }
+        .modal h3 {
+            background: var(--gradient-main);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 300% 300%;
+            animation: gradientMove 4s ease infinite;
+            margin-bottom: 20px;
+            font-size: 22px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .modal .form-group { margin-bottom: 16px; }
+        .modal .form-group label {
+            display: block;
+            color: var(--text-primary);
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        .modal .form-group input,
+        .modal .form-group select {
+            width: 100%;
+            padding: 10px 14px;
+            background: var(--bg-input);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        .modal .form-group input:focus,
+        .modal .form-group select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+            transform: scale(1.01);
+        }
+        .modal .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: flex-end;
+        }
+        .modal .modal-actions button {
+            padding: 10px 24px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        .modal .modal-actions .btn-confirm {
+            background: var(--gradient-main);
+            background-size: 300% 300%;
+            animation: gradientMove 4s ease infinite;
+            color: #fff;
+            -webkit-text-fill-color: #fff;
+        }
+        .modal .modal-actions .btn-confirm:hover { transform: translateY(-2px); }
+        .modal .modal-actions .btn-cancel {
+            background: var(--bg-input);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            -webkit-text-fill-color: var(--text-primary);
+        }
+        .modal .modal-actions .btn-cancel:hover { background: var(--border-color); }
+
+        /* ===== PROGRESS MODAL ===== */
+        .progress-modal .modal { max-width: 520px; }
+        .progress-modal .progress-container { margin: 20px 0; }
+        .progress-modal .progress-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+        .progress-modal .progress-info .progress-label {
+            font-weight: 600;
+            color: var(--text-primary);
+            -webkit-text-fill-color: var(--text-primary);
+        }
+        .progress-modal .progress-info .progress-percent {
+            font-weight: 700;
+            color: var(--accent);
+            -webkit-text-fill-color: var(--accent);
+        }
+        .progress-modal .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: var(--bg-input);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+        .progress-modal .progress-bar .progress-fill {
+            height: 100%;
+            background: var(--gradient-main);
+            background-size: 300% 300%;
+            animation: gradientMove 2s ease infinite;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+        .progress-modal .progress-detail {
+            margin-top: 12px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            text-align: center;
+            min-height: 24px;
+        }
+        .progress-modal .progress-status {
+            margin-top: 8px;
+            padding: 12px;
+            background: var(--bg-input);
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            color: var(--text-primary);
+            min-height: 50px;
+            border: 1px solid var(--border-color);
+            word-break: break-all;
+            max-height: 150px;
+            overflow-y: auto;
+            -webkit-text-fill-color: var(--text-primary);
+        }
+        .progress-modal .modal-actions {
+            margin-top: 20px;
+            justify-content: center;
+        }
+        .progress-modal .modal-actions button { min-width: 100px; }
+
+        /* ===== NOTIFICATION ===== */
+        #notificationContainer {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-width: 380px;
+            width: 100%;
+            pointer-events: none;
+        }
+        #notificationContainer .notification {
+            pointer-events: auto;
+            padding: 14px 20px;
+            border-radius: var(--radius);
+            color: #fff;
+            font-weight: 600;
+            font-size: 13px;
+            animation: slideInNotif 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        @keyframes slideInNotif {
+            from { transform: translateX(120%) scale(0.8); opacity: 0; }
+            to { transform: translateX(0) scale(1); opacity: 1; }
+        }
+        @keyframes slideOutNotif {
+            from { transform: translateX(0) scale(1); opacity: 1; }
+            to { transform: translateX(120%) scale(0.8); opacity: 0; }
+        }
+        #notificationContainer .notification.success { background: linear-gradient(135deg, #238636, var(--success)); }
+        #notificationContainer .notification.error { background: linear-gradient(135deg, #da3633, var(--danger)); }
+        #notificationContainer .notification.info { background: linear-gradient(135deg, #1f6feb, var(--info)); }
+        #notificationContainer .notification.warning { background: linear-gradient(135deg, #d29922, #e3b341); }
+        #notificationContainer .notification .notif-close-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+            opacity: 0.7;
+            padding: 0 4px;
+            transition: opacity 0.2s ease;
+        }
+        #notificationContainer .notification .notif-close-btn:hover { opacity: 1; }
+
+        /* ===== AUTHOR INFO ===== */
+        .author-info {
+            padding: 12px 18px;
+            background: var(--bg-card);
+            backdrop-filter: blur(40px);
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            margin-top: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            box-shadow: var(--shadow), var(--shadow-glow);
+            transition: var(--transition);
+        }
+        .author-info .highlight {
+            background: var(--gradient-main);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+        .author-info .contact-info {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+        .author-info .contact-info a {
+            color: var(--info);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            -webkit-text-fill-color: var(--info);
+        }
+        .author-info .contact-info a:hover { 
+            color: var(--accent); 
+            -webkit-text-fill-color: var(--accent);
+            transform: scale(1.05);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 14px;
+            }
+            .dashboard-header .right {
+                width: 100%;
+                flex-wrap: wrap;
+            }
+            .dashboard-header .right .stats {
+                width: 100%;
+                justify-content: space-around;
+                flex-wrap: wrap;
+                padding: 6px 10px;
+            }
+            .dashboard-header .right .stats .stat-item {
+                font-size: 11px;
+            }
+            .filter-bar {
+                flex-direction: column;
+                padding: 12px 14px;
+            }
+            .filter-bar input { width: 100%; min-width: unset; }
+            .pagination {
+                flex-direction: column;
+                align-items: center;
+            }
+            th, td {
+                padding: 6px 10px;
+                font-size: 11px;
+            }
+            .login-container {
+                padding: 28px 20px;
+                margin: 10px;
+            }
+            .modal {
+                padding: 20px;
+                margin: 10px;
+                width: 95%;
+            }
+            #notificationContainer {
+                top: 10px;
+                right: 10px;
+                left: 10px;
+                max-width: unset;
+                width: auto;
+            }
+            .archive-info {
+                flex-direction: column;
+                text-align: center;
+            }
+            .author-info {
+                flex-direction: column;
+                text-align: center;
+            }
+            .orb { display: none; }
+            .particles { display: none; }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: var(--bg-secondary); }
+        ::-webkit-scrollbar-thumb {
+            background: var(--gradient-main);
+            background-size: 300% 300%;
+            border-radius: 10px;
+        }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            gap: 12px;
+            color: var(--text-secondary);
+        }
+        .loading-spinner .spinner {
+            width: 28px;
+            height: 28px;
+            border: 3px solid var(--border-color);
+            border-radius: 50%;
+            border-top-color: var(--accent);
+            animation: spin 0.8s linear infinite;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== BACKGROUND ANIMATION ===== -->
+    <div class="bg-animation">
+        <div class="gradient-bg"></div>
+        <div class="floating-orbs">
+            <div class="orb orb-1"></div>
+            <div class="orb orb-2"></div>
+            <div class="orb orb-3"></div>
+        </div>
+        <div class="particles" id="particles"></div>
+    </div>
+
+    <!-- ===== LOGIN PAGE ===== -->
+    <div class="login-page" id="loginPage">
+        <div class="login-container">
+            <div class="logo">
+                <span class="icon">🚀</span>
+                <h1>Garena Auto Register Premium Z</h1>
+                <p class="subtitle">Quản lý tài khoản Garena Pro</p>
+                <span class="version">v1.0.0</span>
+            </div>
+
+            <div class="form-group">
+                <label>📧 Email</label>
+                <input type="email" id="loginEmail" placeholder="Nhập email của bạn" autocomplete="email">
+            </div>
+
+            <div class="form-group">
+                <label>🔑 Mật khẩu</label>
+                <input type="password" id="loginPassword" placeholder="Nhập mật khẩu" autocomplete="current-password">
+            </div>
+
+            <button class="btn-login" id="loginBtn">🔐 Đăng nhập</button>
+
+            <div class="login-options">
+                <a id="forgotPasswordLink">🔑 Quên mật khẩu?</a>
+            </div>
+
+            <div class="error-message" id="loginError"></div>
+
+            <div class="footer-text">
+                © 2026 <span class="brand">Garena Auto Register Premium Z v1.0.0</span><br>
+                <span class="author">✍️ Từ Quang Nam</span> | 
+                <span class="contact">📱 Zalo: 0888385536</span> | 
+                <span class="contact">📘 Facebook: Từ Quang Nam</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== DASHBOARD ===== -->
+    <div class="dashboard" id="dashboard">
+        <!-- Header -->
+        <div class="dashboard-header">
+            <div class="left">
+                <span class="brand">🚀 Garena Auto Register Premium Z</span>
+                <span class="user-email" id="userEmailDisplay">loading...</span>
+                <button class="btn btn-theme" id="themeToggle">🌙 Dark</button>
+            </div>
+            <div class="right">
+                <div class="stats" id="statsBar">
+                    <div class="stat-item">📦 Tổng: <span class="num" id="totalCount">0</span></div>
+                    <div class="stat-item">📄 Đã archive: <span class="num" id="archivedCount">0</span></div>
+                    <div class="stat-item">📁 File: <span class="num" id="fileCount">0</span></div>
+                    <div class="stat-item">⏳ Chờ: <span class="num pending" id="pendingCount">0</span></div>
+                </div>
+                <button class="btn btn-refresh" id="refreshBtn">🔄 Làm mới</button>
+                <button class="btn btn-export" id="exportBtn">📊 CSV</button>
+                <button class="btn btn-logout" id="logoutBtn">🚪 Đăng xuất</button>
+            </div>
+        </div>
+
+        <!-- Archive Info -->
+        <div class="archive-info" id="archiveInfo">
+            <span class="info-text">
+                📦 <strong id="archiveTotal">0</strong> tài khoản đã archive 
+                (<span class="archived" id="archivePercent">0%</span>)
+                <span class="status-badge none" id="archiveStatus">⏳ Đang tải...</span>
+            </span>
+            <span class="info-text">📁 Số file: <strong id="fileCountDisplay">0</strong></span>
+            <span class="info-text" id="pendingInfo">⏳ Chờ đủ 100 acc</span>
+            <button class="btn btn-archive btn-sm" id="archiveNowBtn">📦 Archive</button>
+            <button class="btn btn-success btn-sm" id="downloadArchiveBtn">📥 Tải file</button>
+            <button class="btn btn-danger btn-sm" id="deleteArchiveBtn" style="display:none;">🗑️ Xóa</button>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+            <span class="filter-label">🔍 Tìm kiếm:</span>
+            <input type="text" id="searchInput" placeholder="Tìm tên file...">
+            <button class="btn btn-primary btn-sm" id="clearFilterBtn">🧹 Xóa</button>
+        </div>
+
+        <!-- Table -->
+        <div class="table-container">
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" id="selectAll" class="row-checkbox"></th>
+                            <th>#</th>
+                            <th>📄 Tên File</th>
+                            <th>📊 Số lượng</th>
+                            <th>📅 Ngày tạo</th>
+                            <th>📝 Ghi chú</th>
+                            <th>⚡ Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <tr class="empty-row">
+                            <td colspan="7">
+                                <div class="loading-spinner">
+                                    <div class="spinner"></div>
+                                    <span>Đang tải dữ liệu...</span>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pagination">
+                <div class="info">
+                    Hiển thị <span id="startIndex">0</span> - <span id="endIndex">0</span> / <span id="totalItems">0</span>
+                </div>
+                <div class="controls" id="paginationControls">
+                    <button id="prevPage">‹</button>
+                    <span class="page-info" id="pageInfo">Trang 1</span>
+                    <button id="nextPage">›</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="author-info">
+            <span>© 2026 <span class="highlight">Garena Auto Register Premium Z v1.0.0</span></span>
+            <span>✍️ <span class="highlight">Từ Quang Nam</span></span>
+            <div class="contact-info">
+                <a href="#">📘 Facebook: Từ Quang Nam</a>
+                <a href="#">📱 Zalo: 0888385536</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== FORGOT PASSWORD MODAL ===== -->
+    <div class="modal-overlay" id="forgotPasswordModal">
+        <div class="modal">
+            <h3>🔑 Quên mật khẩu</h3>
+            <p style="color:var(--text-secondary);margin-bottom:14px;font-size:14px;">
+                Nhập email để nhận link đặt lại mật khẩu.
+            </p>
+            <div class="form-group">
+                <label>📧 Email</label>
+                <input type="email" id="resetEmail" placeholder="Nhập email của bạn">
+            </div>
+            <div id="resetMessage" style="display:none;"></div>
+            <div class="modal-actions">
+                <button class="btn-cancel" id="resetCancelBtn">❌ Hủy</button>
+                <button class="btn-confirm" id="resetSendBtn">📨 Gửi link</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== PROGRESS MODAL ===== -->
+    <div class="modal-overlay progress-modal" id="progressModal">
+        <div class="modal">
+            <h3 id="progressTitle">⏳ Đang xử lý...</h3>
+            <div class="progress-container">
+                <div class="progress-info">
+                    <span class="progress-label" id="progressLabel">Đang tiến hành...</span>
+                    <span class="progress-percent" id="progressPercent">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-detail" id="progressDetail">Đang chuẩn bị...</div>
+                <div class="progress-status" id="progressStatus">⏳ Đang tải...</div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-cancel" id="progressCancelBtn" style="display:none;">❌ Hủy</button>
+                <button class="btn-confirm" id="progressCloseBtn" style="display:none;">✅ Đóng</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== NOTIFICATION CONTAINER ===== -->
+    <div id="notificationContainer"></div>
+
+    <script>
+        // ============================================
+        // CONFIGURATION
+        // ============================================
+        const CONFIG = {
+            firebase: {
+                apiKey: "AIzaSyCYkHYveuBZAnbZt_qZD2iWWy8BkS49dsU",
+                authDomain: "garena-auto-register-pro.firebaseapp.com",
+                projectId: "garena-auto-register-pro",
+                storageBucket: "garena-auto-register-pro.firebasestorage.app",
+                messagingSenderId: "306207796959",
+                appId: "1:306207796959:web:a7037aba8234f8f357c36a"
+            },
+            app: {
+                version: "1.0.0",
+                name: "Garena Auto Register Premium Z",
+                archiveCollection: 'archive_data',
+                maxPerFile: 100,
+                pageSize: 20,
+                author: "Từ Quang Nam",
+                contact: { facebook: "Từ Quang Nam", zalo: "0888385536" }
+            }
+        };
+
+        // ============================================
+        // PARTICLES
+        // ============================================
+        function createParticles() {
+            const container = document.getElementById('particles');
+            if (!container) return;
+            const colors = ['#f0883e', '#a371f7', '#22d3ee', '#f472b6', '#3fb950'];
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.width = (Math.random() * 3 + 2) + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.animationDelay = (Math.random() * 20) + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                container.appendChild(particle);
+            }
+        }
+        createParticles();
+
+        // ============================================
+        // FIREBASE HELPER
+        // ============================================
+        class FirebaseHelper {
+            constructor() {
+                this.currentUser = null;
+                this._token = null;
+                this.FIRESTORE_URL =
+                    `https://firestore.googleapis.com/v1/projects/${CONFIG.firebase.projectId}/databases/(default)/documents`;
+            }
+
+            async signIn(email, password) {
+                const url =
+                    `https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=${CONFIG.firebase.apiKey}`;
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password, returnSecureToken: true })
+                });
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error?.message || 'Đăng nhập thất bại');
+                }
+                const data = await response.json();
+                this.currentUser = {
+                    email: data.email,
+                    localId: data.localId,
+                    idToken: data.idToken,
+                    refreshToken: data.refreshToken,
+                    expiresIn: data.expiresIn,
+                    loginTime: Date.now()
+                };
+                this._token = data.idToken;
+                localStorage.setItem('garena_user', JSON.stringify(this.currentUser));
+                localStorage.setItem('garena_user_token', data.idToken);
+                return this.currentUser;
+            }
+
+            async resetPassword(email) {
+                const url =
+                    `https://www.googleapis.com/identitytoolkit/v3/relyingparty/getOobConfirmationCode?key=${CONFIG.firebase.apiKey}`;
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, requestType: 'PASSWORD_RESET' })
+                });
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error?.message || 'Gửi email thất bại');
+                }
+                return await response.json();
+            }
+
+            getCurrentUser() {
+                if (this.currentUser) return this.currentUser;
+                const stored = localStorage.getItem('garena_user');
+                if (stored) {
+                    try {
+                        const user = JSON.parse(stored);
+                        const expiresAt = user.loginTime + (parseInt(user.expiresIn) * 1000);
+                        if (Date.now() < expiresAt) {
+                            this.currentUser = user;
+                            this._token = user.idToken;
+                            return user;
+                        }
+                        this.logout();
+                    } catch (e) { this.logout(); }
+                }
+                return null;
+            }
+
+            logout() {
+                this.currentUser = null;
+                this._token = null;
+                localStorage.removeItem('garena_user');
+                localStorage.removeItem('garena_user_token');
+                sessionStorage.clear();
+            }
+
+            getToken() {
+                if (this._token) return this._token;
+                const user = this.getCurrentUser();
+                if (!user) return null;
+                const expiresAt = user.loginTime + (parseInt(user.expiresIn) * 1000);
+                if (Date.now() >= expiresAt) { this.logout(); return null; }
+                return user.idToken;
+            }
+
+            getUserCollection(email) {
+                let sanitized = email.replace(/@/g, '_at_').replace(/\./g, '_dot_').replace(/[^a-zA-Z0-9_]/g, '_');
+                if (sanitized.match(/^[0-9]/)) { sanitized = '_' + sanitized; }
+                if (sanitized.length > 100) { sanitized = sanitized.substring(0, 100); }
+                return `account_garena_${sanitized}`;
+            }
+
+            async fetchAccounts(collection, pageSize = 100, pageToken = null) {
+                const token = this.getToken();
+                if (!token) { this.logout(); return null; }
+                let url = `${this.FIRESTORE_URL}/${collection}?pageSize=${pageSize}`;
+                if (pageToken) { url += `&pageToken=${pageToken}`; }
+                const response = await fetch(url, {
+                    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
+                });
+                if (!response.ok) {
+                    if (response.status === 404) return null;
+                    const errorText = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${errorText}`);
+                }
+                const data = await response.json();
+                const docs = data.documents || [];
+                const accounts = docs.map(doc => {
+                    const fields = doc.fields || {};
+                    return {
+                        docId: doc.name.split('/').pop(),
+                        username: fields.username?.stringValue || '',
+                        password: fields.password?.stringValue || '',
+                        email: fields.email?.stringValue || '',
+                        emailPassword: fields.emailPassword?.stringValue || '',
+                        registeredAt: fields.registeredAt?.stringValue || '',
+                        status: fields.status?.stringValue || 'success',
+                        note: fields.note?.stringValue || ''
+                    };
+                });
+                return { accounts, nextPageToken: data.nextPageToken || null, total: data.totalSize || accounts.length };
+            }
+
+            async fetchAllAccounts(collection) {
+                let allAccounts = [];
+                let pageToken = null;
+                let hasMore = true;
+                const BATCH_SIZE = 100;
+
+                while (hasMore) {
+                    const result = await this.fetchAccounts(collection, BATCH_SIZE, pageToken);
+                    if (!result || result.accounts.length === 0) break;
+                    allAccounts = allAccounts.concat(result.accounts);
+                    pageToken = result.nextPageToken;
+                    hasMore = !!pageToken;
+                    if (hasMore) await new Promise(resolve => setTimeout(resolve, 50));
+                }
+                return allAccounts;
+            }
+
+            async saveArchiveFiles(email, archiveFiles, remainingCount) {
+                const token = this.getToken();
+                if (!token) { this.logout(); return null; }
+
+                const docId = `archive_${email.replace(/[@.]/g, '_')}`;
+                const url = `${this.FIRESTORE_URL}/${CONFIG.app.archiveCollection}/${docId}`;
+
+                const existing = await this.getArchive(email);
+                let allFiles = existing?.files || [];
+                allFiles = allFiles.concat(archiveFiles);
+
+                const fields = {
+                    email: { stringValue: email },
+                    files: { arrayValue: { values: allFiles.map(f => ({ mapValue: { fields: {
+                        fileName: { stringValue: f.fileName },
+                        content: { stringValue: f.content },
+                        totalArchived: { integerValue: f.totalArchived },
+                        createdAt: { stringValue: f.createdAt }
+                    } } })) } },
+                    totalArchived: { integerValue: allFiles.reduce((sum, f) => sum + f.totalArchived, 0) },
+                    fileCount: { integerValue: allFiles.length },
+                    remainingCount: { integerValue: remainingCount || 0 },
+                    updatedAt: { stringValue: new Date().toISOString() }
+                };
+
+                const response = await fetch(url, {
+                    method: 'PATCH',
+                    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ fields })
+                });
+                if (!response.ok) { const error = await response.text(); throw new Error(error); }
+                return await response.json();
+            }
+
+            async getArchive(email) {
+                const token = this.getToken();
+                if (!token) { this.logout(); return null; }
+                const docId = `archive_${email.replace(/[@.]/g, '_')}`;
+                const url = `${this.FIRESTORE_URL}/${CONFIG.app.archiveCollection}/${docId}`;
+                const response = await fetch(url, {
+                    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
+                });
+                if (response.status === 404) return null;
+                if (!response.ok) { const error = await response.text(); throw new Error(error); }
+                const data = await response.json();
+                const fields = data.fields || {};
+
+                let files = [];
+                if (fields.files?.arrayValue) {
+                    files = fields.files.arrayValue.values.map(v => {
+                        const f = v.mapValue.fields;
+                        return {
+                            fileName: f.fileName?.stringValue || '',
+                            content: f.content?.stringValue || '',
+                            totalArchived: parseInt(f.totalArchived?.integerValue || '0'),
+                            createdAt: f.createdAt?.stringValue || ''
+                        };
+                    });
+                }
+
+                return {
+                    email: fields.email?.stringValue || '',
+                    files: files,
+                    totalArchived: files.reduce((sum, f) => sum + f.totalArchived, 0),
+                    fileCount: files.length,
+                    remainingCount: parseInt(fields.remainingCount?.integerValue || '0'),
+                    updatedAt: fields.updatedAt?.stringValue || ''
+                };
+            }
+
+            async deleteArchive(email) {
+                const token = this.getToken();
+                if (!token) { this.logout(); return null; }
+                const docId = `archive_${email.replace(/[@.]/g, '_')}`;
+                const url = `${this.FIRESTORE_URL}/${CONFIG.app.archiveCollection}/${docId}`;
+                const response = await fetch(url, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (response.status === 404) return true;
+                if (!response.ok) { const error = await response.text(); throw new Error(error); }
+                return true;
+            }
+
+            async deleteBatch(collection, docIds, onProgress = null) {
+                const token = this.getToken();
+                if (!token) { this.logout(); return null; }
+
+                let deleted = 0;
+                const total = docIds.length;
+
+                for (let i = 0; i < docIds.length; i++) {
+                    try {
+                        const url = `${this.FIRESTORE_URL}/${collection}/${docIds[i]}`;
+                        const response = await fetch(url, {
+                            method: 'DELETE',
+                            headers: { 'Authorization': `Bearer ${token}` }
+                        });
+                        if (response.ok) deleted++;
+                    } catch (e) { console.error('Lỗi xóa:', e); }
+
+                    if (onProgress && i % 5 === 0) {
+                        onProgress({ deleted, total, percent: Math.round((deleted / total) * 100) });
+                    }
+                    if (i % 10 === 0 && i > 0) {
+                        await new Promise(resolve => setTimeout(resolve, 30));
+                    }
+                }
+                return deleted;
+            }
+        }
+
+        // ============================================
+        // MAIN APPLICATION
+        // ============================================
+        class App {
+            constructor() {
+                this.firebase = new FirebaseHelper();
+                this.currentUser = null;
+                this.archiveFiles = [];
+                this.remainingAccounts = [];
+                this.totalArchived = 0;
+                this.currentPage = 1;
+                this.filteredFiles = [];
+                this.isArchiving = false;
+                this.archiveLoopRunning = false;
+                this.progressCancel = false;
+                this.isLoading = false;
+                this.notificationTimer = null;
+
+                this.dom = {};
+                this.init();
+            }
+
+            init() {
+                this.initDOM();
+                this.initEventListeners();
+                this.initTheme();
+                this.initUser();
+                console.log(`🚀 ${CONFIG.app.name} v${CONFIG.app.version} loaded!`);
+            }
+
+            initDOM() {
+                this.dom = {
+                    loginPage: document.getElementById('loginPage'),
+                    dashboard: document.getElementById('dashboard'),
+                    loginEmail: document.getElementById('loginEmail'),
+                    loginPassword: document.getElementById('loginPassword'),
+                    loginBtn: document.getElementById('loginBtn'),
+                    loginError: document.getElementById('loginError'),
+                    userEmailDisplay: document.getElementById('userEmailDisplay'),
+                    totalCount: document.getElementById('totalCount'),
+                    archivedCount: document.getElementById('archivedCount'),
+                    fileCount: document.getElementById('fileCount'),
+                    pendingCount: document.getElementById('pendingCount'),
+                    tableBody: document.getElementById('tableBody'),
+                    searchInput: document.getElementById('searchInput'),
+                    clearFilterBtn: document.getElementById('clearFilterBtn'),
+                    refreshBtn: document.getElementById('refreshBtn'),
+                    exportBtn: document.getElementById('exportBtn'),
+                    logoutBtn: document.getElementById('logoutBtn'),
+                    themeToggle: document.getElementById('themeToggle'),
+                    archiveInfo: document.getElementById('archiveInfo'),
+                    archiveTotal: document.getElementById('archiveTotal'),
+                    archivePercent: document.getElementById('archivePercent'),
+                    archiveStatus: document.getElementById('archiveStatus'),
+                    fileCountDisplay: document.getElementById('fileCountDisplay'),
+                    downloadArchiveBtn: document.getElementById('downloadArchiveBtn'),
+                    deleteArchiveBtn: document.getElementById('deleteArchiveBtn'),
+                    archiveNowBtn: document.getElementById('archiveNowBtn'),
+                    pendingInfo: document.getElementById('pendingInfo'),
+                    startIndex: document.getElementById('startIndex'),
+                    endIndex: document.getElementById('endIndex'),
+                    totalItems: document.getElementById('totalItems'),
+                    pageInfo: document.getElementById('pageInfo'),
+                    prevPage: document.getElementById('prevPage'),
+                    nextPage: document.getElementById('nextPage'),
+                    selectAll: document.getElementById('selectAll'),
+                    forgotPasswordModal: document.getElementById('forgotPasswordModal'),
+                    resetEmail: document.getElementById('resetEmail'),
+                    resetSendBtn: document.getElementById('resetSendBtn'),
+                    resetCancelBtn: document.getElementById('resetCancelBtn'),
+                    resetMessage: document.getElementById('resetMessage'),
+                    notificationContainer: document.getElementById('notificationContainer'),
+                    forgotPasswordLink: document.getElementById('forgotPasswordLink'),
+                    progressModal: document.getElementById('progressModal'),
+                    progressTitle: document.getElementById('progressTitle'),
+                    progressLabel: document.getElementById('progressLabel'),
+                    progressPercent: document.getElementById('progressPercent'),
+                    progressFill: document.getElementById('progressFill'),
+                    progressDetail: document.getElementById('progressDetail'),
+                    progressStatus: document.getElementById('progressStatus'),
+                    progressCancelBtn: document.getElementById('progressCancelBtn'),
+                    progressCloseBtn: document.getElementById('progressCloseBtn')
+                };
+            }
+
+            initEventListeners() {
+                this.dom.loginBtn.addEventListener('click', () => this.handleLogin());
+                this.dom.loginEmail.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') this.dom.loginPassword.focus();
+                });
+                this.dom.loginPassword.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') this.handleLogin();
+                });
+
+                this.dom.forgotPasswordLink.addEventListener('click', () => this.showForgotPasswordModal());
+                this.dom.resetCancelBtn.addEventListener('click', () => this.closeForgotPasswordModal());
+                this.dom.resetSendBtn.addEventListener('click', () => this.handleResetPassword());
+
+                this.dom.logoutBtn.addEventListener('click', () => {
+                    if (this.isArchiving && !confirm('⚠️ Đang archive, chắc chắn đăng xuất?')) return;
+                    if (confirm('Đăng xuất?')) this.logout();
+                });
+
+                this.dom.refreshBtn.addEventListener('click', () => this.loadData());
+                this.dom.downloadArchiveBtn.addEventListener('click', () => this.downloadAllArchive());
+                this.dom.deleteArchiveBtn.addEventListener('click', () => this.deleteAllArchive());
+                this.dom.archiveNowBtn.addEventListener('click', () => this.startArchiveLoop());
+
+                this.dom.searchInput.addEventListener('input', () => this.applyFilters());
+                this.dom.clearFilterBtn.addEventListener('click', () => {
+                    this.dom.searchInput.value = '';
+                    this.applyFilters();
+                });
+
+                this.dom.prevPage.addEventListener('click', () => {
+                    if (this.currentPage > 1) { this.currentPage--; this.renderTable(); this.updatePagination(); }
+                });
+                this.dom.nextPage.addEventListener('click', () => {
+                    const totalPages = Math.ceil((this.filteredFiles.length || this.archiveFiles.length) / CONFIG.app
+                        .pageSize);
+                    if (this.currentPage < totalPages) { this.currentPage++; this.renderTable(); this.updatePagination(); }
+                });
+
+                this.dom.selectAll.addEventListener('change', () => {
+                    document.querySelectorAll('.row-select').forEach(cb => {
+                        cb.checked = this.dom.selectAll.checked;
+                    });
+                });
+
+                this.dom.exportBtn.addEventListener('click', () => this.exportCSV());
+                this.dom.themeToggle.addEventListener('click', () => this.toggleTheme());
+
+                this.dom.progressCancelBtn.addEventListener('click', () => {
+                    if (confirm('Hủy quá trình?')) {
+                        this.progressCancel = true;
+                        this.dom.progressCancelBtn.disabled = true;
+                        this.dom.progressCancelBtn.textContent = '⏳ Đang hủy...';
+                    }
+                });
+
+                this.dom.progressCloseBtn.addEventListener('click', () => this.closeProgressModal());
+
+                window.addEventListener('beforeunload', (e) => {
+                    if (this.isArchiving) {
+                        e.preventDefault();
+                        e.returnValue = '⚠️ Đang archive! Chắc chắn rời đi?';
+                        return e.returnValue;
+                    }
+                });
+
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
+                        this.closeForgotPasswordModal();
+                        if (this.dom.progressCloseBtn.style.display !== 'none') this.closeProgressModal();
+                    }
+                });
+            }
+
+            initTheme() {
+                const savedTheme = localStorage.getItem('theme') || 'dark';
+                if (savedTheme === 'light') {
+                    document.body.classList.add('light-mode');
+                    this.dom.themeToggle.textContent = '☀️ Light';
+                }
+            }
+
+            initUser() {
+                const user = this.firebase.getCurrentUser();
+                if (user) {
+                    this.currentUser = user;
+                    this.showDashboard();
+                } else {
+                    this.dom.loginPage.style.display = 'flex';
+                    this.dom.dashboard.classList.remove('active');
+                }
+            }
+
+            showProgressModal(title = '⏳ Đang xử lý...') {
+                this.dom.progressModal.classList.add('show');
+                this.dom.progressTitle.textContent = title;
+                this.dom.progressLabel.textContent = 'Đang chuẩn bị...';
+                this.dom.progressPercent.textContent = '0%';
+                this.dom.progressFill.style.width = '0%';
+                this.dom.progressDetail.textContent = 'Đang chuẩn bị...';
+                this.dom.progressStatus.textContent = '⏳ Đang khởi tạo...';
+                this.dom.progressCancelBtn.style.display = 'inline-flex';
+                this.dom.progressCancelBtn.disabled = false;
+                this.dom.progressCancelBtn.textContent = '❌ Hủy';
+                this.dom.progressCloseBtn.style.display = 'none';
+                this.progressCancel = false;
+            }
+
+            updateProgress(percent, label, detail, status) {
+                this.dom.progressPercent.textContent = Math.round(percent) + '%';
+                this.dom.progressFill.style.width = Math.min(100, percent) + '%';
+                if (label) this.dom.progressLabel.textContent = label;
+                if (detail) this.dom.progressDetail.textContent = detail;
+                if (status) this.dom.progressStatus.textContent = status;
+            }
+
+            closeProgressModal() {
+                this.dom.progressModal.classList.remove('show');
+                this.dom.progressCancelBtn.style.display = 'none';
+                this.dom.progressCloseBtn.style.display = 'none';
+            }
+
+            completeProgress(title, detail, status) {
+                this.dom.progressTitle.textContent = title || '✅ Hoàn thành!';
+                this.dom.progressLabel.textContent = '✅ Hoàn thành';
+                this.dom.progressPercent.textContent = '100%';
+                this.dom.progressFill.style.width = '100%';
+                this.dom.progressDetail.textContent = detail || 'Quá trình đã hoàn tất.';
+                this.dom.progressStatus.textContent = status || '✅ Thành công!';
+                this.dom.progressCancelBtn.style.display = 'none';
+                this.dom.progressCloseBtn.style.display = 'inline-flex';
+                this.dom.progressCloseBtn.textContent = '✅ Đóng';
+                this.isArchiving = false;
+            }
+
+            showErrorProgress(error) {
+                this.dom.progressTitle.textContent = '❌ Lỗi!';
+                this.dom.progressLabel.textContent = '❌ Đã xảy ra lỗi';
+                this.dom.progressDetail.textContent = error.message || 'Lỗi không xác định';
+                this.dom.progressStatus.textContent = '❌ Thất bại';
+                this.dom.progressCancelBtn.style.display = 'none';
+                this.dom.progressCloseBtn.style.display = 'inline-flex';
+                this.dom.progressCloseBtn.textContent = '❌ Đóng';
+                this.isArchiving = false;
+            }
+
+            // ============================================
+            // LOGIN
+            // ============================================
+            async handleLogin() {
+                const email = this.dom.loginEmail.value.trim();
+                const password = this.dom.loginPassword.value;
+                if (!email || !password) {
+                    this.showLoginError('Vui lòng nhập email và mật khẩu');
+                    return;
+                }
+                this.dom.loginBtn.disabled = true;
+                this.dom.loginBtn.classList.add('loading');
+                this.hideLoginError();
+                try {
+                    await this.firebase.signIn(email, password);
+                    this.currentUser = this.firebase.currentUser;
+                    this.dom.loginBtn.textContent = '✅ Thành công!';
+                    await this.sleep(300);
+                    this.showDashboard();
+                } catch (error) {
+                    let msg = 'Đăng nhập thất bại';
+                    if (error.message.includes('EMAIL_NOT_FOUND')) msg = 'Email không tồn tại';
+                    else if (error.message.includes('INVALID_PASSWORD')) msg = 'Mật khẩu không đúng';
+                    else if (error.message.includes('TOO_MANY_ATTEMPTS')) msg = 'Quá nhiều lần thử';
+                    else msg = error.message || 'Đăng nhập thất bại';
+                    this.showLoginError(msg);
+                } finally {
+                    this.dom.loginBtn.disabled = false;
+                    this.dom.loginBtn.classList.remove('loading');
+                    this.dom.loginBtn.textContent = '🔐 Đăng nhập';
+                }
+            }
+
+            showLoginError(msg) {
+                this.dom.loginError.textContent = '❌ ' + msg;
+                this.dom.loginError.classList.add('show');
+            }
+            hideLoginError() { this.dom.loginError.classList.remove('show'); }
+
+            async handleResetPassword() {
+                const email = this.dom.resetEmail.value.trim();
+                if (!email) {
+                    this.showResetMessage('Vui lòng nhập email!', 'error');
+                    return;
+                }
+                this.dom.resetSendBtn.disabled = true;
+                this.dom.resetSendBtn.textContent = '⏳ Đang gửi...';
+                try {
+                    await this.firebase.resetPassword(email);
+                    this.showResetMessage('✅ Email đặt lại mật khẩu đã được gửi!', 'success');
+                    this.dom.resetSendBtn.textContent = '✅ Đã gửi';
+                    setTimeout(() => this.closeForgotPasswordModal(), 2500);
+                } catch (error) {
+                    let msg = 'Gửi email thất bại';
+                    if (error.message.includes('EMAIL_NOT_FOUND')) msg = 'Email không tồn tại';
+                    else msg = error.message || 'Gửi email thất bại';
+                    this.showResetMessage('❌ ' + msg, 'error');
+                    this.dom.resetSendBtn.textContent = '📨 Gửi lại';
+                } finally {
+                    this.dom.resetSendBtn.disabled = false;
+                }
+            }
+
+            showResetMessage(msg, type) {
+                const el = this.dom.resetMessage;
+                el.textContent = msg;
+                el.className = type === 'success' ? 'reset-success' : 'error-message show';
+                el.style.display = 'block';
+            }
+
+            showForgotPasswordModal() {
+                this.dom.forgotPasswordModal.classList.add('show');
+                this.dom.resetEmail.value = this.dom.loginEmail.value.trim() || '';
+                this.dom.resetMessage.style.display = 'none';
+                this.dom.resetSendBtn.textContent = '📨 Gửi link';
+                this.dom.resetSendBtn.disabled = false;
+                setTimeout(() => this.dom.resetEmail.focus(), 100);
+            }
+
+            closeForgotPasswordModal() { this.dom.forgotPasswordModal.classList.remove('show'); }
+
+            logout() {
+                this.firebase.logout();
+                this.currentUser = null;
+                this.archiveFiles = [];
+                this.remainingAccounts = [];
+                this.filteredFiles = [];
+                this.isArchiving = false;
+                this.archiveLoopRunning = false;
+                this.dom.dashboard.classList.remove('active');
+                this.dom.loginPage.style.display = 'flex';
+                this.dom.archiveInfo.classList.remove('show');
+                this.closeForgotPasswordModal();
+                this.closeProgressModal();
+            }
+
+            async showDashboard() {
+                this.dom.loginPage.style.display = 'none';
+                this.dom.dashboard.classList.add('active');
+                this.dom.userEmailDisplay.textContent = this.currentUser.email;
+                await this.loadData();
+            }
+
+            // ============================================
+            // LOAD DATA
+            // ============================================
+            async loadData(showLoading = true) {
+                if (this.isLoading) return;
+                this.isLoading = true;
+
+                try {
+                    const collection = this.firebase.getUserCollection(this.currentUser.email);
+
+                    if (showLoading) {
+                        this.showProgressModal('📥 Đang tải dữ liệu...');
+                        this.updateProgress(20, 'Đang đọc dữ liệu...', 'Đang tải từ database...', '⏳ Đang kết nối...');
+                    }
+
+                    const archive = await this.firebase.getArchive(this.currentUser.email);
+
+                    if (showLoading) this.updateProgress(50, 'Đã đọc archive', 'Đang tải tài khoản...', '📦 Đang xử lý...');
+
+                    let allAccounts = [];
+                    let archivedCount = 0;
+                    let fileCount = 0;
+
+                    if (archive && archive.files && archive.files.length > 0) {
+                        this.archiveFiles = archive.files;
+                        this.filteredFiles = archive.files;
+                        archivedCount = archive.totalArchived || 0;
+                        fileCount = archive.fileCount || 0;
+
+                        for (const file of archive.files) {
+                            const lines = file.content.split('\n').filter(line => line.trim());
+                            const parsed = lines.map((line, idx) => {
+                                const parts = line.split('|');
+                                return {
+                                    docId: 'archive_' + Date.now() + '_' + idx,
+                                    username: parts[0] || '',
+                                    password: parts[1] || '',
+                                    email: parts[2] || '',
+                                    emailPassword: parts[3] || '',
+                                    registeredAt: parts[4] || '',
+                                    status: 'archived',
+                                    note: 'Archived'
+                                };
+                            });
+                            allAccounts = allAccounts.concat(parsed);
+                        }
+                    } else {
+                        this.archiveFiles = [];
+                        this.filteredFiles = [];
+                    }
+
+                    const dbAccounts = await this.firebase.fetchAllAccounts(collection);
+                    this.remainingAccounts = dbAccounts || [];
+
+                    if (dbAccounts && dbAccounts.length > 0) {
+                        allAccounts = allAccounts.concat(dbAccounts);
+                    }
+
+                    if (showLoading) this.updateProgress(80, 'Đang cập nhật...', 'Đang hiển thị dữ liệu...', '🎨 Đang cập nhật...');
+
+                    this.totalArchived = archivedCount;
+                    this.dom.totalCount.textContent = allAccounts.length;
+                    this.dom.archivedCount.textContent = archivedCount;
+                    this.dom.fileCount.textContent = fileCount;
+                    this.dom.pendingCount.textContent = this.remainingAccounts.length;
+
+                    if (this.archiveFiles.length > 0) {
+                        this.dom.archiveInfo.classList.add('show');
+                        this.dom.archiveTotal.textContent = archivedCount;
+                        const total = archivedCount + this.remainingAccounts.length;
+                        const percent = total > 0 ? Math.round((archivedCount / total) * 100) : 0;
+                        this.dom.archivePercent.textContent = percent + '%';
+                        this.dom.fileCountDisplay.textContent = fileCount;
+                        this.dom.archiveStatus.textContent = '✅ Đã tải';
+                        this.dom.archiveStatus.className = 'status-badge done';
+                        this.dom.deleteArchiveBtn.style.display = 'inline-flex';
+                    } else {
+                        this.dom.archiveInfo.classList.remove('show');
+                        this.dom.deleteArchiveBtn.style.display = 'none';
+                    }
+
+                    if (this.remainingAccounts.length > 0) {
+                        this.dom.pendingInfo.textContent = `⏳ ${this.remainingAccounts.length} acc đang chờ đủ 100`;
+                        this.dom.pendingInfo.style.color = 'var(--warning)';
+                        this.dom.archiveNowBtn.style.display = 'inline-flex';
+
+                        if (this.remainingAccounts.length >= CONFIG.app.maxPerFile && !this.isArchiving) {
+                            this.dom.pendingInfo.textContent = `⚡ ${this.remainingAccounts.length} acc đã đủ 100, bắt đầu archive...`;
+                            this.dom.pendingInfo.style.color = 'var(--info)';
+                            this.dom.archiveStatus.textContent = '⏳ Đang archive...';
+                            this.dom.archiveStatus.className = 'status-badge archiving';
+                            await this.sleep(300);
+                            this.startArchiveLoop();
+                        }
+                    } else {
+                        this.dom.pendingInfo.textContent = '✅ Tất cả acc đã được archive';
+                        this.dom.pendingInfo.style.color = 'var(--success)';
+                        this.dom.archiveNowBtn.style.display = 'none';
+                    }
+
+                    this.applyFilters();
+                    this.updatePagination();
+
+                    if (showLoading) {
+                        this.completeProgress(
+                            '✅ Tải dữ liệu thành công!',
+                            `Đã tải ${allAccounts.length} tài khoản (${archivedCount} đã archive)`,
+                            '✅ Hoàn tất!'
+                        );
+                    }
+
+                } catch (error) {
+                    console.error('❌ Lỗi load data:', error);
+                    if (showLoading) this.showErrorProgress(error);
+                    this.showNotification('❌ Lỗi: ' + error.message, 'error');
+                } finally {
+                    this.isLoading = false;
+                }
+            }
+
+            // ============================================
+            // ARCHIVE LOOP
+            // ============================================
+            async startArchiveLoop() {
+                if (this.archiveLoopRunning) return;
+                if (this.isArchiving) {
+                    this.showNotification('⏳ Đang archive...', 'warning');
+                    return;
+                }
+
+                this.archiveLoopRunning = true;
+
+                try {
+                    while (this.archiveLoopRunning && this.remainingAccounts.length >= CONFIG.app.maxPerFile) {
+                        if (this.progressCancel) {
+                            this.showNotification('⏹️ Đã hủy archive.', 'warning');
+                            break;
+                        }
+
+                        this.showNotification(`📦 Đang archive ${CONFIG.app.maxPerFile} acc... (còn ${this.remainingAccounts.length} acc)`, 'info');
+                        await this.doArchiveBatch();
+
+                        await this.loadData(false);
+
+                        if (this.remainingAccounts.length < CONFIG.app.maxPerFile) {
+                            this.showNotification(`✅ Archive hết! Còn ${this.remainingAccounts.length} acc`, 'success');
+                            this.dom.pendingInfo.textContent = `✅ Còn ${this.remainingAccounts.length} acc chưa đủ 100`;
+                            this.dom.pendingInfo.style.color = 'var(--success)';
+                            this.dom.archiveStatus.textContent = '✅ Hoàn tất';
+                            this.dom.archiveStatus.className = 'status-badge done';
+                            break;
+                        }
+
+                        await this.sleep(500);
+                    }
+                } catch (error) {
+                    console.error('❌ Lỗi archive loop:', error);
+                    this.showNotification('❌ Lỗi: ' + error.message, 'error');
+                } finally {
+                    this.archiveLoopRunning = false;
+                    this.isArchiving = false;
+                    this.dom.archiveNowBtn.disabled = false;
+                }
+            }
+
+            // ============================================
+            // ARCHIVE BATCH
+            // ============================================
+            async doArchiveBatch() {
+                if (!this.currentUser || this.isArchiving) return;
+
+                const collection = this.firebase.getUserCollection(this.currentUser.email);
+                let pendingAccounts = this.remainingAccounts;
+
+                if (pendingAccounts.length === 0) {
+                    const dbAccounts = await this.firebase.fetchAllAccounts(collection);
+                    if (!dbAccounts || dbAccounts.length === 0) return;
+                    pendingAccounts = dbAccounts;
+                    this.remainingAccounts = dbAccounts;
+                }
+
+                pendingAccounts.sort((a, b) => {
+                    if (!a.registeredAt) return -1;
+                    if (!b.registeredAt) return 1;
+                    return new Date(a.registeredAt) - new Date(b.registeredAt);
+                });
+
+                const maxPerFile = CONFIG.app.maxPerFile;
+                const archiveBatch = pendingAccounts.slice(0, maxPerFile);
+
+                if (archiveBatch.length < maxPerFile) return;
+
+                this.isArchiving = true;
+                this.dom.refreshBtn.disabled = true;
+                this.dom.archiveNowBtn.disabled = true;
+
+                this.dom.archiveStatus.textContent = '⏳ Đang archive...';
+                this.dom.archiveStatus.className = 'status-badge archiving';
+
+                try {
+                    this.showProgressModal(`📦 Đang archive ${archiveBatch.length} tài khoản...`);
+                    this.updateProgress(10, 'Đang chuẩn bị...', 'Đang tạo file archive...', '⏳ Đang khởi tạo...');
+
+                    const now = new Date();
+                    const dateStr = now.toLocaleDateString('vi-VN').replace(/\//g, '-');
+                    const randomId = Math.random().toString(36).substr(2, 6);
+
+                    const content = archiveBatch.map(acc =>
+                        `${acc.username || ''}|${acc.password || ''}|${acc.email || ''}|${acc.emailPassword || ''}|${acc.registeredAt || ''}`
+                    ).join('\n');
+
+                    const fileName = `Garena_Archive_${dateStr}_${randomId}.txt`;
+                    const newFile = {
+                        fileName,
+                        content,
+                        totalArchived: archiveBatch.length,
+                        createdAt: new Date().toISOString()
+                    };
+
+                    this.updateProgress(30, 'Đang lưu archive...', 'Đang lưu lên Firebase...', '💾 Đang lưu...');
+
+                    await this.firebase.saveArchiveFiles(
+                        this.currentUser.email,
+                        [newFile],
+                        pendingAccounts.length - archiveBatch.length
+                    );
+
+                    this.updateProgress(50, 'Đang xóa tài khoản...', 'Đang xóa acc đã archive...', '🗑️ Đang xóa...');
+
+                    const docIds = archiveBatch.map(acc => acc.docId);
+                    const deleteProgress = (progress) => {
+                        const percent = 50 + (progress.percent * 0.4);
+                        this.updateProgress(
+                            percent,
+                            `Đang xóa... (${progress.deleted}/${progress.total})`,
+                            `Đã xóa ${progress.deleted}/${progress.total} acc`,
+                            `🗑️ ${Math.round((progress.deleted/progress.total)*100)}%`
+                        );
+                        if (this.progressCancel) throw new Error('Đã hủy bởi người dùng');
+                    };
+
+                    await this.firebase.deleteBatch(collection, docIds, deleteProgress);
+
+                    this.updateProgress(95, 'Đang cập nhật...', 'Đang cập nhật dữ liệu...', '🔄 Đang cập nhật...');
+
+                    this.remainingAccounts = pendingAccounts.slice(maxPerFile);
+
+                    this.completeProgress(
+                        '✅ Archive thành công!',
+                        `Đã archive ${archiveBatch.length} tài khoản, còn ${this.remainingAccounts.length} acc`,
+                        `✅ Thành công!`
+                    );
+
+                } catch (error) {
+                    console.error('❌ Lỗi archive:', error);
+                    if (error.message === 'Đã hủy bởi người dùng') {
+                        this.showNotification('⚠️ Đã hủy archive.', 'warning');
+                        this.dom.progressTitle.textContent = '⏹️ Đã hủy';
+                        this.dom.progressLabel.textContent = '⏹️ Đã hủy bởi người dùng';
+                        this.dom.progressStatus.textContent = '⏹️ Đã hủy';
+                        this.dom.progressCancelBtn.style.display = 'none';
+                        this.dom.progressCloseBtn.style.display = 'inline-flex';
+                        this.dom.progressCloseBtn.textContent = '✅ Đóng';
+                        this.isArchiving = false;
+                        this.archiveLoopRunning = false;
+                    } else {
+                        this.showErrorProgress(error);
+                        this.showNotification('❌ Lỗi archive: ' + error.message, 'error');
+                    }
+                } finally {
+                    this.dom.refreshBtn.disabled = false;
+                    this.dom.archiveNowBtn.disabled = false;
+                    if (!this.dom.progressModal.classList.contains('show')) {
+                        this.closeProgressModal();
+                    }
+                    this.dom.archiveStatus.textContent = this.archiveFiles.length > 0 ? '✅ Đã tải' : '📭 Chưa có archive';
+                    this.dom.archiveStatus.className = this.archiveFiles.length > 0 ? 'status-badge done' :
+                    'status-badge none';
+                }
+            }
+
+            // ============================================
+            // DOWNLOAD ALL ARCHIVE
+            // ============================================
+            async downloadAllArchive() {
+                if (!this.archiveFiles || this.archiveFiles.length === 0) {
+                    this.showNotification('📭 Chưa có file archive!', 'warning');
+                    return;
+                }
+
+                this.showProgressModal('📥 Đang tải file...');
+                let downloaded = 0;
+                const total = this.archiveFiles.length;
+
+                for (const file of this.archiveFiles) {
+                    const blob = new Blob(['\uFEFF' + file.content], { type: 'text/plain;charset=utf-8' });
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = file.fileName;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    setTimeout(() => URL.revokeObjectURL(url), 3000);
+
+                    downloaded++;
+                    const percent = (downloaded / total) * 100;
+                    this.updateProgress(percent, `Đang tải... (${downloaded}/${total})`, `Đã tải: ${file.fileName}`, `📥 ${Math.round(percent)}%`);
+                    await this.sleep(200);
+                }
+
+                this.completeProgress('✅ Tải file thành công!', `Đã tải ${total} file archive.`, '✅ Thành công!');
+                this.showNotification(`✅ Đã tải ${this.archiveFiles.length} file archive!`, 'success');
+            }
+
+            // ============================================
+            // DELETE ALL ARCHIVE
+            // ============================================
+            async deleteAllArchive() {
+                if (!this.archiveFiles || this.archiveFiles.length === 0) {
+                    this.showNotification('📭 Không có archive để xóa!', 'warning');
+                    return;
+                }
+
+                if (!confirm(`⚠️ Xóa ${this.archiveFiles.length} file archive?`)) return;
+                if (!confirm(`🔴 KHÔNG THỂ HOÀN TÁC!`)) return;
+
+                try {
+                    this.showProgressModal('🗑️ Đang xóa archive...');
+                    this.updateProgress(20, 'Đang chuẩn bị...', 'Đang xóa dữ liệu...', '⏳ Đang xử lý...');
+
+                    await this.firebase.deleteArchive(this.currentUser.email);
+
+                    this.archiveFiles = [];
+                    this.filteredFiles = [];
+                    this.totalArchived = 0;
+                    this.dom.archiveInfo.classList.remove('show');
+                    this.dom.deleteArchiveBtn.style.display = 'none';
+
+                    await this.loadData(false);
+
+                    this.completeProgress('✅ Xóa archive thành công!', 'Đã xóa toàn bộ dữ liệu archive.', '✅ Thành công!');
+                    this.showNotification('✅ Đã xóa toàn bộ archive!', 'success');
+
+                } catch (error) {
+                    this.showErrorProgress(error);
+                    this.showNotification('❌ Lỗi: ' + error.message, 'error');
+                }
+            }
+
+            // ============================================
+            // FILTER & RENDER
+            // ============================================
+            applyFilters() {
+                const search = this.dom.searchInput.value.toLowerCase().trim();
+                if (search) {
+                    this.filteredFiles = this.archiveFiles.filter(f => f.fileName.toLowerCase().includes(search));
+                } else {
+                    this.filteredFiles = this.archiveFiles.slice();
+                }
+                this.currentPage = 1;
+                this.renderTable();
+                this.updatePagination();
+            }
+
+            renderTable() {
+                const files = this.filteredFiles || this.archiveFiles || [];
+                if (files.length === 0) {
+                    this.dom.tableBody.innerHTML = `
+                        <tr class="empty-row"><td colspan="7">📭 Chưa có file archive nào</td></tr>
+                    `;
+                    this.updatePaginationInfo();
+                    return;
+                }
+
+                const start = (this.currentPage - 1) * CONFIG.app.pageSize;
+                const end = Math.min(start + CONFIG.app.pageSize, files.length);
+                const pageData = files.slice(start, end);
+
+                let html = '';
+                pageData.forEach((file, index) => {
+                    const num = start + index + 1;
+                    const date = file.createdAt ? this.formatDate(file.createdAt) : '-';
+                    html += `
+                        <tr data-file="${file.fileName}">
+                            <td><input type="checkbox" class="row-checkbox row-select"></td>
+                            <td>${num}</td>
+                            <td class="file-name-cell">📄 ${this.escapeHtml(file.fileName)}</td>
+                            <td class="file-count-cell">${file.totalArchived || 0} acc</td>
+                            <td>${date}</td>
+                            <td>📦 Archived</td>
+                            <td>
+                                <div class="action-btns">
+                                    <button class="btn btn-success btn-sm" onclick="window.app.downloadFile('${this.escapeHtml(file.fileName)}')">📥</button>
+                                    <button class="btn btn-danger btn-sm" onclick="window.app.deleteFile('${this.escapeHtml(file.fileName)}')">🗑️</button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                this.dom.tableBody.innerHTML = html;
+                this.updatePaginationInfo();
+            }
+
+            updatePaginationInfo() {
+                const files = this.filteredFiles || this.archiveFiles || [];
+                const total = files.length;
+                const start = total === 0 ? 0 : (this.currentPage - 1) * CONFIG.app.pageSize + 1;
+                const end = Math.min(this.currentPage * CONFIG.app.pageSize, total);
+                this.dom.startIndex.textContent = total > 0 ? start : 0;
+                this.dom.endIndex.textContent = total > 0 ? end : 0;
+                this.dom.totalItems.textContent = total;
+                this.dom.pageInfo.textContent = total > 0 ? `Trang ${this.currentPage}` : 'Trang 1';
+            }
+
+            updatePagination() {
+                const files = this.filteredFiles || this.archiveFiles || [];
+                const totalPages = Math.ceil(files.length / CONFIG.app.pageSize);
+                this.dom.prevPage.disabled = this.currentPage <= 1 || totalPages === 0;
+                this.dom.nextPage.disabled = this.currentPage >= totalPages || totalPages === 0;
+            }
+
+            // ============================================
+            // FILE OPERATIONS
+            // ============================================
+            downloadFile(fileName) {
+                const file = this.archiveFiles.find(f => f.fileName === fileName);
+                if (!file) { this.showNotification('❌ Không tìm thấy file!', 'error'); return; }
+
+                const blob = new Blob(['\uFEFF' + file.content], { type: 'text/plain;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = file.fileName;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                setTimeout(() => URL.revokeObjectURL(url), 3000);
+                this.showNotification(`✅ Đã tải: ${fileName}`, 'success');
+            }
+
+            async deleteFile(fileName) {
+                if (!confirm(`Xóa file "${fileName}"?`)) return;
+                if (!confirm('🔴 KHÔNG THỂ HOÀN TÁC!')) return;
+
+                try {
+                    this.showProgressModal('🗑️ Đang xóa file...');
+                    this.updateProgress(20, 'Đang chuẩn bị...', `Đang xóa: ${fileName}`, '⏳ Đang xử lý...');
+
+                    const updatedFiles = this.archiveFiles.filter(f => f.fileName !== fileName);
+                    const newTotalArchived = updatedFiles.reduce((sum, f) => sum + f.totalArchived, 0);
+
+                    const token = this.firebase.getToken();
+                    if (!token) { this.logout(); return; }
+
+                    const docId = `archive_${this.currentUser.email.replace(/[@.]/g, '_')}`;
+                    const url = `${this.firebase.FIRESTORE_URL}/${CONFIG.app.archiveCollection}/${docId}`;
+
+                    const fields = {
+                        email: { stringValue: this.currentUser.email },
+                        files: { arrayValue: { values: updatedFiles.map(f => ({ mapValue: { fields: {
+                            fileName: { stringValue: f.fileName },
+                            content: { stringValue: f.content },
+                            totalArchived: { integerValue: f.totalArchived },
+                            createdAt: { stringValue: f.createdAt }
+                        } } })) } },
+                        totalArchived: { integerValue: newTotalArchived },
+                        fileCount: { integerValue: updatedFiles.length },
+                        remainingCount: { integerValue: this.remainingAccounts.length },
+                        updatedAt: { stringValue: new Date().toISOString() }
+                    };
+
+                    const response = await fetch(url, {
+                        method: 'PATCH',
+                        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ fields })
+                    });
+                    if (!response.ok) { const error = await response.text(); throw new Error(error); }
+
+                    this.archiveFiles = updatedFiles;
+                    this.filteredFiles = this.filteredFiles.filter(f => f.fileName !== fileName);
+                    this.totalArchived = newTotalArchived;
+
+                    this.dom.fileCount.textContent = updatedFiles.length;
+                    this.dom.fileCountDisplay.textContent = updatedFiles.length;
+                    this.dom.archiveTotal.textContent = newTotalArchived;
+                    this.dom.archivedCount.textContent = newTotalArchived;
+
+                    if (updatedFiles.length === 0) {
+                        this.dom.archiveInfo.classList.remove('show');
+                        this.dom.deleteArchiveBtn.style.display = 'none';
+                    }
+
+                    this.applyFilters();
+
+                    this.completeProgress('✅ Xóa file thành công!', `Đã xóa file: ${fileName}`, '✅ Hoàn tất!');
+                    this.showNotification(`✅ Đã xóa: ${fileName}`, 'success');
+
+                } catch (error) {
+                    this.showErrorProgress(error);
+                    this.showNotification('❌ Lỗi: ' + error.message, 'error');
+                }
+            }
+
+            // ============================================
+            // EXPORT CSV
+            // ============================================
+            exportCSV() {
+                const total = parseInt(this.dom.totalCount.textContent) || 0;
+                if (total === 0) { this.showNotification('📭 Không có dữ liệu!', 'warning'); return; }
+
+                const headers = ['Username', 'Password', 'Email', 'EmailPassword', 'RegisteredAt', 'Status', 'Note'];
+                let rows = [];
+
+                for (const file of this.archiveFiles) {
+                    const lines = file.content.split('\n').filter(line => line.trim());
+                    for (const line of lines) {
+                        const parts = line.split('|');
+                        rows.push([
+                            parts[0] || '', parts[1] || '', parts[2] || '',
+                            parts[3] || '', parts[4] || '', 'archived', 'Archived'
+                        ]);
+                    }
+                }
+
+                if (rows.length === 0) { this.showNotification('📭 Không có dữ liệu!', 'warning'); return; }
+
+                const content = headers.join(',') + '\n' + rows.map(row => row.join(',')).join('\n');
+                const blob = new Blob(['\uFEFF' + content], { type: 'text/csv;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `garena_accounts_${Date.now()}.csv`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                setTimeout(() => URL.revokeObjectURL(url), 3000);
+                this.showNotification(`✅ Đã export ${rows.length} tài khoản!`, 'success');
+            }
+
+            // ============================================
+            // THEME
+            // ============================================
+            toggleTheme() {
+                document.body.classList.toggle('light-mode');
+                const isDark = !document.body.classList.contains('light-mode');
+                localStorage.setItem('theme', isDark ? 'dark' : 'light');
+                this.dom.themeToggle.textContent = isDark ? '🌙 Dark' : '☀️ Light';
+            }
+
+            // ============================================
+            // UTILITY
+            // ============================================
+            sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
+
+            escapeHtml(text) {
+                if (!text) return '';
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+
+            formatDate(dateStr) {
+                if (!dateStr) return '-';
+                try {
+                    const d = new Date(dateStr);
+                    return d.toLocaleDateString('vi-VN') + ' ' +
+                        d.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+                } catch { return dateStr; }
+            }
+
+            showNotification(message, type = 'info') {
+                const container = this.dom.notificationContainer;
+                const notif = document.createElement('div');
+                notif.className = `notification ${type}`;
+                notif.innerHTML = `
+                    <span>${message}</span>
+                    <button class="notif-close-btn" onclick="this.parentElement.remove()">×</button>
+                `;
+                container.appendChild(notif);
+                setTimeout(() => {
+                    if (notif.parentElement) {
+                        notif.style.animation = 'slideOutNotif 0.3s ease';
+                        setTimeout(() => notif.remove(), 300);
+                    }
+                }, 5000);
+            }
+        }
+
+        // ============================================
+        // INITIALIZE
+        // ============================================
+        const app = new App();
+        window.app = app;
+        console.log(`🚀 ${CONFIG.app.name} v${CONFIG.app.version} ready!`);
+    </script>
+</body>
+</html>

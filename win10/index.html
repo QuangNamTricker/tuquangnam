@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Windows 10 Simulation</title>
+    <style>
+        /* ===== RESET & BASE ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        body { 
+            font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+            background: #000; overflow: hidden; height: 100vh; 
+            color: #fff; cursor: default;
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
+
+        /* ===== BOOT SCREEN ===== */
+        #bootScreen {
+            position: fixed; inset: 0; z-index: 10000;
+            background: #000; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            transition: opacity 0.8s ease, visibility 0.8s;
+        }
+        #bootScreen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+        .boot-logo { 
+            display: flex; align-items: center; gap: 20px;
+            font-size: 3.5rem; font-weight: 300; color: #fff;
+            margin-bottom: 40px;
+        }
+        .boot-logo svg { width: 64px; height: 64px; fill: #fff; }
+        .boot-dots { display: flex; gap: 10px; }
+        .boot-dots span {
+            width: 12px; height: 12px; border-radius: 50%;
+            background: #fff; animation: bootPulse 1.2s infinite ease-in-out both;
+        }
+        .boot-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .boot-dots span:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes bootPulse {
+            0%, 80%, 100% { transform: scale(0.3); opacity: 0.2; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+        .boot-text { color: rgba(255,255,255,0.3); font-size: 0.8rem; margin-top: 30px; letter-spacing: 2px; }
+
+        /* ===== LOCK SCREEN ===== */
+        #lockScreen {
+            position: fixed; inset: 0; z-index: 9000;
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MCIgaGVpZ2h0PSI4MCIgdmlld0JveD0iMCAwIDgwIDgwIj48cmVjdCB3aWR0aD0iODAiIGhlaWdodD0iODAiIGZpbGw9IiMxYTFhMmUiLz48Y2lyY2xlIGN4PSI0MCIgY3k9IjQwIiByPSIzMCIgZmlsbD0iIzJhMmE0ZSIvPjwvc3ZnPg==') center/cover no-repeat;
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: opacity 0.5s; background-color: rgba(0,0,0,0.6);
+            background-blend-mode: overlay;
+        }
+        #lockScreen.hidden { opacity: 0; pointer-events: none; }
+        .lock-time { font-size: 7rem; font-weight: 200; letter-spacing: 4px; text-shadow: 0 4px 40px rgba(0,0,0,0.5); }
+        .lock-date { font-size: 1.2rem; opacity: 0.8; margin-bottom: 30px; }
+        .lock-avatar {
+            width: 100px; height: 100px; border-radius: 50%;
+            background: linear-gradient(135deg, #1a73e8, #0d47a1);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 3.5rem; margin-bottom: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+        }
+        .lock-name { font-size: 1.1rem; margin-bottom: 20px; opacity: 0.9; }
+        .lock-input-group {
+            display: flex; gap: 8px; align-items: center;
+            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 30px; padding: 4px 8px 4px 20px;
+            backdrop-filter: blur(8px);
+        }
+        .lock-input-group input {
+            background: transparent; border: none; color: #fff;
+            font-size: 1rem; padding: 10px 0; outline: none; width: 200px;
+        }
+        .lock-input-group input::placeholder { color: rgba(255,255,255,0.4); }
+        .lock-btn {
+            padding: 8px 24px; border-radius: 30px; border: none;
+            background: #1a73e8; color: #fff; font-size: 0.9rem;
+            cursor: pointer; transition: background 0.2s;
+        }
+        .lock-btn:hover { background: #2b7ef0; }
+        .lock-hint { margin-top: 20px; font-size: 0.8rem; opacity: 0.4; }
+
+        /* ===== DESKTOP ===== */
+        #desktop {
+            position: fixed; inset: 0; z-index: 1;
+            background: #1a1a2e;
+            background-image: 
+                radial-gradient(ellipse at 20% 50%, #2a2a5e 0%, #0f0f1a 100%);
+        }
+        #wallpaper {
+            position: absolute; inset: 0;
+            background: 
+                radial-gradient(circle at 70% 30%, rgba(60,60,140,0.3) 0%, transparent 50%),
+                radial-gradient(circle at 30% 70%, rgba(140,60,60,0.2) 0%, transparent 50%);
+        }
+
+        /* ===== DESKTOP ICONS ===== */
+        #desktopIcons {
+            position: absolute; inset: 0; padding: 16px;
+            display: grid; grid-template-columns: repeat(auto-fill, 80px);
+            grid-auto-rows: 90px; gap: 6px 12px;
+            align-content: start; z-index: 2;
+        }
+        .desktop-icon {
+            display: flex; flex-direction: column; align-items: center;
+            justify-content: center; width: 76px; height: 86px;
+            border-radius: 6px; cursor: pointer;
+            transition: background 0.12s; padding: 4px;
+            text-align: center; color: #fff;
+            font-size: 0.7rem; text-shadow: 0 1px 8px rgba(0,0,0,0.9);
+            position: relative;
+        }
+        .desktop-icon:hover { background: rgba(255,255,255,0.06); }
+        .desktop-icon.selected { background: rgba(255,255,255,0.12); outline: 1px solid rgba(255,255,255,0.15); }
+        .desktop-icon .icon-img { font-size: 2.4rem; line-height: 1; filter: drop-shadow(0 2px 10px rgba(0,0,0,0.6)); }
+        .desktop-icon .icon-label { margin-top: 4px; line-height: 1.2; max-width: 70px; word-wrap: break-word; font-size: 0.65rem; }
+
+        /* ===== CONTEXT MENU ===== */
+        .context-menu {
+            position: fixed; z-index: 9999;
+            background: rgba(40,40,48,0.92); backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 6px; padding: 4px 0;
+            min-width: 220px; box-shadow: 0 12px 48px rgba(0,0,0,0.7);
+            display: none;
+        }
+        .context-menu.show { display: block; }
+        .context-item {
+            padding: 6px 28px 6px 16px;
+            color: #eee; font-size: 0.82rem;
+            cursor: pointer; display: flex;
+            align-items: center; gap: 12px;
+            transition: background 0.08s;
+            position: relative;
+        }
+        .context-item:hover { background: rgba(255,255,255,0.06); }
+        .context-item .shortcut {
+            color: rgba(255,255,255,0.3);
+            font-size: 0.7rem;
+            margin-left: auto;
+        }
+        .context-divider { height: 1px; background: rgba(255,255,255,0.06); margin: 4px 12px; }
+
+        /* ===== TASKBAR ===== */
+        #taskbar {
+            position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+            height: 48px;
+            background: rgba(20,20,28,0.85);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            display: flex; align-items: center;
+            padding: 0 8px;
+            border-top: 1px solid rgba(255,255,255,0.04);
+        }
+        .taskbar-start {
+            padding: 0 12px; cursor: pointer;
+            font-size: 1.2rem; color: #ddd;
+            transition: background 0.15s;
+            border-radius: 4px; height: 36px;
+            display: flex; align-items: center;
+        }
+        .taskbar-start:hover { background: rgba(255,255,255,0.06); }
+        .taskbar-search {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: 20px; padding: 4px 14px;
+            margin: 0 8px; min-width: 180px;
+            color: rgba(255,255,255,0.6);
+            font-size: 0.8rem; cursor: pointer;
+            display: flex; align-items: center; gap: 8px;
+            transition: background 0.2s;
+        }
+        .taskbar-search:hover { background: rgba(255,255,255,0.08); }
+        .taskbar-items {
+            display: flex; flex: 1; gap: 2px;
+            align-items: center; padding: 0 4px;
+            overflow-x: auto;
+        }
+        .taskbar-item {
+            padding: 4px 12px; border-radius: 4px;
+            cursor: pointer; color: #ccc;
+            font-size: 0.75rem; transition: background 0.15s;
+            display: flex; align-items: center; gap: 6px;
+            height: 32px; position: relative;
+            min-width: 40px; justify-content: center;
+        }
+        .taskbar-item:hover { background: rgba(255,255,255,0.06); }
+        .taskbar-item.active { background: rgba(255,255,255,0.04); }
+        .taskbar-item.active::after {
+            content: '';
+            position: absolute; bottom: 2px;
+            left: 20%; right: 20%; height: 2px;
+            background: #1a73e8; border-radius: 2px;
+        }
+        .taskbar-item .app-icon { font-size: 1rem; }
+        .taskbar-item .app-label { font-size: 0.7rem; white-space: nowrap; }
+        .taskbar-tray {
+            display: flex; align-items: center; gap: 4px;
+            padding: 0 8px;
+        }
+        .tray-icon {
+            background: transparent; border: none;
+            color: #ccc; padding: 4px 6px;
+            border-radius: 4px; cursor: pointer;
+            font-size: 1rem; transition: background 0.15s;
+        }
+        .tray-icon:hover { background: rgba(255,255,255,0.06); }
+        .tray-clock {
+            color: #ddd; font-size: 0.75rem;
+            padding: 0 8px; cursor: pointer;
+            font-weight: 400;
+        }
+        .tray-clock:hover { background: rgba(255,255,255,0.04); border-radius: 4px; }
+
+        /* ===== START MENU ===== */
+        #startMenu {
+            position: fixed; bottom: 48px; left: 0; z-index: 200;
+            width: 540px; height: 540px;
+            background: rgba(30,30,38,0.92);
+            backdrop-filter: blur(32px); -webkit-backdrop-filter: blur(32px);
+            border-radius: 0 8px 0 0;
+            box-shadow: 0 -8px 40px rgba(0,0,0,0.6);
+            display: none; overflow: hidden;
+            border-top: 1px solid rgba(255,255,255,0.04);
+        }
+        #startMenu.show { display: flex; flex-direction: column; }
+        .start-header {
+            padding: 16px 20px 8px;
+            display: flex; align-items: center; gap: 12px;
+        }
+        .start-header .user-avatar {
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1a73e8, #0d47a1);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.4rem;
+        }
+        .start-header .user-name {
+            font-size: 0.95rem; font-weight: 500;
+            color: #eee;
+        }
+        .start-search {
+            margin: 0 20px 12px;
+            padding: 8px 16px;
+            border-radius: 20px; border: 1px solid rgba(255,255,255,0.04);
+            background: rgba(255,255,255,0.04);
+            color: #fff; font-size: 0.85rem;
+            outline: none;
+        }
+        .start-search::placeholder { color: rgba(255,255,255,0.3); }
+        .start-body {
+            flex: 1; overflow-y: auto;
+            padding: 0 16px 12px;
+        }
+        .start-section {
+            margin-bottom: 16px;
+        }
+        .start-section-title {
+            color: rgba(255,255,255,0.4);
+            font-size: 0.7rem; text-transform: uppercase;
+            letter-spacing: 0.5px; margin-bottom: 8px;
+        }
+        .start-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr);
+            gap: 4px;
+        }
+        .start-app {
+            padding: 8px 4px; border-radius: 6px;
+            cursor: pointer; text-align: center;
+            transition: background 0.15s; color: #ddd;
+            font-size: 0.7rem;
+        }
+        .start-app:hover { background: rgba(255,255,255,0.06); }
+        .start-app .app-icon { font-size: 1.8rem; display: block; margin-bottom: 4px; }
+        .start-footer {
+            padding: 8px 20px;
+            border-top: 1px solid rgba(255,255,255,0.04);
+            display: flex; justify-content: flex-end; gap: 8px;
+        }
+        .start-footer button {
+            background: transparent; border: none;
+            color: #aaa; padding: 6px 12px;
+            border-radius: 4px; cursor: pointer;
+            font-size: 0.8rem;
+        }
+        .start-footer button:hover { background: rgba(255,255,255,0.06); }
+
+        /* ===== WINDOWS ===== */
+        .window {
+            position: fixed; z-index: 50;
+            background: rgba(28,28,36,0.92);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: 8px;
+            min-width: 320px; min-height: 180px;
+            box-shadow: 0 16px 60px rgba(0,0,0,0.6);
+            display: flex; flex-direction: column;
+            transition: box-shadow 0.15s;
+            overflow: hidden;
+        }
+        .window.active { z-index: 80; box-shadow: 0 20px 80px rgba(0,0,0,0.8); }
+        .window-header {
+            display: flex; align-items: center;
+            padding: 6px 12px;
+            background: rgba(255,255,255,0.02);
+            border-bottom: 1px solid rgba(255,255,255,0.02);
+            cursor: move; flex-shrink: 0;
+            height: 36px;
+        }
+        .window-title {
+            flex: 1; font-size: 0.8rem;
+            color: #ddd; display: flex;
+            align-items: center; gap: 8px;
+            font-weight: 400;
+        }
+        .window-controls {
+            display: flex; gap: 4px;
+        }
+        .window-controls button {
+            width: 28px; height: 28px;
+            border: none; border-radius: 4px;
+            cursor: pointer; font-size: 0.7rem;
+            transition: background 0.15s;
+            color: #ccc; background: transparent;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .window-controls button:hover { background: rgba(255,255,255,0.06); }
+        .window-controls .btn-close:hover { background: #e81123; color: #fff; }
+        .window-body {
+            flex: 1; padding: 12px 16px;
+            overflow: auto;
+            color: #ddd; font-size: 0.85rem;
+            line-height: 1.6;
+        }
+
+        /* ===== QUICK SETTINGS ===== */
+        #quickSettings {
+            position: fixed; bottom: 48px; right: 8px; z-index: 300;
+            background: rgba(30,30,38,0.92);
+            backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: 8px;
+            padding: 16px 18px;
+            width: 280px;
+            display: none;
+            box-shadow: 0 12px 48px rgba(0,0,0,0.5);
+        }
+        #quickSettings.show { display: block; }
+        .qs-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 6px; margin-bottom: 12px;
+        }
+        .qs-item {
+            padding: 10px 8px; text-align: center;
+            border-radius: 6px; cursor: pointer;
+            transition: background 0.15s;
+        }
+        .qs-item:hover { background: rgba(255,255,255,0.04); }
+        .qs-item .qs-icon { font-size: 1.4rem; display: block; }
+        .qs-item .qs-label { font-size: 0.6rem; color: #aaa; margin-top: 4px; }
+        .qs-slider {
+            display: flex; align-items: center; gap: 12px;
+            padding: 4px 0;
+        }
+        .qs-slider input[type="range"] {
+            flex: 1; -webkit-appearance: none;
+            background: rgba(255,255,255,0.08);
+            height: 4px; border-radius: 2px;
+            outline: none;
+        }
+        .qs-slider input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px; height: 16px;
+            border-radius: 50%;
+            background: #1a73e8;
+            cursor: pointer;
+        }
+
+        /* ===== NOTIFICATION ===== */
+        #notification {
+            position: fixed; top: 20px; right: 20px; z-index: 9999;
+            background: rgba(30,30,38,0.92);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: 8px;
+            padding: 14px 20px;
+            min-width: 280px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+            transform: translateX(120%);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        #notification.show { transform: translateX(0); }
+        #notification .notif-title { font-weight: 500; font-size: 0.9rem; margin-bottom: 4px; }
+        #notification .notif-body { font-size: 0.8rem; opacity: 0.8; }
+
+        /* ===== CALCULATOR APP ===== */
+        .calc-display {
+            background: rgba(0,0,0,0.2);
+            padding: 12px 16px; text-align: right;
+            font-size: 2rem; border-radius: 4px;
+            margin-bottom: 8px; font-weight: 300;
+            min-height: 60px;
+        }
+        .calc-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr);
+            gap: 4px;
+        }
+        .calc-grid button {
+            padding: 12px; border: none; border-radius: 4px;
+            background: rgba(255,255,255,0.04);
+            color: #fff; font-size: 1rem; cursor: pointer;
+            transition: background 0.1s;
+        }
+        .calc-grid button:hover { background: rgba(255,255,255,0.08); }
+        .calc-grid .op { color: #1a73e8; }
+        .calc-grid .eq { background: #1a73e8; color: #fff; }
+        .calc-grid .eq:hover { background: #2b7ef0; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 640px) {
+            #startMenu { width: 100%; height: 100vh; bottom: 48px; border-radius: 0; }
+            .lock-time { font-size: 4rem; }
+            .taskbar-search { min-width: 100px; }
+            .window { min-width: 90%; left: 5% !important; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== BOOT SCREEN ===== -->
+<div id="bootScreen">
+    <div class="boot-logo">
+        <svg viewBox="0 0 64 64"><rect x="0" y="0" width="64" height="64" fill="none"/><path d="M28 4 L4 14 L4 50 L28 60 L28 4 Z" fill="#fff" opacity="0.8"/><path d="M36 4 L60 14 L60 50 L36 60 L36 4 Z" fill="#fff" opacity="0.6"/></svg>
+        <span>Windows 10</span>
+    </div>
+    <div class="boot-dots"><span></span><span></span><span></span></div>
+    <div class="boot-text">ĐANG KHỞI ĐỘNG...</div>
+</div>
+
+<!-- ===== LOCK SCREEN ===== -->
+<div id="lockScreen">
+    <div class="lock-time" id="lockTime">12:00</div>
+    <div class="lock-date" id="lockDate">Thứ Hai, 1 tháng 1, 2024</div>
+    <div class="lock-avatar">👤</div>
+    <div class="lock-name">Người Dùng</div>
+    <div class="lock-input-group">
+        <input type="password" id="lockPin" placeholder="Mật khẩu" autofocus>
+        <button class="lock-btn" id="unlockBtn">→</button>
+    </div>
+    <div class="lock-hint">Nhấn Enter hoặc Space để mở khóa</div>
+</div>
+
+<!-- ===== DESKTOP ===== -->
+<div id="desktop">
+    <div id="wallpaper"></div>
+    <div id="desktopIcons"></div>
+</div>
+
+<!-- ===== TASKBAR ===== -->
+<div id="taskbar">
+    <div class="taskbar-start" id="startBtn">⊞</div>
+    <div class="taskbar-search" id="searchBtn">🔍 Tìm kiếm</div>
+    <div class="taskbar-items" id="taskbarItems"></div>
+    <div class="taskbar-tray">
+        <button class="tray-icon" id="notifBtn">🔔</button>
+        <button class="tray-icon" id="traySettings">🔊</button>
+        <button class="tray-icon" id="trayNetwork">📶</button>
+        <span class="tray-clock" id="trayClock">12:00</span>
+    </div>
+</div>
+
+<!-- ===== START MENU ===== -->
+<div id="startMenu">
+    <div class="start-header">
+        <div class="user-avatar">👤</div>
+        <div class="user-name">Người Dùng</div>
+    </div>
+    <input class="start-search" placeholder="Tìm kiếm ứng dụng..." id="startSearch">
+    <div class="start-body">
+        <div class="start-section">
+            <div class="start-section-title">📌 Đã ghim</div>
+            <div class="start-grid" id="pinnedGrid"></div>
+        </div>
+        <div class="start-section">
+            <div class="start-section-title">💡 Gợi ý</div>
+            <div class="start-grid" id="recommendedGrid"></div>
+        </div>
+        <div class="start-section">
+            <div class="start-section-title">📋 Tất cả ứng dụng</div>
+            <div class="start-grid" id="allAppsGrid"></div>
+        </div>
+    </div>
+    <div class="start-footer">
+        <button id="powerBtn">⏻ Tắt máy</button>
+        <button id="lockBtn">🔒 Khóa</button>
+    </div>
+</div>
+
+<!-- ===== CONTEXT MENU ===== -->
+<div class="context-menu" id="contextMenu">
+    <div class="context-item" data-action="view">Xem <span class="shortcut"></span></div>
+    <div class="context-item" data-action="sort">Sắp xếp theo <span class="shortcut"></span></div>
+    <div class="context-item" data-action="refresh">Làm mới <span class="shortcut">F5</span></div>
+    <div class="context-divider"></div>
+    <div class="context-item" data-action="newfolder">📁 Thư mục mới</div>
+    <div class="context-item" data-action="newtxt">📄 Tài liệu văn bản</div>
+    <div class="context-divider"></div>
+    <div class="context-item" data-action="display">🖥️ Cài đặt hiển thị</div>
+    <div class="context-item" data-action="personalize">🎨 Cá nhân hóa</div>
+</div>
+
+<!-- ===== QUICK SETTINGS ===== -->
+<div id="quickSettings">
+    <div class="qs-grid">
+        <div class="qs-item" data-action="wifi"><span class="qs-icon">📶</span><span class="qs-label">Wi-Fi</span></div>
+        <div class="qs-item" data-action="bluetooth"><span class="qs-icon">📡</span><span class="qs-label">Bluetooth</span></div>
+        <div class="qs-item" data-action="airplane"><span class="qs-icon">✈️</span><span class="qs-label">Máy bay</span></div>
+        <div class="qs-item" data-action="brightness"><span class="qs-icon">☀️</span><span class="qs-label">Độ sáng</span></div>
+        <div class="qs-item" data-action="night"><span class="qs-icon">🌙</span><span class="qs-label">Đèn ngủ</span></div>
+        <div class="qs-item" data-action="vpn"><span class="qs-icon">🔒</span><span class="qs-label">VPN</span></div>
+    </div>
+    <div class="qs-slider">
+        <span>🔊</span>
+        <input type="range" min="0" max="100" value="70" id="volumeSlider">
+        <span id="volumeLabel">70%</span>
+    </div>
+    <div style="margin-top:8px; display:flex; justify-content:space-between; font-size:0.7rem; color:#888;">
+        <span>🔋 75%</span>
+        <span>⚡ Đang sạc</span>
+    </div>
+</div>
+
+<!-- ===== NOTIFICATION ===== -->
+<div id="notification">
+    <div class="notif-title">🔔 Thông báo</div>
+    <div class="notif-body" id="notifBody">Chào mừng bạn đến với Windows 10!</div>
+</div>
+
+<script>
+    // =================================================================
+    // 1. BOOT & LOCK
+    // =================================================================
+    const bootScreen = document.getElementById('bootScreen');
+    const lockScreen = document.getElementById('lockScreen');
+    const unlockBtn = document.getElementById('unlockBtn');
+    const lockPin = document.getElementById('lockPin');
+
+    function playBootSound() {
+        try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(880, ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(440, ctx.currentTime + 0.2);
+            gain.gain.setValueAtTime(0.15, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.35);
+            osc.start(ctx.currentTime);
+            osc.stop(ctx.currentTime + 0.35);
+        } catch(e) {}
+    }
+
+    setTimeout(() => {
+        bootScreen.classList.add('hidden');
+        playBootSound();
+        lockScreen.classList.remove('hidden');
+        updateClock();
+        setInterval(updateClock, 1000);
+    }, 2500);
+
+    function unlockSystem() {
+        lockScreen.classList.add('hidden');
+        document.getElementById('desktop').style.display = 'block';
+        document.getElementById('taskbar').style.display = 'flex';
+        initDesktopIcons();
+        initStartMenu();
+        showNotification('Chào mừng!', 'Đã đăng nhập thành công');
+    }
+
+    unlockBtn.addEventListener('click', unlockSystem);
+    lockPin.addEventListener('keydown', e => { if(e.key === 'Enter') unlockSystem(); });
+    document.addEventListener('keydown', e => {
+        if(e.key === ' ' && !lockScreen.classList.contains('hidden')) {
+            e.preventDefault();
+            unlockSystem();
+        }
+        if(e.ctrlKey && e.key === 'l') {
+            e.preventDefault();
+            lockScreen.classList.remove('hidden');
+            lockPin.value = '';
+            lockPin.focus();
+        }
+        if(e.ctrlKey && e.key === 'p') {
+            e.preventDefault();
+            showNotification('🎨 Phím tắt', 'Ctrl + P đã được nhấn');
+        }
+    });
+
+    function updateClock() {
+        const now = new Date();
+        const h = String(now.getHours()).padStart(2,'0');
+        const m = String(now.getMinutes()).padStart(2,'0');
+        document.getElementById('lockTime').textContent = h + ':' + m;
+        document.getElementById('trayClock').textContent = h + ':' + m;
+        const days = ['Chủ nhật','Thứ hai','Thứ ba','Thứ tư','Thứ năm','Thứ sáu','Thứ bảy'];
+        document.getElementById('lockDate').textContent = 
+            `${days[now.getDay()]}, ${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()}`;
+    }
+
+    // =================================================================
+    // 2. NOTIFICATION
+    // =================================================================
+    let notifTimeout;
+
+    function showNotification(title, body) {
+        const el = document.getElementById('notification');
+        document.querySelector('.notif-title').textContent = title || '🔔 Thông báo';
+        document.getElementById('notifBody').textContent = body || '';
+        el.classList.add('show');
+        clearTimeout(notifTimeout);
+        notifTimeout = setTimeout(() => el.classList.remove('show'), 3500);
+    }
+
+    document.getElementById('notifBtn').addEventListener('click', () => {
+        showNotification('🔔 Trung tâm thông báo', 'Bạn có 3 thông báo mới');
+    });
+
+    // =================================================================
+    // 3. DESKTOP ICONS
+    // =================================================================
+    const iconsData = [
+        { id: 'pc', label: 'This PC', icon: '🖥️' },
+        { id: 'recycle', label: 'Recycle Bin', icon: '🗑️' },
+        { id: 'chrome', label: 'Google Chrome', icon: '🌐' },
+        { id: 'explorer', label: 'File Explorer', icon: '📁' },
+        { id: 'terminal', label: 'Terminal', icon: '⌨️' },
+        { id: 'settings', label: 'Settings', icon: '⚙️' },
+        { id: 'music', label: 'Music Player', icon: '🎵' },
+        { id: 'portfolio', label: 'Portfolio', icon: '📄' },
+        { id: 'calculator', label: 'Calculator', icon: '🧮' },
+        { id: 'notepad', label: 'Notepad', icon: '📝' },
+    ];
+
+    function initDesktopIcons() {
+        const container = document.getElementById('desktopIcons');
+        container.innerHTML = '';
+        iconsData.forEach(icon => {
+            const div = document.createElement('div');
+            div.className = 'desktop-icon';
+            div.dataset.id = icon.id;
+            div.innerHTML = `<span class="icon-img">${icon.icon}</span><span class="icon-label">${icon.label}</span>`;
+            div.addEventListener('dblclick', () => openApp(icon.id));
+            div.addEventListener('click', (e) => {
+                document.querySelectorAll('.desktop-icon').forEach(el => el.classList.remove('selected'));
+                div.classList.add('selected');
+            });
+            // Drag
+            let isDragging = false, sx, sy, ox, oy;
+            div.addEventListener('mousedown', (e) => {
+                if(e.button !== 0) return;
+                isDragging = true;
+                const rect = div.getBoundingClientRect();
+                sx = e.clientX; sy = e.clientY;
+                ox = rect.left; oy = rect.top;
+                div.style.position = 'fixed';
+                div.style.left = ox + 'px';
+                div.style.top = oy + 'px';
+                div.style.width = rect.width + 'px';
+                div.style.zIndex = 10;
+                document.addEventListener('mousemove', onDrag);
+                document.addEventListener('mouseup', onDrop);
+            });
+            function onDrag(e) {
+                if(!isDragging) return;
+                let nx = ox + (e.clientX - sx);
+                let ny = oy + (e.clientY - sy);
+                nx = Math.max(0, Math.min(window.innerWidth - 80, nx));
+                ny = Math.max(0, Math.min(window.innerHeight - 100, ny));
+                div.style.left = nx + 'px';
+                div.style.top = ny + 'px';
+            }
+            function onDrop() {
+                isDragging = false;
+                document.removeEventListener('mousemove', onDrag);
+                document.removeEventListener('mouseup', onDrop);
+                div.style.position = '';
+                div.style.left = '';
+                div.style.top = '';
+                div.style.width = '';
+                div.style.zIndex = '';
+            }
+            container.appendChild(div);
+        });
+    }
+
+    // =================================================================
+    // 4. CONTEXT MENU
+    // =================================================================
+    const contextMenu = document.getElementById('contextMenu');
+    document.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        const x = Math.min(e.clientX, window.innerWidth - 240);
+        const y = Math.min(e.clientY, window.innerHeight - 220);
+        contextMenu.style.left = x + 'px';
+        contextMenu.style.top = y + 'px';
+        contextMenu.classList.add('show');
+    });
+    document.addEventListener('click', () => contextMenu.classList.remove('show'));
+    contextMenu.addEventListener('click', (e) => {
+        const action = e.target.closest('.context-item')?.dataset.action;
+        if(action) {
+            showNotification('📋 Hành động', `Đã thực hiện: ${action}`);
+            contextMenu.classList.remove('show');
+            if(action === 'refresh') {
+                showNotification('🔄 Đã làm mới', 'Màn hình đã được làm mới');
+            }
+            if(action === 'newfolder') {
+                showNotification('📁 Thư mục mới', 'Đã tạo thư mục mới trên Desktop');
+            }
+        }
+    });
+
+    // =================================================================
+    // 5. START MENU
+    // =================================================================
+    const startBtn = document.getElementById('startBtn');
+    const startMenu = document.getElementById('startMenu');
+    let startOpen = false;
+
+    startBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        startOpen = !startOpen;
+        startMenu.classList.toggle('show', startOpen);
+        if(startOpen) {
+            document.querySelector('.start-search')?.focus();
+        }
+    });
+    document.addEventListener('click', (e) => {
+        if(!startMenu.contains(e.target) && e.target !== startBtn) {
+            startMenu.classList.remove('show');
+            startOpen = false;
+        }
+    });
+
+    const allAppsData = [
+        { label: 'This PC', icon: '🖥️', id: 'pc' },
+        { label: 'Chrome', icon: '🌐', id: 'chrome' },
+        { label: 'Explorer', icon: '📁', id: 'explorer' },
+        { label: 'Terminal', icon: '⌨️', id: 'terminal' },
+        { label: 'Settings', icon: '⚙️', id: 'settings' },
+        { label: 'Music', icon: '🎵', id: 'music' },
+        { label: 'Portfolio', icon: '📄', id: 'portfolio' },
+        { label: 'Calculator', icon: '🧮', id: 'calculator' },
+        { label: 'Notepad', icon: '📝', id: 'notepad' },
+        { label: 'Paint', icon: '🎨', id: 'paint' },
+        { label: 'Calendar', icon: '📅', id: 'calendar' },
+        { label: 'Chat AI', icon: '🤖', id: 'chat' },
+        { label: 'Media Player', icon: '🎬', id: 'media' },
+    ];
+
+    function initStartMenu() {
+        const pinned = document.getElementById('pinnedGrid');
+        const recommended = document.getElementById('recommendedGrid');
+        const allApps = document.getElementById('allAppsGrid');
+        
+        const pinnedApps = allAppsData.slice(0, 8);
+        const recommendedApps = allAppsData.slice(4, 8);
+        
+        function renderGrid(grid, apps) {
+            grid.innerHTML = '';
+            apps.forEach(app => {
+                const div = document.createElement('div');
+                div.className = 'start-app';
+                div.innerHTML = `<span class="app-icon">${app.icon}</span>${app.label}`;
+                div.addEventListener('click', () => {
+                    startMenu.classList.remove('show');
+                    startOpen = false;
+                    openApp(app.id);
+                });
+                grid.appendChild(div);
+            });
+        }
+        
+        renderGrid(pinned, pinnedApps);
+        renderGrid(recommended, recommendedApps);
+        renderGrid(allApps, allAppsData);
+    }
+
+    // Search
+    document.getElementById('startSearch').addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase();
+        const allItems = document.querySelectorAll('.start-app');
+        allItems.forEach(item => {
+            const label = item.textContent.toLowerCase();
+            item.style.display = label.includes(query) ? '' : 'none';
+        });
+    });
+
+    // =================================================================
+    // 6. WINDOW MANAGEMENT
+    // =================================================================
+    let windowCounter = 0;
+    const windows = [];
+    let zIndexCounter = 50;
+
+    function createWindow(title, content, appId, width=480, height=380) {
+        const win = document.createElement('div');
+        win.className = 'window';
+        win.style.width = width + 'px';
+        win.style.height = height + 'px';
+        const offset = Math.min(windows.length * 24, 120);
+        win.style.left = (40 + offset) + 'px';
+        win.style.top = (30 + offset) + 'px';
+        win.dataset.app = appId;
+        win.id = 'win-' + (++windowCounter);
+
+        const header = document.createElement('div');
+        header.className = 'window-header';
+        header.innerHTML = `
+            <div class="window-title"><span>${title}</span></div>
+            <div class="window-controls">
+                <button class="btn-min">─</button>
+                <button class="btn-max">☐</button>
+                <button class="btn-close">✕</button>
+            </div>
+        `;
+        const body = document.createElement('div');
+        body.className = 'window-body';
+        body.innerHTML = content;
+
+        win.appendChild(header);
+        win.appendChild(body);
+        document.body.appendChild(win);
+
+        // Controls
+        header.querySelector('.btn-close').addEventListener('click', () => {
+            win.remove();
+            const idx = windows.indexOf(win);
+            if(idx > -1) windows.splice(idx,1);
+            updateTaskbar();
+        });
+        header.querySelector('.btn-min').addEventListener('click', () => {
+            win.style.display = 'none';
+            updateTaskbar();
+        });
+        header.querySelector('.btn-max').addEventListener('click', () => {
+            if(win.style.width === '100%') {
+                win.style.width = width + 'px';
+                win.style.height = height + 'px';
+                win.style.left = (40 + offset) + 'px';
+                win.style.top = (30 + offset) + 'px';
+                win.style.borderRadius = '8px';
+            } else {
+                win.style.width = '100%';
+                win.style.height = 'calc(100vh - 48px)';
+                win.style.left = '0';
+                win.style.top = '0';
+                win.style.borderRadius = '0';
+            }
+        });
+
+        // Bring to front
+        win.addEventListener('mousedown', () => bringToFront(win));
+
+        // Drag
+        let isDragging = false, dx, dy, sx, sy;
+        header.addEventListener('mousedown', (e) => {
+            if(e.target.closest('.window-controls')) return;
+            isDragging = true;
+            const rect = win.getBoundingClientRect();
+            dx = e.clientX - rect.left;
+            dy = e.clientY - rect.top;
+            bringToFront(win);
+            document.addEventListener('mousemove', onDragWin);
+            document.addEventListener('mouseup', onDropWin);
+        });
+        function onDragWin(e) {
+            if(!isDragging) return;
+            let nx = e.clientX - dx;
+            let ny = e.clientY - dy;
+            nx = Math.max(-20, Math.min(window.innerWidth - win.offsetWidth + 20, nx));
+            ny = Math.max(-20, Math.min(window.innerHeight - win.offsetHeight + 20, ny));
+            win.style.left = nx + 'px';
+            win.style.top = ny + 'px';
+        }
+        function onDropWin() {
+            isDragging = false;
+            document.removeEventListener('mousemove', onDragWin);
+            document.removeEventListener('mouseup', onDropWin);
+        }
+
+        // Resize
+        let isResizing = false, resDir, resStartX, resStartY, resStartW, resStartH, resStartL, resStartT;
+        win.addEventListener('mousemove', (e) => {
+            const rect = win.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const edge = 6;
+            let cursor = 'default';
+            if(x < edge && y < edge) cursor = 'nwse-resize';
+            else if(x > rect.width - edge && y < edge) cursor = 'nesw-resize';
+            else if(x < edge && y > rect.height - edge) cursor = 'nesw-resize';
+            else if(x > rect.width - edge && y > rect.height - edge) cursor = 'nwse-resize';
+            else if(x < edge || x > rect.width - edge) cursor = 'ew-resize';
+            else if(y < edge || y > rect.height - edge) cursor = 'ns-resize';
+            win.style.cursor = cursor;
+        });
+        win.addEventListener('mousedown', (e) => {
+            const rect = win.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const edge = 6;
+            if(x < edge || x > rect.width - edge || y < edge || y > rect.height - edge) {
+                isResizing = true;
+                resDir = '';
+                if(x < edge && y < edge) resDir = 'tl';
+                else if(x > rect.width - edge && y < edge) resDir = 'tr';
+                else if(x < edge && y > rect.height - edge) resDir = 'bl';
+                else if(x > rect.width - edge && y > rect.height - edge) resDir = 'br';
+                else if(x < edge) resDir = 'l';
+                else if(x > rect.width - edge) resDir = 'r';
+                else if(y < edge) resDir = 't';
+                else if(y > rect.height - edge) resDir = 'b';
+                if(resDir) {
+                    resStartX = e.clientX; resStartY = e.clientY;
+                    resStartW = rect.width; resStartH = rect.height;
+                    resStartL = rect.left; resStartT = rect.top;
+                    document.addEventListener('mousemove', onResize);
+                    document.addEventListener('mouseup', onResizeEnd);
+                }
+            }
+        });
+        function onResize(e) {
+            if(!isResizing) return;
+            let dw = e.clientX - resStartX;
+            let dh = e.clientY - resStartY;
+            let newW = resStartW, newH = resStartH, newL = resStartL, newT = resStartT;
+            if(resDir.includes('r')) newW = Math.max(200, resStartW + dw);
+            if(resDir.includes('l')) { newW = Math.max(200, resStartW - dw); newL = resStartL + (resStartW - newW); }
+            if(resDir.includes('b')) newH = Math.max(120, resStartH + dh);
+            if(resDir.includes('t')) { newH = Math.max(120, resStartH - dh); newT = resStartT + (resStartH - newH); }
+            win.style.width = newW + 'px';
+            win.style.height = newH + 'px';
+            win.style.left = newL + 'px';
+            win.style.top = newT + 'px';
+        }
+        function onResizeEnd() {
+            isResizing = false;
+            document.removeEventListener('mousemove', onResize);
+            document.removeEventListener('mouseup', onResizeEnd);
+        }
+
+        windows.push(win);
+        bringToFront(win);
+        updateTaskbar();
+        return win;
+    }
+
+    function bringToFront(win) {
+        windows.forEach(w => w.classList.remove('active'));
+        win.classList.add('active');
+        win.style.zIndex = ++zIndexCounter;
+    }
+
+    // =================================================================
+    // 7. TASKBAR
+    // =================================================================
+    function updateTaskbar() {
+        const container = document.getElementById('taskbarItems');
+        container.innerHTML = '';
+        windows.forEach(win => {
+            if(win.style.display === 'none') return;
+            const title = win.querySelector('.window-title span')?.textContent || 'App';
+            const icon = win.dataset.app || '📄';
+            const item = document.createElement('div');
+            item.className = 'taskbar-item active';
+            item.innerHTML = `<span class="app-icon">${icon}</span><span class="app-label">${title}</span>`;
+            item.addEventListener('click', () => {
+                if(win.style.display === 'none') {
+                    win.style.display = '';
+                    updateTaskbar();
+                }
+                bringToFront(win);
+            });
+            container.appendChild(item);
+        });
+    }
+
+    // =================================================================
+    // 8. APP LAUNCHER
+    // =================================================================
+    function openApp(appId) {
+        const appMap = {
+            'pc': { title: 'This PC', content: `
+                <div style="margin-bottom:12px;">
+                    <div style="display:flex;gap:16px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
+                        <span>💻 Tên máy: DESKTOP-123</span>
+                        <span>🔧 HĐH: Windows 10</span>
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;">
+                        <div style="background:rgba(255,255,255,0.02);padding:10px;border-radius:6px;">💾 Ổ C: 128/256 GB</div>
+                        <div style="background:rgba(255,255,255,0.02);padding:10px;border-radius:6px;">🧠 RAM: 16 GB</div>
+                        <div style="background:rgba(255,255,255,0.02);padding:10px;border-radius:6px;">⚡ CPU: Intel i7</div>
+                        <div style="background:rgba(255,255,255,0.02);padding:10px;border-radius:6px;">🎮 GPU: NVIDIA GTX</div>
+                    </div>
+                </div>
+            ` },
+            'recycle': { title: 'Recycle Bin', content: '🗑️ <b>Thùng rác</b><br><br>📄 document.txt<br>📄 image.png<br>📄 notes.docx' },
+            'chrome': { title: 'Google Chrome', content: `
+                <div style="background:rgba(255,255,255,0.02);padding:8px 12px;border-radius:6px;margin-bottom:12px;display:flex;gap:8px;">
+                    <span>🔍</span>
+                    <input style="flex:1;background:transparent;border:none;color:#fff;outline:none;" value="google.com" placeholder="Nhập URL...">
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
+                    <div style="text-align:center;padding:12px;background:rgba(255,255,255,0.02);border-radius:6px;cursor:pointer;">📧 Gmail</div>
+                    <div style="text-align:center;padding:12px;background:rgba(255,255,255,0.02);border-radius:6px;cursor:pointer;">📹 YouTube</div>
+                    <div style="text-align:center;padding:12px;background:rgba(255,255,255,0.02);border-radius:6px;cursor:pointer;">📘 Facebook</div>
+                    <div style="text-align:center;padding:12px;background:rgba(255,255,255,0.02);border-radius:6px;cursor:pointer;">🐦 Twitter</div>
+                </div>
+            ` },
+            'explorer': { title: 'File Explorer', content: `
+                <div style="display:flex;gap:8px;margin-bottom:12px;padding:6px;background:rgba(255,255,255,0.02);border-radius:4px;">
+                    <span>📁</span> <span>This PC</span> <span>→</span> <span>Desktop</span>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
+                    <div style="padding:8px;background:rgba(255,255,255,0.02);border-radius:4px;">📂 Documents</div>
+                    <div style="padding:8px;background:rgba(255,255,255,0.02);border-radius:4px;">📂 Downloads</div>
+                    <div style="padding:8px;background:rgba(255,255,255,0.02);border-radius:4px;">📂 Pictures</div>
+                    <div style="padding:8px;background:rgba(255,255,255,0.02);border-radius:4px;">📂 Music</div>
+                    <div style="padding:8px;background:rgba(255,255,255,0.02);border-radius:4px;">📂 Videos</div>
+                    <div style="padding:8px;background:rgba(255,255,255,0.02);border-radius:4px;">📂 Desktop</div>
+                </div>
+            ` },
+            'terminal': { title: 'Terminal', content: `
+                <div style="background:#0a0a0a;padding:12px;border-radius:6px;font-family:'Consolas',monospace;color:#0f0;font-size:0.8rem;min-height:150px;">
+                    C:\\Users\\User> <span style="color:#fff;">help</span><br>
+                    <span style="color:#888;">Available commands: help, cls, date, whoami, about, echo</span><br>
+                    C:\\Users\\User> whoami<br>
+                    <span style="color:#0ff;">desktop\\user</span><br>
+                    C:\\Users\\User> date<br>
+                    <span style="color:#0ff;">${new Date().toLocaleDateString()}</span><br>
+                    C:\\Users\\User> <span style="animation:blink 1s infinite;">_</span>
+                </div>
+                <style>@keyframes blink{0%,50%{opacity:1}51%,100%{opacity:0}}</style>
+            ` },
+            'settings': { title: 'Settings', content: `
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                    <div style="padding:12px;background:rgba(255,255,255,0.02);border-radius:6px;cursor:pointer;">🖥️ Hiển thị</div>
+                    <div style="padding:12px;background:rgba(255,255,255,0.02);border-radius:6px;cursor:pointer;">🔊 Âm thanh</div>
+                    <div style="padding:12px;background:rgba(255,255,255,0.02);border-radius:6px;cursor:pointer;">🌐 Mạng</div>
+                    <div style="padding:12px;background:rgba(255,255,255,0.02);border-radius:6px;cursor:pointer;">🔋 Nguồn</div>
+                    <div style="padding:12px;background:rgba(255,255,255,0.02);border-radius:6px;cursor:pointer;">🛡️ Bảo mật</div>
+                    <div style="padding:12px;background:rgba(255,255,255,0.02);border-radius:6px;cursor:pointer;">🎨 Cá nhân hóa</div>
+                </div>
+            ` },
+            'music': { title: 'Music Player', content: `
+                <div style="text-align:center;padding:8px;">
+                    <div style="font-size:3rem;margin-bottom:8px;">🎵</div>
+                    <div style="font-weight:500;">Imagine - John Lennon</div>
+                    <div style="color:#888;font-size:0.8rem;">3:45 / 4:20</div>
+                    <div style="background:rgba(255,255,255,0.06);height:4px;border-radius:2px;margin:8px 0;position:relative;">
+                        <div style="width:60%;height:100%;background:#1a73e8;border-radius:2px;"></div>
+                    </div>
+                    <div style="display:flex;gap:16px;justify-content:center;font-size:1.4rem;">
+                        <span style="cursor:pointer;">⏮</span>
+                        <span style="cursor:pointer;">▶️</span>
+                        <span style="cursor:pointer;">⏭</span>
+                        <span style="cursor:pointer;">🔁</span>
+                    </div>
+                    <div style="margin-top:12px;display:flex;gap:8px;justify-content:center;font-size:0.7rem;color:#888;">
+                        <span>🎤 Lyrics</span>
+                        <span>📋 Playlist</span>
+                    </div>
+                </div>
+            ` },
+            'portfolio': { title: 'Portfolio', content: `
+                <div style="text-align:center;padding:4px;">
+                    <div style="font-size:3rem;">👨‍💻</div>
+                    <h3 style="font-weight:400;">Full Stack Developer</h3>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0;">
+                        <div style="background:rgba(255,255,255,0.02);padding:8px;border-radius:6px;">💻 HTML/CSS/JS</div>
+                        <div style="background:rgba(255,255,255,0.02);padding:8px;border-radius:6px;">⚛️ React/Vue</div>
+                        <div style="background:rgba(255,255,255,0.02);padding:8px;border-radius:6px;">🐍 Python/Java</div>
+                        <div style="background:rgba(255,255,255,0.02);padding:8px;border-radius:6px;">🗄️ SQL/MongoDB</div>
+                    </div>
+                    <div style="color:#888;font-size:0.8rem;">📧 dev@portfolio.com</div>
+                </div>
+            ` },
+            'calculator': { title: 'Calculator', content: `
+                <div class="calc-display" id="calcDisplay">0</div>
+                <div class="calc-grid">
+                    <button onclick="calcInput('7')">7</button>
+                    <button onclick="calcInput('8')">8</button>
+                    <button onclick="calcInput('9')">9</button>
+                    <button class="op" onclick="calcInput('/')">÷</button>
+                    <button onclick="calcInput('4')">4</button>
+                    <button onclick="calcInput('5')">5</button>
+                    <button onclick="calcInput('6')">6</button>
+                    <button class="op" onclick="calcInput('*')">×</button>
+                    <button onclick="calcInput('1')">1</button>
+                    <button onclick="calcInput('2')">2</button>
+                    <button onclick="calcInput('3')">3</button>
+                    <button class="op" onclick="calcInput('-')">−</button>
+                    <button onclick="calcInput('0')">0</button>
+                    <button onclick="calcInput('.')">.</button>
+                    <button onclick="calcResult()">=</button>
+                    <button class="op" onclick="calcInput('+')">+</button>
+                    <button style="grid-column:span 2;" onclick="calcClear()">C</button>
+                    <button onclick="calcBackspace()">⌫</button>
+                </div>
+                <script>
+                    let calcExpr = '';
+                    function calcInput(v) { calcExpr += v; document.getElementById('calcDisplay').textContent = calcExpr || '0'; }
+                    function calcResult() { try { calcExpr = eval(calcExpr).toString(); document.getElementById('calcDisplay').textContent = calcExpr; } catch(e) { document.getElementById('calcDisplay').textContent = 'Error'; calcExpr = ''; } }
+                    function calcClear() { calcExpr = ''; document.getElementById('calcDisplay').textContent = '0'; }
+                    function calcBackspace() { calcExpr = calcExpr.slice(0,-1); document.getElementById('calcDisplay').textContent = calcExpr || '0'; }
+                <\/script>
+            ` },
+            'notepad': { title: 'Notepad', content: `
+                <textarea style="width:100%;height:100%;background:transparent;border:none;color:#ddd;outline:none;resize:none;font-family:'Consolas',monospace;font-size:0.85rem;" placeholder="Bắt đầu viết...">Chào mừng đến với Notepad!
+                
+    Đây là một ứng dụng ghi chú đơn giản.
+    Bạn có thể viết bất cứ điều gì ở đây.</textarea>
+            ` },
+            'paint': { title: 'Paint', content: `
+                <div style="text-align:center;padding:20px;">
+                    <div style="font-size:4rem;margin-bottom:12px;">🎨</div>
+                    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+                        <span style="padding:4px 12px;background:rgba(255,255,255,0.04);border-radius:4px;">✏️ Bút</span>
+                        <span style="padding:4px 12px;background:rgba(255,255,255,0.04);border-radius:4px;">🖌️ Cọ</span>
+                        <span style="padding:4px 12px;background:rgba(255,255,255,0.04);border-radius:4px;">🔲 Hình chữ nhật</span>
+                        <span style="padding:4px 12px;background:rgba(255,255,255,0.04);border-radius:4px;">⭕ Hình tròn</span>
+                        <span style="padding:4px 12px;background:rgba(255,255,255,0.04);border-radius:4px;">🎯 Tô màu</span>
+                    </div>
+                    <div style="margin-top:16px;display:flex;gap:6px;justify-content:center;">
+                        <span style="width:24px;height:24px;border-radius:50%;background:#ff0000;border:2px solid rgba(255,255,255,0.2);"></span>
+                        <span style="width:24px;height:24px;border-radius:50%;background:#00ff00;border:2px solid rgba(255,255,255,0.2);"></span>
+                        <span style="width:24px;height:24px;border-radius:50%;background:#0000ff;border:2px solid rgba(255,255,255,0.2);"></span>
+                        <span style="width:24px;height:24px;border-radius:50%;background:#ffff00;border:2px solid rgba(255,255,255,0.2);"></span>
+                        <span style="width:24px;height:24px;border-radius:50%;background:#ff00ff;border:2px solid rgba(255,255,255,0.2);"></span>
+                        <span style="width:24px;height:24px;border-radius:50%;background:#ffffff;border:2px solid rgba(255,255,255,0.2);"></span>
+                    </div>
+                    <div style="margin-top:16px;color:#888;font-size:0.8rem;">🖱️ Vùng vẽ (click để vẽ)</div>
+                </div>
+            ` },
+            'chat': { title: 'AI Assistant', content: `
+                <div style="display:flex;flex-direction:column;height:100%;">
+                    <div style="flex:1;overflow-y:auto;margin-bottom:8px;padding:4px;">
+                        <div style="background:rgba(255,255,255,0.03);padding:8px 12px;border-radius:8px;margin-bottom:6px;max-width:80%;">👤: Xin chào AI!</div>
+                        <div style="background:rgba(26,115,232,0.15);padding:8px 12px;border-radius:8px;margin-bottom:6px;max-width:80%;margin-left:auto;">🤖: Chào bạn! Tôi là trợ lý AI. Tôi có thể giúp gì cho bạn?</div>
+                        <div style="background:rgba(255,255,255,0.03);padding:8px 12px;border-radius:8px;margin-bottom:6px;max-width:80%;">👤: Thời tiết hôm nay thế nào?</div>
+                        <div style="background:rgba(26,115,232,0.15);padding:8px 12px;border-radius:8px;margin-bottom:6px;max-width:80%;margin-left:auto;">🤖: Hôm nay trời nắng đẹp, nhiệt độ 28°C. Thích hợp để ra ngoài!</div>
+                    </div>
+                    <div style="display:flex;gap:8px;">
+                        <input style="flex:1;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:20px;padding:8px 16px;color:#fff;outline:none;" placeholder="Nhập tin nhắn...">
+                        <button style="padding:8px 16px;border:none;border-radius:20px;background:#1a73e8;color:#fff;cursor:pointer;">Gửi</button>
+                    </div>
+                </div>
+            ` },
+            'media': { title: 'Media Player', content: `
+                <div style="text-align:center;padding:8px;">
+                    <div style="font-size:4rem;margin-bottom:8px;">🎬</div>
+                    <div style="background:rgba(255,255,255,0.02);padding:12px;border-radius:6px;margin-bottom:8px;">
+                        <div style="font-weight:500;">Video Sample.mp4</div>
+                        <div style="color:#888;font-size:0.8rem;">00:05 / 01:30</div>
+                        <div style="background:rgba(255,255,255,0.06);height:4px;border-radius:2px;margin:8px 0;position:relative;">
+                            <div style="width:15%;height:100%;background:#1a73e8;border-radius:2px;"></div>
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:16px;justify-content:center;font-size:1.4rem;">
+                        <span style="cursor:pointer;">⏮</span>
+                        <span style="cursor:pointer;">▶️</span>
+                        <span style="cursor:pointer;">⏭</span>
+                        <span style="cursor:pointer;">🔊</span>
+                    </div>
+                </div>
+            ` },
+            'calendar': { title: 'Calendar', content: `
+                <div style="text-align:center;">
+                    <div style="font-size:1.2rem;font-weight:500;margin-bottom:8px;">📅 ${new Date().toLocaleDateString('vi-VN', { weekday:'long', day:'numeric', month:'long', year:'numeric' })}</div>
+                    <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;font-size:0.7rem;">
+                        <span style="color:#888;">T2</span><span style="color:#888;">T3</span><span style="color:#888;">T4</span>
+                        <span style="color:#888;">T5</span><span style="color:#888;">T6</span><span style="color:#888;">T7</span><span style="color:#888;">CN</span>
+                        ${Array.from({length:31},(_,i) => `<span style="padding:4px;border-radius:4px;${i+1===new Date().getDate()?'background:#1a73e8;':''}">${i+1}</span>`).join('')}
+                    </div>
+                    <div style="margin-top:12px;color:#888;font-size:0.8rem;">
+                        📌 Sự kiện: Họp lúc 10:00
+                    </div>
+                </div>
+            ` },
+        };
+
+        const app = appMap[appId];
+        if(app) {
+            createWindow(app.title, app.content, appId);
+            showNotification('🚀 Mở ứng dụng', `Đã mở ${app.title}`);
+        } else {
+            showNotification('⚠️ Lỗi', `Không tìm thấy ứng dụng: ${appId}`);
+        }
+    }
+
+    // =================================================================
+    // 9. QUICK SETTINGS
+    // =================================================================
+    const traySettings = document.getElementById('traySettings');
+    const quickSettings = document.getElementById('quickSettings');
+    let qsOpen = false;
+
+    traySettings.addEventListener('click', (e) => {
+        e.stopPropagation();
+        qsOpen = !qsOpen;
+        quickSettings.classList.toggle('show', qsOpen);
+    });
+    document.addEventListener('click', () => {
+        quickSettings.classList.remove('show');
+        qsOpen = false;
+    });
+
+    document.getElementById('volumeSlider').addEventListener('input', (e) => {
+        document.getElementById('volumeLabel').textContent = e.target.value + '%';
+    });
+
+    document.querySelectorAll('.qs-item').forEach(item => {
+        item.addEventListener('click', () => {
+            const action = item.dataset.action;
+            showNotification('⚙️ Cài đặt nhanh', `Đã bật/tắt: ${action}`);
+            quickSettings.classList.remove('show');
+            qsOpen = false;
+        });
+    });
+
+    // =================================================================
+    // 10. TASKBAR SEARCH
+    // =================================================================
+    document.getElementById('searchBtn').addEventListener('click', () => {
+        startBtn.click();
+        setTimeout(() => {
+            document.querySelector('.start-search')?.focus();
+        }, 100);
+    });
+
+    // =================================================================
+    // 11. POWER & LOCK
+    // =================================================================
+    document.getElementById('powerBtn').addEventListener('click', () => {
+        if(confirm('Bạn có muốn tắt máy?')) {
+            showNotification('⏻ Tắt máy', 'Đang tắt hệ thống...');
+            setTimeout(() => {
+                location.reload();
+            }, 2000);
+        }
+    });
+
+    document.getElementById('lockBtn').addEventListener('click', () => {
+        startMenu.classList.remove('show');
+        startOpen = false;
+        lockScreen.classList.remove('hidden');
+        lockPin.value = '';
+        lockPin.focus();
+        showNotification('🔒 Đã khóa', 'Màn hình đã được khóa');
+    });
+
+    // =================================================================
+    // 12. KEYBOARD SHORTCUTS
+    // =================================================================
+    document.addEventListener('keydown', (e) => {
+        // Win key
+        if(e.key === 'Meta' || (e.ctrlKey && e.key === 'Escape')) {
+            e.preventDefault();
+            startBtn.click();
+        }
+        // Alt + F4 to close active window
+        if(e.altKey && e.key === 'F4') {
+            e.preventDefault();
+            const active = windows.find(w => w.classList.contains('active'));
+            if(active) {
+                active.querySelector('.btn-close')?.click();
+                showNotification('❌ Đóng cửa sổ', 'Đã đóng cửa sổ hiện tại');
+            }
+        }
+        // F5 refresh
+        if(e.key === 'F5') {
+            e.preventDefault();
+            showNotification('🔄 Làm mới', 'Đã làm mới màn hình');
+        }
+    });
+
+    // =================================================================
+    // 13. INIT
+    // =================================================================
+    document.getElementById('desktop').style.display = 'none';
+    document.getElementById('taskbar').style.display = 'none';
+    initDesktopIcons();
+    initStartMenu();
+
+    console.log('Windows 10 Simulation loaded!');
+    console.log('📌 Shortcuts: Ctrl+L = Lock, Win = Start, Alt+F4 = Close');
+</script>
+</body>
+</html>
