@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#4f46e5">
+<meta name="description" content="Ôn thi Giáo dục Quốc phòng - An ninh chuyên nghiệp. Trắc nghiệm QP-AN 1 & 2, gợi ý, đếm giờ, thống kê.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Quiz QP-AN">
+<title>Quiz QP-AN | Ôn thi chuyên nghiệp</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #4f46e5;
+  --primary-dark: #4338ca;
+  --primary-light: #818cf8;
+  --primary-bg: #eef2ff;
+  --accent: #f59e0b;
+  --accent-light: #fbbf24;
+  --accent-bg: #fffbeb;
+  --correct: #10b981;
+  --bg: #f8fafc;
+  --card: #ffffff;
+  --text: #0f172a;
+  --muted: #64748b;
+  --border: #e2e8f0;
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07);
+  --shadow-lg: 0 10px 25px -5px rgba(0,0,0,0.1);
+  --shadow-xl: 0 25px 50px -12px rgba(0,0,0,0.18);
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+[data-theme="dark"] {
+  --bg: #0f172a;
+  --card: #1e293b;
+  --text: #f1f5f9;
+  --muted: #94a3b8;
+  --border: #334155;
+  --primary-bg: #312e81;
+  --accent-bg: #422006;
+  --shadow-xl: 0 25px 50px -12px rgba(0,0,0,0.6);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body {
+  font-family: 'Be Vietnam Pro', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  min-height: 100vh;
+  min-height: 100dvh;
+  color: var(--text);
+  line-height: 1.6;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: background 0.3s, color 0.3s;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(circle at 15% 15%, rgba(79,70,229,0.12) 0%, transparent 45%),
+    radial-gradient(circle at 85% 85%, rgba(245,158,11,0.10) 0%, transparent 45%),
+    radial-gradient(circle at 50% 50%, rgba(129,140,248,0.05) 0%, transparent 60%);
+  z-index: -1;
+  animation: bgFloat 24s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes bgFloat {
+  0%,100% { transform: scale(1) rotate(0deg); opacity: 1; }
+  50% { transform: scale(1.15) rotate(4deg); opacity: 0.8; }
+}
+
+/* ===== TOPBAR ===== */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: color-mix(in srgb, var(--card) 80%, transparent);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+.topbar-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.brand-logo {
+  width: 42px; height: 42px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+  display: grid; place-items: center;
+  font-size: 1.3rem;
+  box-shadow: 0 4px 12px rgba(79,70,229,0.35);
+  flex-shrink: 0;
+}
+.brand-text h1 { font-size: 1rem; font-weight: 700; line-height: 1.2; }
+.brand-text p { font-size: 0.7rem; color: var(--muted); font-weight: 500; }
+.header-actions { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.icon-btn {
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  display: grid; place-items: center;
+  cursor: pointer;
+  transition: all 0.2s var(--ease);
+  flex-shrink: 0;
+}
+.icon-btn:hover { border-color: var(--primary-light); color: var(--primary); transform: translateY(-1px); }
+.icon-btn svg { width: 18px; height: 18px; }
+.icon-btn.hidden { display: none; }
+
+/* ===== MAIN ===== */
+main {
+  flex: 1;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 32px 20px 40px;
+  width: 100%;
+}
+
+/* ===== HERO ===== */
+.hero {
+  text-align: center;
+  margin-bottom: 36px;
+  animation: heroIn 0.7s var(--ease-bounce);
+}
+@keyframes heroIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.hero-icon {
+  width: 96px; height: 96px;
+  margin: 0 auto 20px;
+  border-radius: 26px;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+  display: grid; place-items: center;
+  font-size: 2.8rem;
+  box-shadow: 0 16px 40px rgba(79,70,229,0.4);
+  animation: bounceIn 0.9s var(--ease-bounce);
+  position: relative;
+}
+.hero-icon::after {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border-radius: 32px;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  opacity: 0.15;
+  z-index: -1;
+  animation: pulse 3s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%,100% { transform: scale(1); opacity: 0.15; }
+  50% { transform: scale(1.1); opacity: 0.05; }
+}
+@keyframes bounceIn {
+  0% { transform: scale(0); opacity: 0; }
+  60% { transform: scale(1.12); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.hero h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 8px;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1.2;
+}
+.hero p {
+  color: var(--muted);
+  font-size: 0.95rem;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+/* ===== INSTALL BANNER ===== */
+.install-banner {
+  display: none;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+  color: white;
+  border-radius: 16px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 8px 24px rgba(79,70,229,0.3);
+  animation: slideDown 0.5s var(--ease-bounce);
+  align-items: center;
+  gap: 14px;
+}
+.install-banner.show { display: flex; }
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.install-banner .ib-icon { font-size: 1.8rem; flex-shrink: 0; }
+.install-banner .ib-text { flex: 1; min-width: 0; }
+.install-banner .ib-title { font-weight: 700; font-size: 0.92rem; margin-bottom: 2px; }
+.install-banner .ib-desc { font-size: 0.78rem; opacity: 0.9; }
+.install-banner .ib-btn {
+  background: white;
+  color: var(--primary);
+  border: none;
+  padding: 9px 16px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.install-banner .ib-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+
+/* ===== QUIZ CARDS ===== */
+.quiz-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+  margin-bottom: 28px;
+}
+.quiz-card {
+  position: relative;
+  background: var(--card);
+  border-radius: 24px;
+  padding: 32px 24px;
+  border: 2px solid var(--border);
+  box-shadow: var(--shadow-lg);
+  text-decoration: none;
+  color: var(--text);
+  overflow: hidden;
+  transition: all 0.35s var(--ease);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  animation: cardIn 0.6s var(--ease-bounce) backwards;
+}
+.quiz-card:nth-child(1) { animation-delay: 0.1s; }
+.quiz-card:nth-child(2) { animation-delay: 0.25s; }
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(24px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.quiz-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 5px;
+  background: linear-gradient(90deg, var(--primary), var(--primary-light));
+  transition: height 0.3s;
+}
+.quiz-card.qp2::before {
+  background: linear-gradient(90deg, var(--accent), var(--accent-light));
+}
+.quiz-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px -10px rgba(79,70,229,0.25);
+  border-color: var(--primary-light);
+}
+.quiz-card.qp2:hover {
+  box-shadow: 0 20px 40px -10px rgba(245,158,11,0.25);
+  border-color: var(--accent);
+}
+.quiz-card:hover::before { height: 7px; }
+.quiz-card:active { transform: translateY(-2px) scale(0.99); }
+
+.qc-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 4px 11px;
+  border-radius: 999px;
+  background: var(--primary-bg);
+  color: var(--primary);
+  margin-bottom: 16px;
+  width: fit-content;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.quiz-card.qp2 .qc-badge {
+  background: var(--accent-bg);
+  color: #92400e;
+}
+.qc-icon {
+  font-size: 2.6rem;
+  margin-bottom: 12px;
+  line-height: 1;
+  transition: transform 0.4s var(--ease-bounce);
+}
+.quiz-card:hover .qc-icon { transform: scale(1.15) rotate(-5deg); }
+.qc-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  margin-bottom: 6px;
+  line-height: 1.25;
+}
+.qc-desc {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-bottom: 18px;
+  flex: 1;
+}
+.qc-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--primary);
+  transition: gap 0.25s;
+}
+.quiz-card.qp2 .qc-cta { color: var(--accent); }
+.quiz-card:hover .qc-cta { gap: 12px; }
+.qc-cta svg { width: 18px; height: 18px; }
+
+.qc-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+  font-size: 0.78rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+.qc-meta span { display: inline-flex; align-items: center; gap: 4px; }
+.qc-meta svg { width: 13px; height: 13px; }
+
+/* ===== FEATURES ===== */
+.features {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 28px;
+}
+.feature {
+  background: var(--card);
+  border-radius: 14px;
+  padding: 16px 10px;
+  text-align: center;
+  border: 1px solid var(--border);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+  transition: all 0.25s var(--ease);
+}
+.feature:hover {
+  transform: translateY(-3px);
+  border-color: var(--primary-light);
+  box-shadow: 0 6px 16px rgba(79,70,229,0.12);
+}
+.feature-icon { font-size: 1.4rem; margin-bottom: 6px; }
+.feature-text { font-size: 0.75rem; font-weight: 600; color: var(--muted); }
+
+/* ===== FOOTER ===== */
+footer {
+  text-align: center;
+  padding: 24px 20px;
+  color: var(--muted);
+  font-size: 0.8rem;
+  border-top: 1px solid var(--border);
+  background: color-mix(in srgb, var(--card) 50%, transparent);
+}
+footer a { color: var(--primary); text-decoration: none; font-weight: 600; }
+footer a:hover { text-decoration: underline; }
+.footer-meta { margin-top: 4px; font-size: 0.72rem; opacity: 0.7; }
+
+/* ===== OFFLINE TOAST ===== */
+.offline-badge {
+  position: fixed;
+  top: 70px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-20px);
+  background: var(--wrong-bg);
+  color: var(--wrong-dark);
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  box-shadow: var(--shadow-lg);
+  z-index: 200;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s var(--ease-bounce);
+}
+.offline-badge.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 640px) {
+  .topbar-inner { padding: 10px 14px; }
+  .brand-text h1 { font-size: 0.92rem; }
+  .brand-text p { display: none; }
+  .brand-logo { width: 36px; height: 36px; font-size: 1.15rem; }
+  .icon-btn { width: 34px; height: 34px; }
+  main { padding: 20px 14px 30px; }
+  .hero-icon { width: 76px; height: 76px; font-size: 2.2rem; border-radius: 20px; }
+  .hero h1 { font-size: 1.5rem; }
+  .hero p { font-size: 0.88rem; }
+  .hero { margin-bottom: 28px; }
+  .quiz-grid { grid-template-columns: 1fr; gap: 14px; }
+  .quiz-card { padding: 24px 20px; }
+  .qc-icon { font-size: 2.2rem; }
+  .qc-title { font-size: 1.2rem; }
+  .features { grid-template-columns: repeat(2, 1fr); }
+  .install-banner { flex-direction: column; text-align: center; gap: 10px; padding: 16px; }
+  .install-banner .ib-btn { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Page transition overlay */
+.page-transition {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 700;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s var(--ease);
+}
+.page-transition.show { opacity: 1; pointer-events: auto; }
+.page-transition .pt-spinner {
+  width: 44px; height: 44px;
+  border: 4px solid rgba(255,255,255,0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  margin-bottom: 16px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.page-transition .pt-content { text-align: center; }
+</style>
+</head>
+<body>
+
+<!-- ===== TOPBAR ===== -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="brand-logo">🎖️</div>
+      <div class="brand-text">
+        <h1>Quiz QP-AN</h1>
+        <p>Ôn thi chuyên nghiệp</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" id="btnInstall" title="Cài đặt ứng dụng" aria-label="Cài đặt ứng dụng" style="display:none;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      </button>
+      <button class="icon-btn" id="btnTheme" title="Đổi giao diện" aria-label="Đổi giao diện">
+        <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-icon">🎯</div>
+    <h1>Ôn thi QP-AN</h1>
+    <p>Chọn bộ câu hỏi để bắt đầu. Giao diện đẹp, gợi ý thông minh, thống kê chi tiết, dùng tốt trên mọi thiết bị.</p>
+  </section>
+
+  <!-- INSTALL BANNER -->
+  <div class="install-banner" id="installBanner">
+    <div class="ib-icon">📲</div>
+    <div class="ib-text">
+      <div class="ib-title">Cài đặt như ứng dụng</div>
+      <div class="ib-desc">Truy cập nhanh từ màn hình chính, dùng offline</div>
+    </div>
+    <button class="ib-btn" id="installBannerBtn">Cài đặt</button>
+  </div>
+
+  <!-- QUIZ CARDS -->
+  <div class="quiz-grid">
+    <a class="quiz-card qp1" href="./gdqpan1/" data-target="gdqpan1">
+      <span class="qc-badge">📚 Môn 1</span>
+      <div class="qc-icon">🎖️</div>
+      <h2 class="qc-title">Giáo dục QP-AN 1</h2>
+      <p class="qc-desc">Bộ câu hỏi ôn tập Giáo dục Quốc phòng - An ninh học phần 1.</p>
+      <div class="qc-meta">
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Trắc nghiệm</span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Tức thì</span>
+      </div>
+      <span class="qc-cta">Bắt đầu <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+    </a>
+
+    <a class="quiz-card qp2" href="./gdqpan2/" data-target="gdqpan2">
+      <span class="qc-badge">📖 Môn 2</span>
+      <div class="qc-icon">🛡️</div>
+      <h2 class="qc-title">Giáo dục QP-AN 2</h2>
+      <p class="qc-desc">Bộ câu hỏi ôn tập Giáo dục Quốc phòng - An ninh học phần 2.</p>
+      <div class="qc-meta">
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Trắc nghiệm</span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Tức thì</span>
+      </div>
+      <span class="qc-cta">Bắt đầu <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+    </a>
+  </div>
+
+  <!-- FEATURES -->
+  <div class="features">
+    <div class="feature"><div class="feature-icon">💡</div><div class="feature-text">Gợi ý thông minh</div></div>
+    <div class="feature"><div class="feature-icon">⏱️</div><div class="feature-text">Đếm giờ</div></div>
+    <div class="feature"><div class="feature-icon">📊</div><div class="feature-text">Thống kê</div></div>
+    <div class="feature"><div class="feature-icon">🌙</div><div class="feature-text">Dark mode</div></div>
+  </div>
+</main>
+
+<footer>
+  <div>© <span id="year"></span> Quiz QP-AN — Ôn thi chuyên nghiệp</div>
+  <div class="footer-meta">Hoạt động offline sau khi cài đặt • Made with ❤️</div>
+</footer>
+
+<!-- OFFLINE BADGE -->
+<div class="offline-badge" id="offlineBadge">📴 Bạn đang offline</div>
+
+<!-- PAGE TRANSITION -->
+<div class="page-transition" id="pageTransition">
+  <div class="pt-content">
+    <div class="pt-spinner"></div>
+    <div>Đang mở...</div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   THEME
+============================================================ */
+function initTheme() {
+  const saved = localStorage.getItem('home_theme');
+  const theme = saved || 'light';
+  document.documentElement.setAttribute('data-theme', theme === 'dark' ? 'dark' : 'light');
+  updateThemeIcon(theme);
+}
+function updateThemeIcon(theme) {
+  const icon = document.getElementById('themeIcon');
+  if (theme === 'dark') {
+    icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+  } else {
+    icon.innerHTML = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+  }
+}
+document.getElementById('btnTheme').addEventListener('click', () => {
+  const cur = document.documentElement.getAttribute('data-theme');
+  const next = cur === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next === 'dark' ? 'dark' : 'light');
+  localStorage.setItem('home_theme', next);
+  updateThemeIcon(next);
+});
+initTheme();
+document.getElementById('year').textContent = new Date().getFullYear();
+
+/* ============================================================
+   PAGE TRANSITION khi chọn môn
+============================================================ */
+document.querySelectorAll('.quiz-card').forEach(card => {
+  card.addEventListener('click', (e) => {
+    // Cho phép mở tab mới nếu user dùng Ctrl/Cmd/chuột giữa
+    if (e.ctrlKey || e.metaKey || e.button === 1) return;
+    e.preventDefault();
+    const href = card.getAttribute('href');
+    const transition = document.getElementById('pageTransition');
+    transition.classList.add('show');
+    setTimeout(() => { window.location.href = href; }, 280);
+  });
+});
+
+/* ============================================================
+   PWA - SERVICE WORKER
+============================================================ */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js')
+      .then(reg => console.log('SW registered:', reg.scope))
+      .catch(err => console.warn('SW registration failed:', err));
+  });
+}
+
+/* ============================================================
+   PWA - INSTALL PROMPT
+============================================================ */
+let deferredPrompt = null;
+const installBanner = document.getElementById('installBanner');
+const btnInstall = document.getElementById('btnInstall');
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  // Hiện cả nút trên topbar và banner
+  btnInstall.style.display = '';
+  installBanner.classList.add('show');
+});
+
+async function triggerInstall() {
+  if (!deferredPrompt) {
+    // Hướng dẫn thủ công nếu trình duyệt không hỗ trợ
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    const isAndroid = /Android/.test(navigator.userAgent);
+    if (isIOS) {
+      alert('📲 Cách cài trên iPhone/iPad:\n\n1. Mở bằng Safari\n2. Nhấn nút Chia sẻ (⤴) ở thanh dưới\n3. Chọn "Thêm vào MH chính" (Add to Home Screen)\n4. Nhấn "Thêm"');
+    } else if (isAndroid) {
+      alert('📲 Cách cài trên Android:\n\n1. Mở bằng Chrome\n2. Nhấn menu ⋮ ở góc phải trên\n3. Chọn "Thêm vào MH chính" hoặc "Cài đặt ứng dụng"\n4. Nhấn "Cài đặt"');
+    } else {
+      alert('📲 Trình duyệt của bạn chưa hỗ trợ cài đặt tự động.\nHãy dùng Chrome/Edge (PC) hoặc Chrome/Safari (điện thoại) và tìm mục "Cài đặt ứng dụng" trong menu.');
+    }
+    return;
+  }
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  console.log('Install outcome:', outcome);
+  deferredPrompt = null;
+  btnInstall.style.display = 'none';
+  installBanner.classList.remove('show');
+}
+
+btnInstall.addEventListener('click', triggerInstall);
+document.getElementById('installBannerBtn').addEventListener('click', triggerInstall);
+
+window.addEventListener('appinstalled', () => {
+  console.log('PWA installed!');
+  btnInstall.style.display = 'none';
+  installBanner.classList.remove('show');
+});
+
+/* ============================================================
+   ONLINE / OFFLINE DETECTION
+============================================================ */
+const offlineBadge = document.getElementById('offlineBadge');
+function updateOnlineStatus() {
+  if (navigator.onLine) {
+    offlineBadge.classList.remove('show');
+  } else {
+    offlineBadge.classList.add('show');
+    setTimeout(() => offlineBadge.classList.remove('show'), 4000);
+  }
+}
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+</script>
+</body>
+</html>
