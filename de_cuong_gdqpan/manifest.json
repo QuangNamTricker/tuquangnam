@@ -1,16 +1,19 @@
 {
-  "name": "Quiz Giáo dục QP-AN",
-  "short_name": "Quiz QP-AN",
-  "description": "Ôn thi Giáo dục Quốc phòng - An ninh chuyên nghiệp với trắc nghiệm, gợi ý, đếm giờ và thống kê.",
+  "name": "Đề cương Giáo dục QP-AN",
+  "short_name": "Đề cương QP-AN",
+  "description": "Bộ đề cương ôn thi Giáo dục Quốc phòng - An ninh với trắc nghiệm, gợi ý, đếm giờ và thống kê chi tiết.",
+  "id": "/de_cuong_gdqpan/",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
   "orientation": "portrait",
   "background_color": "#f8fafc",
   "theme_color": "#4f46e5",
   "lang": "vi",
   "dir": "ltr",
   "categories": ["education", "productivity"],
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "icons/icon-192.png",
@@ -31,19 +34,35 @@
       "purpose": "maskable"
     }
   ],
+  "screenshots": [
+    {
+      "src": "icons/screenshot-mobile.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Trang làm bài trắc nghiệm"
+    },
+    {
+      "src": "icons/screenshot-desktop.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Giao diện desktop"
+    }
+  ],
   "shortcuts": [
     {
-      "name": "Giáo dục QP-AN 1",
-      "short_name": "QP-AN 1",
-      "description": "Mở trắc nghiệm QP-AN 1",
-      "url": "./gdqpan1/",
+      "name": "Bắt đầu làm bài",
+      "short_name": "Làm bài",
+      "description": "Mở ngay màn hình làm bài trắc nghiệm",
+      "url": "./?start=1",
       "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
     },
     {
-      "name": "Giáo dục QP-AN 2",
-      "short_name": "QP-AN 2",
-      "description": "Mở trắc nghiệm QP-AN 2",
-      "url": "./gdqpan2/",
+      "name": "Đảo câu ngẫu nhiên",
+      "short_name": "Đảo câu",
+      "description": "Bắt đầu với câu hỏi xáo trộn",
+      "url": "./?shuffle=1",
       "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
     }
   ]
