@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz Giáo dục QP-AN</title>
+<style>
+  :root {
+    --primary: #1e3a8a;
+    --primary-light: #3b82f6;
+    --correct: #10b981;
+    --wrong: #ef4444;
+    --bg: #f0f4ff;
+    --card: #ffffff;
+    --text: #1f2937;
+    --muted: #6b7280;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    color: var(--text);
+    padding: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+  }
+  .container {
+    width: 100%;
+    max-width: 820px;
+    background: var(--card);
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    overflow: hidden;
+    animation: slideUp 0.5s ease;
+  }
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+    color: white;
+    padding: 20px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  header h1 { font-size: 1.2rem; font-weight: 600; }
+  .stats { display: flex; gap: 16px; font-size: 0.85rem; }
+  .stats span { background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 20px; }
+  .progress-bar {
+    height: 5px;
+    background: rgba(255,255,255,0.3);
+  }
+  .progress-fill {
+    height: 100%;
+    background: #fbbf24;
+    width: 0%;
+    transition: width 0.4s ease;
+  }
+  main { padding: 24px; }
+  .question-counter {
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin-bottom: 8px;
+  }
+  .question-text {
+    font-size: 1.15rem;
+    font-weight: 600;
+    line-height: 1.5;
+    margin-bottom: 20px;
+    animation: fadeIn 0.4s ease;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: white;
+    font-size: 0.98rem;
+  }
+  .option:hover:not(.disabled) {
+    border-color: var(--primary-light);
+    background: #eff6ff;
+    transform: translateX(4px);
+  }
+  .option .letter {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+  .option.selected { border-color: var(--primary-light); background: #eff6ff; }
+  .option.selected .letter { background: var(--primary-light); color: white; }
+  .option.correct { border-color: var(--correct); background: #ecfdf5; animation: pulseCorrect 0.5s; }
+  .option.correct .letter { background: var(--correct); color: white; }
+  .option.wrong { border-color: var(--wrong); background: #fef2f2; animation: shake 0.5s; }
+  .option.wrong .letter { background: var(--wrong); color: white; }
+  .option.disabled { cursor: default; }
+  @keyframes pulseCorrect {
+    0%,100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+  }
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    75% { transform: translateX(6px); }
+  }
+  .explanation {
+    margin-top: 16px;
+    padding: 14px 16px;
+    border-radius: 12px;
+    background: #f3f4f6;
+    border-left: 4px solid var(--primary-light);
+    animation: fadeIn 0.4s ease;
+    font-size: 0.92rem;
+    line-height: 1.5;
+  }
+  .explanation.correct-exp { border-left-color: var(--correct); background: #ecfdf5; }
+  .explanation.wrong-exp { border-left-color: var(--wrong); background: #fef2f2; }
+  .explanation strong { display: block; margin-bottom: 4px; }
+  .controls { margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap; }
+  button {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+  }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-primary { background: var(--primary); color: white; flex: 1; }
+  .btn-primary:hover:not(:disabled) { background: var(--primary-light); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(59,130,246,0.4); }
+  .btn-secondary { background: #e5e7eb; color: var(--text); }
+  .btn-secondary:hover:not(:disabled) { background: #d1d5db; }
+  .btn-shuffle { background: #fbbf24; color: #78350f; }
+  .btn-shuffle:hover:not(:disabled) { background: #f59e0b; transform: translateY(-2px); }
+  .result-screen { text-align: center; padding: 40px 20px; animation: fadeIn 0.6s; }
+  .result-screen h2 { font-size: 1.8rem; color: var(--primary); margin-bottom: 12px; }
+  .score-big { font-size: 3rem; font-weight: 800; color: var(--correct); margin: 16px 0; }
+  .result-screen p { color: var(--muted); margin-bottom: 24px; }
+  .hidden { display: none !important; }
+  .loading { text-align: center; padding: 60px 20px; color: var(--muted); }
+  .loading .spinner {
+    width: 40px; height: 40px;
+    border: 4px solid #e5e7eb;
+    border-top-color: var(--primary-light);
+    border-radius: 50%;
+    margin: 0 auto 16px;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (max-width: 600px) {
+    body { padding: 8px; }
+    header { padding: 16px; }
+    header h1 { font-size: 1rem; }
+    main { padding: 16px; }
+    .question-text { font-size: 1.02rem; }
+    .option { padding: 12px; font-size: 0.92rem; }
+    .stats { font-size: 0.75rem; gap: 8px; }
+    .controls { flex-direction: column; }
+    button { width: 100%; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>🎯 Quiz Giáo dục QP-AN</h1>
+    <div class="stats">
+      <span id="statCorrect">✅ 0</span>
+      <span id="statWrong">❌ 0</span>
+    </div>
+  </header>
+  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  <main id="app">
+    <div class="loading" id="loading">
+      <div class="spinner"></div>
+      Đang tải câu hỏi...
+    </div>
+    <div id="quizArea" class="hidden">
+      <div class="question-counter" id="qCounter"></div>
+      <div class="question-text" id="qText"></div>
+      <div class="options" id="options"></div>
+      <div class="explanation hidden" id="explanation"></div>
+      <div class="controls">
+        <button class="btn-primary" id="btnNext" disabled>Tiếp theo →</button>
+        <button class="btn-shuffle" id="btnShuffle">🔀 Đảo câu</button>
+      </div>
+    </div>
+    <div id="resultArea" class="result-screen hidden">
+      <h2>🎉 Hoàn thành!</h2>
+      <div class="score-big" id="finalScore"></div>
+      <p id="finalMsg"></p>
+      <button class="btn-primary" id="btnRestart" style="max-width:300px;margin:0 auto;">🔄 Làm lại</button>
+    </div>
+  </main>
+</div>
+
+<script>
+let allQuestions = [];
+let questions = [];
+let current = 0;
+let correctCount = 0;
+let wrongCount = 0;
+let answered = false;
+
+const letters = ['A', 'B', 'C', 'D'];
+
+async function loadData() {
+  try {
+    const res = await fetch('gdqpan1.json');
+    if (!res.ok) throw new Error('Không tải được file JSON');
+    allQuestions = await res.json();
+    questions = shuffle([...allQuestions]);
+    startQuiz();
+  } catch (e) {
+    document.getElementById('loading').innerHTML =
+      '<div style="color:#ef4444">⚠️ Lỗi: Không tải được file gdqpan1.json.<br><small>Hãy đặt file JSON cùng thư mục và chạy qua server (VD: Live Server).</small></div>';
+  }
+}
+
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function startQuiz() {
+  current = 0; correctCount = 0; wrongCount = 0; answered = false;
+  document.getElementById('loading').classList.add('hidden');
+  document.getElementById('quizArea').classList.remove('hidden');
+  document.getElementById('resultArea').classList.add('hidden');
+  updateStats();
+  renderQuestion();
+}
+
+function updateStats() {
+  document.getElementById('statCorrect').textContent = `✅ ${correctCount}`;
+  document.getElementById('statWrong').textContent = `❌ ${wrongCount}`;
+  const pct = questions.length ? ((current) / questions.length) * 100 : 0;
+  document.getElementById('progressFill').style.width = pct + '%';
+}
+
+function renderQuestion() {
+  answered = false;
+  const q = questions[current];
+  document.getElementById('qCounter').textContent = `Câu ${current + 1} / ${questions.length}`;
+  document.getElementById('qText').textContent = q.question;
+  document.getElementById('qText').style.animation = 'none';
+  void document.getElementById('qText').offsetWidth;
+  document.getElementById('qText').style.animation = 'fadeIn 0.4s ease';
+
+  const opts = document.getElementById('options');
+  opts.innerHTML = '';
+  q.options.forEach((text, idx) => {
+    const div = document.createElement('div');
+    div.className = 'option';
+    div.innerHTML = `<span class="letter">${letters[idx]}</span><span>${text}</span>`;
+    div.onclick = () => selectAnswer(idx);
+    opts.appendChild(div);
+  });
+
+  const exp = document.getElementById('explanation');
+  exp.classList.add('hidden');
+  exp.className = 'explanation hidden';
+
+  const btnNext = document.getElementById('btnNext');
+  btnNext.disabled = true;
+  btnNext.textContent = (current === questions.length - 1) ? 'Xem kết quả' : 'Tiếp theo →';
+  updateStats();
+}
+
+function selectAnswer(idx) {
+  if (answered) return;
+  answered = true;
+  const q = questions[current];
+  const opts = document.querySelectorAll('.option');
+  const isCorrect = idx === q.correct;
+
+  opts.forEach((el, i) => {
+    el.classList.add('disabled');
+    if (i === q.correct) el.classList.add('correct');
+    if (i === idx && !isCorrect) el.classList.add('wrong');
+  });
+
+  if (isCorrect) correctCount++; else wrongCount++;
+  updateStats();
+
+  const exp = document.getElementById('explanation');
+  exp.className = 'explanation ' + (isCorrect ? 'correct-exp' : 'wrong-exp');
+  exp.innerHTML = `<strong>${isCorrect ? '✅ Chính xác!' : '❌ Sai rồi!'}</strong>
+    Đáp án đúng: <b>${letters[q.correct]}. ${q.options[q.correct]}</b>`;
+  exp.classList.remove('hidden');
+
+  document.getElementById('btnNext').disabled = false;
+}
+
+function nextQuestion() {
+  if (current < questions.length - 1) {
+    current++;
+    renderQuestion();
+  } else {
+    showResult();
+  }
+}
+
+function showResult() {
+  document.getElementById('quizArea').classList.add('hidden');
+  document.getElementById('resultArea').classList.remove('hidden');
+  document.getElementById('progressFill').style.width = '100%';
+  const total = questions.length;
+  const pct = total ? Math.round((correctCount / total) * 100) : 0;
+  document.getElementById('finalScore').textContent = `${correctCount} / ${total}`;
+  let msg = '';
+  if (pct >= 90) msg = `Xuất sắc! Bạn đạt ${pct}% 🏆`;
+  else if (pct >= 70) msg = `Tốt lắm! Bạn đạt ${pct}% 👍`;
+  else if (pct >= 50) msg = `Khá ổn! Bạn đạt ${pct}% — cố gắng thêm nhé!`;
+  else msg = `Bạn đạt ${pct}% — hãy ôn tập lại và thử lại nhé!`;
+  document.getElementById('finalMsg').textContent = msg;
+}
+
+function shuffleQuestions() {
+  questions = shuffle([...questions]);
+  current = 0;
+  startQuiz();
+}
+
+document.getElementById('btnNext').onclick = nextQuestion;
+document.getElementById('btnShuffle').onclick = shuffleQuestions;
+document.getElementById('btnRestart').onclick = () => {
+  questions = shuffle([...allQuestions]);
+  startQuiz();
+};
+
+loadData();
+</script>
+</body>
+</html>
