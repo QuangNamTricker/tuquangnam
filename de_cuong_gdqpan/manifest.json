@@ -1,0 +1,50 @@
+{
+  "name": "Quiz Giáo dục QP-AN",
+  "short_name": "Quiz QP-AN",
+  "description": "Ôn thi Giáo dục Quốc phòng - An ninh chuyên nghiệp với trắc nghiệm, gợi ý, đếm giờ và thống kê.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f8fafc",
+  "theme_color": "#4f46e5",
+  "lang": "vi",
+  "dir": "ltr",
+  "categories": ["education", "productivity"],
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Giáo dục QP-AN 1",
+      "short_name": "QP-AN 1",
+      "description": "Mở trắc nghiệm QP-AN 1",
+      "url": "./gdqpan1/",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Giáo dục QP-AN 2",
+      "short_name": "QP-AN 2",
+      "description": "Mở trắc nghiệm QP-AN 2",
+      "url": "./gdqpan2/",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}
