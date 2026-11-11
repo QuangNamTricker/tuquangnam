@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Báo cáo tiến độ — Chương 1: Giải thuật đệ quy</title>
+<style>
+  :root{
+    --bg:#0f172a; --panel:#1e293b; --panel2:#243449; --text:#e2e8f0;
+    --muted:#94a3b8; --accent:#38bdf8; --accent2:#22d3ee;
+    --green:#4ade80; --orange:#fb923c; --pink:#f472b6;
+    --border:#334155; --code-bg:#0b1220;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+    background:var(--bg); color:var(--text); line-height:1.7;
+    display:flex; min-height:100vh;
+  }
+
+  /* ===== SIDEBAR ===== */
+  #sidebar{
+    width:280px; background:var(--panel); border-right:1px solid var(--border);
+    padding:24px 16px; position:fixed; top:0; left:0; height:100vh;
+    overflow-y:auto; z-index:10; transition:transform .3s;
+  }
+  #sidebar h1{
+    font-size:1.1rem; color:var(--accent); margin-bottom:4px; line-height:1.3;
+  }
+  #sidebar .sub{font-size:.78rem; color:var(--muted); margin-bottom:20px}
+  #sidebar nav a{
+    display:block; color:var(--muted); text-decoration:none;
+    padding:9px 12px; border-radius:8px; font-size:.9rem;
+    margin-bottom:4px; transition:.2s; border-left:3px solid transparent;
+  }
+  #sidebar nav a:hover{background:var(--panel2); color:var(--text)}
+  #sidebar nav a.active{
+    background:var(--panel2); color:var(--accent);
+    border-left-color:var(--accent); font-weight:600;
+  }
+  #sidebar nav a .num{
+    display:inline-block; width:26px; color:var(--accent2); font-weight:700;
+  }
+  #sidebar .progress-wrap{
+    margin-top:24px; padding-top:16px; border-top:1px solid var(--border);
+  }
+  #sidebar .progress-wrap .label{
+    font-size:.75rem; color:var(--muted); margin-bottom:6px;
+    display:flex; justify-content:space-between;
+  }
+  .bar{height:6px; background:var(--code-bg); border-radius:99px; overflow:hidden}
+  .bar > i{
+    display:block; height:100%; width:0;
+    background:linear-gradient(90deg,var(--accent),var(--accent2));
+    transition:width .4s;
+  }
+
+  /* ===== MAIN ===== */
+  main{
+    margin-left:280px; flex:1; padding:40px 56px 120px; max-width:1000px;
+  }
+  header.hero{
+    background:linear-gradient(135deg,#1e3a8a,#0e7490);
+    border-radius:16px; padding:36px 40px; margin-bottom:36px;
+    border:1px solid #1e40af;
+  }
+  header.hero .tag{
+    display:inline-block; background:rgba(56,189,248,.15); color:var(--accent2);
+    font-size:.75rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+    padding:4px 12px; border-radius:99px; margin-bottom:12px;
+  }
+  header.hero h2{font-size:2rem; line-height:1.2; margin-bottom:8px}
+  header.hero p{color:#bae6fd; font-size:.95rem}
+  header.hero .meta{
+    display:flex; gap:20px; margin-top:18px; flex-wrap:wrap;
+    font-size:.85rem; color:#7dd3fc;
+  }
+  header.hero .meta span{display:flex; align-items:center; gap:6px}
+
+  /* ===== SECTIONS ===== */
+  section.card{
+    background:var(--panel); border:1px solid var(--border);
+    border-radius:14px; padding:28px 32px; margin-bottom:28px;
+  }
+  section.card h3{
+    font-size:1.35rem; color:var(--accent); margin-bottom:6px;
+    display:flex; align-items:center; gap:10px;
+  }
+  section.card h3 .badge{
+    font-size:.7rem; background:var(--accent); color:#0f172a;
+    padding:2px 10px; border-radius:99px; font-weight:800;
+  }
+  section.card .lead{color:var(--muted); font-size:.9rem; margin-bottom:18px}
+  section.card h4{
+    font-size:1.02rem; color:var(--accent2); margin:20px 0 8px;
+    padding-left:10px; border-left:3px solid var(--accent2);
+  }
+  section.card p{margin-bottom:10px}
+  section.card ul, section.card ol{margin:0 0 12px 22px}
+  section.card li{margin-bottom:6px}
+
+  /* callout */
+  .callout{
+    background:var(--panel2); border-left:4px solid var(--accent);
+    padding:14px 18px; border-radius:8px; margin:14px 0; font-size:.92rem;
+  }
+  .callout.green{border-left-color:var(--green)}
+  .callout.orange{border-left-color:var(--orange)}
+  .callout.pink{border-left-color:var(--pink)}
+  .callout strong{color:var(--text)}
+
+  /* formula */
+  .formula{
+    background:var(--code-bg); border:1px solid var(--border);
+    border-radius:8px; padding:14px 18px; margin:12px 0;
+    font-family:'Consolas','Courier New',monospace; font-size:1rem;
+    color:var(--accent2); text-align:center; letter-spacing:.03em;
+  }
+  .formula.big{font-size:1.25rem; color:var(--accent)}
+
+  /* tables */
+  .table-wrap{overflow-x:auto; margin:14px 0}
+  table{
+    width:100%; border-collapse:collapse; font-size:.86rem;
+    background:var(--code-bg); border-radius:8px; overflow:hidden;
+  }
+  th{
+    background:#1e3a8a; color:#bae6fd; padding:10px 12px;
+    text-align:left; font-weight:600; white-space:nowrap;
+  }
+  td{padding:9px 12px; border-top:1px solid var(--border); color:var(--text)}
+  tr:hover td{background:rgba(56,189,248,.05)}
+  td.center, th.center{text-align:center}
+  .hl{color:var(--accent2); font-weight:700}
+  .hl-green{color:var(--green); font-weight:700}
+  .hl-orange{color:var(--orange); font-weight:700}
+  .hl-pink{color:var(--pink); font-weight:700}
+
+  /* code */
+  pre{
+    background:var(--code-bg); border:1px solid var(--border);
+    border-radius:8px; padding:16px 18px; overflow-x:auto;
+    font-family:'Consolas','Courier New',monospace; font-size:.84rem;
+    line-height:1.6; margin:12px 0; color:#cbd5e1;
+  }
+  pre .kw{color:#c084fc}   /* keyword */
+  pre .fn{color:#38bdf8}   /* function */
+  pre .st{color:#86efac}   /* string */
+  pre .cm{color:#64748b; font-style:italic} /* comment */
+  pre .nu{color:#fb923c}   /* number */
+
+  /* Q&A */
+  details{
+    background:var(--panel2); border-radius:8px; margin-bottom:10px;
+    border:1px solid var(--border);
+  }
+  details summary{
+    padding:12px 16px; cursor:pointer; font-weight:600; color:var(--accent2);
+    list-style:none; display:flex; justify-content:space-between; gap:10px;
+  }
+  details summary::-webkit-details-marker{display:none}
+  details summary::after{content:'▾'; color:var(--muted); transition:.2s}
+  details[open] summary::after{transform:rotate(180deg)}
+  details .answer{padding:0 16px 14px; color:var(--text); font-size:.92rem}
+
+  /* progress steps for timeline */
+  .timeline{position:relative; margin:20px 0 0 8px; padding-left:24px}
+  .timeline::before{
+    content:''; position:absolute; left:0; top:6px; bottom:6px;
+    width:2px; background:var(--border);
+  }
+  .timeline .step{position:relative; margin-bottom:18px}
+  .timeline .step::before{
+    content:''; position:absolute; left:-30px; top:5px;
+    width:12px; height:12px; border-radius:50%;
+    background:var(--accent); border:2px solid var(--bg);
+  }
+  .timeline .step h5{color:var(--accent2); font-size:.95rem; margin-bottom:2px}
+  .timeline .step p{font-size:.88rem; color:var(--muted); margin:0}
+
+  /* scroll spy hint */
+  .back-top{
+    position:fixed; right:24px; bottom:24px; z-index:20;
+    width:46px; height:46px; border-radius:50%;
+    background:var(--accent); color:#0f172a; border:none;
+    font-size:1.3rem; cursor:pointer; display:none;
+    align-items:center; justify-content:center; font-weight:800;
+    box-shadow:0 6px 20px rgba(56,189,248,.4);
+  }
+  .back-top.show{display:flex}
+
+  /* mobile */
+  .menu-btn{
+    display:none; position:fixed; top:14px; left:14px; z-index:30;
+    background:var(--panel); color:var(--accent); border:1px solid var(--border);
+    width:44px; height:44px; border-radius:10px; font-size:1.4rem; cursor:pointer;
+  }
+  @media(max-width:900px){
+    #sidebar{transform:translateX(-100%)}
+    #sidebar.open{transform:translateX(0)}
+    main{margin-left:0; padding:80px 18px 100px}
+    .menu-btn{display:flex; align-items:center; justify-content:center}
+    header.hero{padding:26px 22px}
+    header.hero h2{font-size:1.5rem}
+    section.card{padding:22px 18px}
+  }
+
+  /* print */
+  @media print{
+    #sidebar, .back-top, .menu-btn, header.hero .tag{display:none}
+    body{background:#fff; color:#000}
+    main{margin:0; padding:0; max-width:none}
+    section.card, header.hero{background:#fff; border:1px solid #ccc; break-inside:avoid}
+    section.card h3, header.hero h2{color:#000}
+    pre{background:#f4f4f4; color:#000; border-color:#ccc}
+    th{background:#eee; color:#000}
+    td{color:#000}
+  }
+</style>
+</head>
+<body>
+
+<button class="menu-btn" id="menuBtn">☰</button>
+
+<!-- ================= SIDEBAR ================= -->
+<aside id="sidebar">
+  <h1>Chương 1 — Giải thuật đệ quy</h1>
+  <div class="sub">Báo cáo tiến độ · Phần 1</div>
+  <nav>
+    <a href="#hero" class="active"><span class="num">00</span>Mở đầu</a>
+    <a href="#bai11"><span class="num">1.1</span>Tháp Hà Nội</a>
+    <a href="#bai12"><span class="num">1.2</span>Tổ hợp &amp; ghi nhớ</a>
+    <a href="#bai13"><span class="num">1.3</span>Hoán vị quay lui</a>
+    <a href="#bai14"><span class="num">1.4</span>Khử đệ quy</a>
+    <a href="#tongket"><span class="num">✓</span>Tổng kết</a>
+    <a href="#cachgiai"><span class="num">★</span>Cách giải chi tiết</a>
+    <a href="#qa"><span class="num">?</span>Hỏi &amp; Đáp</a>
+    <a href="#meo"><span class="num">✓</span>Mẹo thuyết trình</a>
+  </nav>
+  <div class="progress-wrap">
+    <div class="label"><span>Tiến độ đọc</span><span id="pct">0%</span></div>
+    <div class="bar"><i id="barFill"></i></div>
+  </div>
+</aside>
+
+<!-- ================= MAIN ================= -->
+<main>
+
+  <!-- HERO -->
+  <header class="hero" id="hero">
+    <span class="tag">Báo cáo tiến độ · Phần 1</span>
+    <h2>Chương 1: Giải thuật đệ quy</h2>
+    <p>Tổng hợp bản nói thuyết trình, cách giải chi tiết và bộ câu hỏi phản biện cho 4 bài: Tháp Hà Nội · Tổ hợp &amp; ghi nhớ · Hoán vị quay lui · Khử đệ quy bằng ngăn xếp.</p>
+    <div class="meta">
+      <span>📚 4 bài học</span>
+      <span>⏱️ ~10–12 phút</span>
+      <span>💻 4 file mã nguồn</span>
+      <span>📝 7 mục mỗi bài</span>
+    </div>
+  </header>
+
+  <!-- ============ BÀI 1.1 ============ -->
+  <section class="card" id="bai11">
+    <h3><span class="badge">1.1</span>Tháp Hà Nội</h3>
+    <p class="lead">Đệ quy cơ bản · T(n) = 2ⁿ − 1 · O(2ⁿ) thời gian, O(n) bộ nhớ</p>
+
+    <h4>Phát biểu bài toán</h4>
+    <p>Có 3 cọc A, B, C. Cọc A có <strong>n đĩa</strong> kích thước khác nhau, đĩa lớn nằm dưới. Cần chuyển toàn bộ n đĩa sang cọc C, dùng B làm trung gian. <strong>Ràng buộc</strong>: mỗi lần chỉ chuyển 1 đĩa trên cùng, và <strong>không bao giờ đặt đĩa lớn lên đĩa nhỏ</strong>.</p>
+    <div class="callout">
+      <strong>Input:</strong> n (0 ≤ n ≤ 20) &nbsp;·&nbsp;
+      <strong>Output:</strong> dãy bước chuyển + tổng số bước
+    </div>
+
+    <h4>Cách giải — ý tưởng đệ quy</h4>
+    <p>Gọi <code>HN(n, A, B, C)</code> là thao tác chuyển n đĩa từ A sang C, dùng B làm trung gian.</p>
+    <ul>
+      <li><strong>Trường hợp cơ sở:</strong> n = 0 → không có gì để chuyển, dừng.</li>
+      <li><strong>Bước đệ quy</strong> gồm 3 thao tác:
+        <ol>
+          <li>Chuyển <strong>n−1 đĩa trên cùng</strong> từ A sang B (dùng C trung gian) → <code>HN(n−1, A, C, B)</code>.</li>
+          <li>Chuyển <strong>đĩa lớn nhất</strong> (đĩa thứ n) từ A sang C → in bước chuyển.</li>
+          <li>Chuyển <strong>n−1 đĩa</strong> từ B sang C (dùng A trung gian) → <code>HN(n−1, B, A, C)</code>.</li>
+        </ol>
+      </li>
+    </ul>
+    <div class="callout green">
+      <strong>Vì sao đúng?</strong> Sau bước 1, n−1 đĩa nhỏ đã nằm gọn trên B → đĩa lớn nhất ở A là đĩa duy nhất còn lại, chuyển thẳng sang C không vi phạm quy tắc. Sau bước 2, đĩa lớn nhất đã ở đúng vị trí cuối cùng dưới đáy C → bước 3 chỉ cần chuyển n−1 đĩa từ B sang C.
+    </div>
+
+    <h4>Công thức số bước</h4>
+    <div class="formula">T(n) = 2·T(n−1) + 1, &nbsp; T(0) = 0 &nbsp; ⟹ &nbsp; T(n) = 2ⁿ − 1</div>
+    <div class="callout orange">
+      <strong>Vì sao tối ưu?</strong> Đĩa lớn nhất buộc phải chuyển ít nhất 1 lần; trước đó phải đưa n−1 đĩa ra khỏi A, sau đó đưa n−1 đĩa về C → T(n) ≥ 2·T(n−1)+1. Thuật toán đạt đúng cận này.
+    </div>
+
+    <h4>Minh họa n = 3 (chạy tay)</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th class="center">Bước</th><th>Thao tác</th><th>Cọc A</th><th>Cọc B</th><th>Cọc C</th></tr></thead>
+        <tbody>
+          <tr><td class="center">0</td><td>Trạng thái đầu</td><td>3 2 1</td><td></td><td></td></tr>
+          <tr><td class="center">1</td><td>Đĩa 1: A → C</td><td>3 2</td><td></td><td>1</td></tr>
+          <tr><td class="center">2</td><td>Đĩa 2: A → B</td><td>3</td><td>2</td><td>1</td></tr>
+          <tr><td class="center">3</td><td>Đĩa 1: C → B</td><td>3</td><td>2 1</td><td></td></tr>
+          <tr><td class="center">4</td><td>Đĩa 3: A → C</td><td></td><td>2 1</td><td>3</td></tr>
+          <tr><td class="center">5</td><td>Đĩa 1: B → A</td><td>1</td><td>2</td><td>3</td></tr>
+          <tr><td class="center">6</td><td>Đĩa 2: B → C</td><td>1</td><td></td><td>3 2</td></tr>
+          <tr><td class="center">7</td><td>Đĩa 1: A → C</td><td></td><td></td><td>3 2 1</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Cài đặt (P1_Bai01.cpp)</h4>
+<pre><span class="kw">void</span> <span class="fn">thapHaNoi</span>(<span class="kw">int</span> n, <span class="kw">char</span> A, <span class="kw">char</span> B, <span class="kw">char</span> C) {
+    <span class="kw">if</span> (n == <span class="nu">0</span>) <span class="kw">return</span>;              <span class="cm">// trường hợp cơ sở</span>
+    <span class="fn">thapHaNoi</span>(n - <span class="nu">1</span>, A, C, B);       <span class="cm">// n-1 đĩa: A -> B (qua C)</span>
+    dem++;
+    cout &lt;&lt; <span class="st">"Buoc "</span> &lt;&lt; dem &lt;&lt; <span class="st">": chuyen dia "</span> &lt;&lt; n
+         &lt;&lt; <span class="st">" tu "</span> &lt;&lt; A &lt;&lt; <span class="st">" sang "</span> &lt;&lt; C &lt;&lt; endl;
+    <span class="fn">thapHaNoi</span>(n - <span class="nu">1</span>, B, A, C);       <span class="cm">// n-1 đĩa: B -> C (qua A)</span>
+}</pre>
+
+    <h4>Độ phức tạp &amp; kết quả chạy thử</h4>
+    <p><strong>Thời gian O(2ⁿ)</strong> — có 2ⁿ − 1 lần chuyển đĩa. <strong>Bộ nhớ O(n)</strong> — độ sâu đệ quy là n.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Test</th><th class="center">n</th><th>Kết quả</th></tr></thead>
+        <tbody>
+          <tr><td>1 (biên)</td><td class="center">0</td><td>Tong so buoc: 0</td></tr>
+          <tr><td>2</td><td class="center">1</td><td>1 bước</td></tr>
+          <tr><td>3</td><td class="center">2</td><td>3 bước</td></tr>
+          <tr><td>4</td><td class="center">3</td><td>7 bước</td></tr>
+          <tr><td>5</td><td class="center">10</td><td><span class="hl">1023 bước</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ BÀI 1.2 ============ -->
+  <section class="card" id="bai12">
+    <h3><span class="badge">1.2</span>Tổ hợp C(n,k) &amp; kỹ thuật ghi nhớ</h3>
+    <p class="lead">Đánh đổi bộ nhớ lấy thời gian · 310 triệu lần gọi vs 225 ô</p>
+
+    <h4>Phát biểu bài toán</h4>
+    <p>Tính số tổ hợp chập k của n phần tử theo công thức Pascal, và <strong>so sánh hai cách cài đặt</strong>: đệ quy thuần và đệ quy có ghi nhớ (memoization).</p>
+    <div class="callout">
+      <strong>Input:</strong> n, k (0 ≤ k ≤ n ≤ 30) &nbsp;·&nbsp;
+      <strong>Output:</strong> C(n,k), số lần gọi hàm bản thuần, số ô thực sự tính của bản ghi nhớ
+    </div>
+
+    <h4>Cách giải — công thức Pascal</h4>
+    <div class="formula">C(n,0) = C(n,n) = 1 &nbsp;·&nbsp; C(n,k) = C(n−1,k−1) + C(n−1,k)</div>
+    <p><strong>Cách 1 – đệ quy thuần:</strong> viết đúng công thức trên. Nhược điểm: cùng một ô C(i,j) bị tính lại rất nhiều lần — số lần gọi = <strong>2·C(n,k) − 1</strong>, tăng theo hàm mũ.</p>
+    <p><strong>Cách 2 – ghi nhớ:</strong> thêm mảng <code>memo[n][k]</code> và mảng <code>daTinh[n][k]</code>. Khi cần C(n,k): nếu ô đã tính → <strong>trả về ngay</strong> <code>memo[n][k]</code>; nếu chưa → tính, <strong>lưu vào memo</strong>, đánh dấu. Nhờ vậy mỗi ô chỉ tính đúng <strong>một lần</strong>.</p>
+    <div class="callout green">
+      <strong>Vì sao bản thuần gọi 2·C(n,k) − 1 lần?</strong> Mỗi lần gọi không phải cơ sở sinh ra 2 lần gọi con. Cây gọi có C(n,k) lá (ô cơ sở) → tổng số nút = 2·lá − 1.
+    </div>
+
+    <h4>Minh họa C(5,2) = 10</h4>
+    <p>Bản thuần gọi 2·10 − 1 = <strong>19 lần</strong>. Bản ghi nhớ chỉ tính <strong>6 ô</strong> không phải ô cơ sở:</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th class="center">Thứ tự</th><th>Ô (n,k)</th><th class="center">Giá trị</th><th>Cách tính</th></tr></thead>
+        <tbody>
+          <tr><td class="center">1</td><td>(2,1)</td><td class="center">2</td><td>C(1,0) + C(1,1) = 1 + 1</td></tr>
+          <tr><td class="center">2</td><td>(3,1)</td><td class="center">3</td><td>C(2,0) + C(2,1) = 1 + 2</td></tr>
+          <tr><td class="center">3</td><td>(4,1)</td><td class="center">4</td><td>C(3,0) + C(3,1) = 1 + 3</td></tr>
+          <tr><td class="center">4</td><td>(3,2)</td><td class="center">3</td><td>C(2,1) + C(2,2) = <span class="hl">2 (đọc lại)</span> + 1</td></tr>
+          <tr><td class="center">5</td><td>(4,2)</td><td class="center">6</td><td>C(3,1) <span class="hl">(đọc lại)</span> + C(3,2) = 3 + 3</td></tr>
+          <tr><td class="center">6</td><td>(5,2)</td><td class="center">10</td><td>C(4,1) + C(4,2) = 4 + 6</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Cài đặt (P1_Bai02.cpp)</h4>
+<pre><span class="kw">long long</span> C1(<span class="kw">int</span> n, <span class="kw">int</span> k) {          <span class="cm">// đệ quy thuần</span>
+    goiThuan++;
+    <span class="kw">if</span> (k == <span class="nu">0</span> || k == n) <span class="kw">return</span> <span class="nu">1</span>;
+    <span class="kw">return</span> <span class="fn">C1</span>(n - <span class="nu">1</span>, k - <span class="nu">1</span>) + <span class="fn">C1</span>(n - <span class="nu">1</span>, k);
+}
+
+<span class="kw">long long</span> C2(<span class="kw">int</span> n, <span class="kw">int</span> k) {          <span class="cm">// đệ quy có ghi nhớ</span>
+    <span class="kw">if</span> (k == <span class="nu">0</span> || k == n) <span class="kw">return</span> <span class="nu">1</span>;
+    <span class="kw">if</span> (daTinh[n][k]) <span class="kw">return</span> memo[n][k];
+    daTinh[n][k] = <span class="kw">true</span>;
+    soOTinh++;
+    <span class="kw">return</span> memo[n][k] = <span class="fn">C2</span>(n - <span class="nu">1</span>, k - <span class="nu">1</span>) + <span class="fn">C2</span>(n - <span class="nu">1</span>, k);
+}</pre>
+
+    <h4>Độ phức tạp &amp; kết quả chạy thử</h4>
+    <p>Bản thuần: <strong>Θ(C(n,k))</strong> lần gọi — hàm mũ theo n; bộ nhớ O(n). Bản ghi nhớ: <strong>O(n·k)</strong> thời gian và bộ nhớ — <strong>đánh đổi bộ nhớ lấy thời gian</strong>.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Test</th><th class="center">n k</th><th class="center">C(n,k)</th><th class="center">Gọi thuần</th><th class="center">Ô ghi nhớ</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td class="center">5 2</td><td class="center">10</td><td class="center">19</td><td class="center">6</td></tr>
+          <tr><td>2</td><td class="center">6 3</td><td class="center">20</td><td class="center">39</td><td class="center">9</td></tr>
+          <tr><td>3 (k=0)</td><td class="center">10 0</td><td class="center">1</td><td class="center">1</td><td class="center">0</td></tr>
+          <tr><td>4 (k=n)</td><td class="center">10 10</td><td class="center">1</td><td class="center">1</td><td class="center">0</td></tr>
+          <tr><td>5</td><td class="center">30 15</td><td class="center">155117520</td><td class="center hl-orange">310.235.039</td><td class="center hl-green">225</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout orange">
+      <strong>Test 5 minh họa rõ nhất:</strong> bản thuần gọi hơn <strong>310 triệu lần</strong>, bản ghi nhớ chỉ tính <strong>225 ô</strong>. Đây là con số ấn tượng nhất của toàn bài.
+    </div>
+  </section>
+
+  <!-- ============ BÀI 1.3 ============ -->
+  <section class="card" id="bai13">
+    <h3><span class="badge">1.3</span>Liệt kê hoán vị bằng quay lui</h3>
+    <p class="lead">Thử – đánh dấu – đệ quy – gỡ đánh dấu · O(n·n!)</p>
+
+    <h4>Phát biểu bài toán</h4>
+    <p>Liệt kê tất cả hoán vị của tập {1, 2, …, n} theo thứ tự từ điển.</p>
+    <div class="callout">
+      <strong>Input:</strong> n (1 ≤ n ≤ 8) &nbsp;·&nbsp;
+      <strong>Output:</strong> mỗi dòng một hoán vị, cuối cùng in tổng số (bằng n!)
+    </div>
+
+    <h4>Cách giải — quay lui</h4>
+    <p>Xây dựng hoán vị <strong>từng vị trí</strong>. Tại vị trí i, thử lần lượt các giá trị v từ 1 đến n <strong>chưa được dùng</strong>:</p>
+    <ol>
+      <li>Gán <code>x[i] = v</code>, đánh dấu <code>dung[v] = true</code>.</li>
+      <li>Nếu i = n → in kết quả; ngược lại gọi đệ quy <code>Thu(i+1)</code>.</li>
+      <li><strong>Quay lui:</strong> gỡ đánh dấu <code>dung[v] = false</code> để thử giá trị khác.</li>
+    </ol>
+    <div class="callout pink">
+      <strong>Vì sao phải gỡ đánh dấu?</strong> Sau khi in xong một hoán vị và quay về vị trí trước, giá trị v phải được "giải phóng" để dùng lại ở nhánh khác. Nếu không gỡ, các hoán vị sau sẽ thiếu giá trị.
+    </div>
+
+    <h4>Minh họa n = 3 (chạy tay)</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th class="center">Bước</th><th class="center">i</th><th>x</th><th>Ghi chú</th></tr></thead>
+        <tbody>
+          <tr><td class="center">1</td><td class="center">1</td><td>[1]</td><td>chọn 1 cho vị trí 1</td></tr>
+          <tr><td class="center">2</td><td class="center">2</td><td>[1, 2]</td><td>1 đã dùng, chọn 2</td></tr>
+          <tr><td class="center">3</td><td class="center">3</td><td>[1, 2, 3]</td><td>đủ n phần tử, in "1 2 3"</td></tr>
+          <tr><td class="center">4</td><td class="center">2</td><td>[1, 3]</td><td><span class="hl-pink">quay lui</span>, thử v = 3</td></tr>
+          <tr><td class="center">5</td><td class="center">3</td><td>[1, 3, 2]</td><td>in "1 3 2"</td></tr>
+          <tr><td class="center">6</td><td class="center">1</td><td>[2]</td><td><span class="hl-pink">quay lui</span> về vị trí 1, thử v = 2</td></tr>
+          <tr><td class="center">7</td><td class="center">2</td><td>[2, 1]</td><td></td></tr>
+          <tr><td class="center">8</td><td class="center">3</td><td>[2, 1, 3]</td><td>in "2 1 3"</td></tr>
+          <tr><td class="center">9</td><td class="center">2</td><td>[2, 3]</td><td><span class="hl-pink">quay lui</span></td></tr>
+          <tr><td class="center">10</td><td class="center">3</td><td>[2, 3, 1]</td><td>in "2 3 1"</td></tr>
+          <tr><td class="center">11</td><td class="center">1</td><td>[3]</td><td><span class="hl-pink">quay lui</span> về vị trí 1, thử v = 3</td></tr>
+          <tr><td class="center">12</td><td class="center">2</td><td>[3, 1]</td><td></td></tr>
+          <tr><td class="center">13</td><td class="center">3</td><td>[3, 1, 2]</td><td>in "3 1 2"</td></tr>
+          <tr><td class="center">14</td><td class="center">2</td><td>[3, 2]</td><td><span class="hl-pink">quay lui</span></td></tr>
+          <tr><td class="center">15</td><td class="center">3</td><td>[3, 2, 1]</td><td>in "3 2 1", kết thúc</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Cài đặt (P1_Bai03.cpp)</h4>
+<pre><span class="kw">void</span> <span class="fn">thu</span>(<span class="kw">int</span> i) {
+    <span class="kw">for</span> (<span class="kw">int</span> v = <span class="nu">1</span>; v &lt;= n; v++) {
+        <span class="kw">if</span> (!dung[v]) {
+            x[i] = v;
+            dung[v] = <span class="kw">true</span>;
+            <span class="kw">if</span> (i == n) <span class="fn">inKetQua</span>();
+            <span class="kw">else</span> <span class="fn">thu</span>(i + <span class="nu">1</span>);
+            dung[v] = <span class="kw">false</span>;      <span class="cm">// quay lui</span>
+        }
+    }
+}</pre>
+
+    <h4>Độ phức tạp &amp; kết quả chạy thử</h4>
+    <p>Có n! hoán vị, mỗi hoán vị tốn O(n) để in → <strong>O(n·n!)</strong> thời gian; <strong>O(n)</strong> bộ nhớ.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Test</th><th class="center">n</th><th>Kết quả</th></tr></thead>
+        <tbody>
+          <tr><td>1 (biên)</td><td class="center">1</td><td>1; Tổng: 1</td></tr>
+          <tr><td>2</td><td class="center">2</td><td>1 2; 2 1; Tổng: 2</td></tr>
+          <tr><td>3</td><td class="center">3</td><td>6 hoán vị; Tổng: 6</td></tr>
+          <tr><td>4</td><td class="center">4</td><td>24 hoán vị; Tổng: 24</td></tr>
+          <tr><td>5</td><td class="center">8</td><td>Tổng: <span class="hl">40320</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ BÀI 1.4 ============ -->
+  <section class="card" id="bai14">
+    <h3><span class="badge">1.4</span>Khử đệ quy bằng ngăn xếp</h3>
+    <p class="lead">Thay lời gọi hàm bằng frame · O(2ⁿ) thời gian, O(n) bộ nhớ</p>
+
+    <h4>Phát biểu bài toán</h4>
+    <p>Cài đặt lại Tháp Hà Nội <strong>không dùng đệ quy</strong>, thay bằng một ngăn xếp tự cài để thay cho ngăn xếp gọi hàm của hệ thống. Kết quả phải <strong>giống hệt</strong> bản đệ quy.</p>
+    <div class="callout">
+      <strong>Input:</strong> n (0 ≤ n ≤ 20) &nbsp;·&nbsp;
+      <strong>Output:</strong> dãy bước chuyển + tổng số bước, giống mục 1.1
+    </div>
+
+    <h4>Cách giải — thay lời gọi bằng frame</h4>
+    <p>Mỗi lời gọi đệ quy được thay bằng một <strong>khung (frame)</strong> lưu trong ngăn xếp. Có 2 loại khung:</p>
+    <ul>
+      <li><strong>Khung S(n, a, b, c)</strong>: việc "giải bài toán n đĩa từ a sang c qua b".</li>
+      <li><strong>Khung M(d, a→c)</strong>: việc "chuyển đĩa d từ a sang c".</li>
+    </ul>
+    <p>Vòng lặp: lấy khung ở đỉnh ra.</p>
+    <ul>
+      <li>Nếu là <strong>M</strong> → in bước chuyển.</li>
+      <li>Nếu là <strong>S với n &gt; 0</strong> → đẩy vào <strong>3 khung theo thứ tự ngược</strong> để khung xử lý đầu tiên nằm trên đỉnh: đẩy <code>S(n−1, b, a, c)</code>, rồi <code>M(n, a→c)</code>, rồi <code>S(n−1, a, c, b)</code>.</li>
+      <li>Khung S với n = 0 bị <strong>bỏ qua</strong>. Ngăn xếp rỗng thì dừng.</li>
+    </ul>
+    <div class="callout green">
+      <strong>Vì sao đẩy 3 khung theo thứ tự ngược?</strong> Ngăn xếp là LIFO: khung đẩy <strong>sau cùng</strong> sẽ được lấy ra <strong>đầu tiên</strong>. Ta muốn xử lý theo thứ tự (1) S(n−1,a→b), (2) M(n,a→c), (3) S(n−1,b→c) — nên phải đẩy ngược: (3) trước, rồi (2), rồi (1) để (1) nằm trên đỉnh.
+    </div>
+
+    <h4>Minh họa n = 2 (chạy tay)</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Thao tác</th><th>Ngăn xếp sau thao tác</th><th>Output</th></tr></thead>
+        <tbody>
+          <tr><td>Khởi tạo</td><td>S(2,A,B,C)</td><td></td></tr>
+          <tr><td>Lấy S(2), đẩy 3 khung</td><td>S(1,B,A,C) · M(2,A→C) · S(1,A,C,B)</td><td></td></tr>
+          <tr><td>Lấy S(1,A,C,B), đẩy 3 khung</td><td>… · S(0,C,A,B) · M(1,A→B) · S(0,A,B,C)</td><td></td></tr>
+          <tr><td>Lấy S(0,A,B,C), bỏ qua</td><td>… · S(0,C,A,B) · M(1,A→B)</td><td></td></tr>
+          <tr><td>Lấy M(1,A→B), in</td><td>… · S(0,C,A,B)</td><td><span class="hl-green">Bước 1: đĩa 1 A→B</span></td></tr>
+          <tr><td>Lấy S(0,C,A,B), bỏ qua</td><td>S(1,B,A,C) · M(2,A→C)</td><td></td></tr>
+          <tr><td>Lấy M(2,A→C), in</td><td>S(1,B,A,C)</td><td><span class="hl-green">Bước 2: đĩa 2 A→C</span></td></tr>
+          <tr><td>Lấy S(1,B,A,C), đẩy 3 khung</td><td>S(0,A,B,C) · M(1,B→C) · S(0,B,C,A)</td><td></td></tr>
+          <tr><td>Lấy S(0,B,C,A), bỏ qua</td><td>S(0,A,B,C) · M(1,B→C)</td><td></td></tr>
+          <tr><td>Lấy M(1,B→C), in</td><td>S(0,A,B,C)</td><td><span class="hl-green">Bước 3: đĩa 1 B→C</span></td></tr>
+          <tr><td>Lấy S(0,A,B,C), bỏ qua</td><td>rỗng, dừng</td><td></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Cài đặt (P1_Bai04.cpp)</h4>
+<pre><span class="kw">struct</span> Frame {
+    <span class="kw">int</span> loai;      <span class="cm">// 0: S (giải bài toán), 1: M (chuyển đĩa)</span>
+    <span class="kw">int</span> n;         <span class="cm">// số đĩa (loại 0) hoặc số hiệu đĩa (loại 1)</span>
+    <span class="kw">char</span> a, b, c;  <span class="cm">// cọc nguồn, trung gian, đích</span>
+};
+
+<span class="kw">while</span> (top &gt;= <span class="nu">0</span>) {
+    Frame f = st[top--];
+    <span class="kw">if</span> (f.loai == <span class="nu">1</span>) {           <span class="cm">// khung M: in bước chuyển</span>
+        dem++;
+        cout &lt;&lt; <span class="st">"Buoc "</span> &lt;&lt; dem &lt;&lt; <span class="st">": chuyen dia "</span> &lt;&lt; f.n
+             &lt;&lt; <span class="st">" tu "</span> &lt;&lt; f.a &lt;&lt; <span class="st">" sang "</span> &lt;&lt; f.c &lt;&lt; endl;
+    } <span class="kw">else if</span> (f.n &gt; <span class="nu">0</span>) {     <span class="cm">// khung S: đẩy 3 khung ngược</span>
+        <span class="fn">push</span>({<span class="nu">0</span>, f.n - <span class="nu">1</span>, f.b, f.a, f.c});   <span class="cm">// làm sau cùng: B → C</span>
+        <span class="fn">push</span>({<span class="nu">1</span>, f.n, f.a, f.b, f.c});       <span class="cm">// chuyển đĩa n: A → C</span>
+        <span class="fn">push</span>({<span class="nu">0</span>, f.n - <span class="nu">1</span>, f.a, f.c, f.b});   <span class="cm">// làm đầu tiên: A → B</span>
+    }
+}</pre>
+
+    <h4>Độ phức tạp &amp; kết quả chạy thử</h4>
+    <p>Thời gian <strong>O(2ⁿ)</strong> như bản đệ quy; bộ nhớ <strong>O(n)</strong> vì số khung trong ngăn xếp tại mọi thời điểm không vượt quá khoảng 2n+1 (mảng 200 phần tử đủ cho n ≤ 20). <strong>Ưu điểm</strong>: kiểm soát được bộ nhớ, tránh tràn ngăn xếp hệ thống.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Test</th><th class="center">n</th><th>Kết quả</th><th class="center">Trùng bản đệ quy</th></tr></thead>
+        <tbody>
+          <tr><td>1 (biên)</td><td class="center">0</td><td>Tong so buoc: 0</td><td class="center hl-green">Có</td></tr>
+          <tr><td>2</td><td class="center">1</td><td>1 bước</td><td class="center hl-green">Có</td></tr>
+          <tr><td>3</td><td class="center">2</td><td>3 bước</td><td class="center hl-green">Có</td></tr>
+          <tr><td>4</td><td class="center">3</td><td>7 bước</td><td class="center hl-green">Có</td></tr>
+          <tr><td>5</td><td class="center">10</td><td>1023 bước</td><td class="center hl-green">Có</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ TỔNG KẾT ============ -->
+  <section class="card" id="tongket">
+    <h3><span class="badge">✓</span>Tổng kết tiến độ</h3>
+    <p class="lead">4/4 bài hoàn thành · 4 file mã nguồn · 4 kỹ thuật đệ quy</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Bài</th><th>Nội dung</th><th>Kỹ thuật</th><th>File</th></tr></thead>
+        <tbody>
+          <tr><td>1.1</td><td>Tháp Hà Nội</td><td>Đệ quy cơ bản</td><td><code>P1_Bai01.cpp</code></td></tr>
+          <tr><td>1.2</td><td>Tổ hợp C(n,k)</td><td>Ghi nhớ (memoization)</td><td><code>P1_Bai02.cpp</code></td></tr>
+          <tr><td>1.3</td><td>Hoán vị</td><td>Quay lui (backtracking)</td><td><code>P1_Bai03.cpp</code></td></tr>
+          <tr><td>1.4</td><td>Khử đệ quy Tháp Hà Nội</td><td>Ngăn xếp tự cài</td><td><code>P1_Bai04.cpp</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="timeline">
+      <div class="step"><h5>Đã hoàn thành</h5><p>Chương 1 — 4/4 bài, đủ 7 mục mỗi bài, 4 file mã nguồn.</p></div>
+      <div class="step"><h5>Tiếp theo</h5><p>Chương 2 — Các giải thuật sắp xếp (5 bài, 2.1–2.5).</p></div>
+      <div class="step"><h5>Dự kiến</h5><p>Chương 3 — Ngăn xếp và biểu thức (3 bài, 3.1–3.3).</p></div>
+    </div>
+
+    <div class="callout green" style="margin-top:20px">
+      Bốn bài bao quát <strong>4 kỹ thuật đệ quy quan trọng</strong>: đệ quy cơ bản, ghi nhớ khắc phục tính lặp, quay lui sinh kết quả, và khử đệ quy bằng ngăn xếp.
+    </div>
+  </section>
+
+  <!-- ============ CÁCH GIẢI CHI TIẾT ============ -->
+  <section class="card" id="cachgiai">
+    <h3><span class="badge">★</span>Cách giải chi tiết (để hiểu sâu)</h3>
+    <p class="lead">Giải thích sâu hơn — dùng khi trả lời câu hỏi hoặc cần nắm bản chất</p>
+
+    <h4>B.1. Tháp Hà Nội — vì sao T(n) = 2ⁿ − 1 là tối ưu?</h4>
+    <ul>
+      <li>Đĩa lớn nhất (đĩa n) buộc phải chuyển từ A sang C ít nhất 1 lần.</li>
+      <li>Trước khi chuyển nó, n−1 đĩa nhỏ phải nằm gọn trên B → tốn ít nhất T(n−1) bước.</li>
+      <li>Sau khi chuyển nó, n−1 đĩa phải từ B sang C → tốn ít nhất T(n−1) bước.</li>
+      <li>Vậy T(n) ≥ 2·T(n−1) + 1. Thuật toán đạt đúng cận này → tối ưu.</li>
+    </ul>
+    <p><strong>Cây gọi n = 3:</strong></p>
+<pre>HN(3,A,B,C)
+├── HN(2,A,C,B)
+│   ├── HN(1,A,B,C): đĩa1 A→C
+│   ├── đĩa2 A→B
+│   └── HN(1,C,A,B): đĩa1 C→B
+├── đĩa3 A→C
+└── HN(2,B,A,C)
+    ├── HN(1,B,C,A): đĩa1 B→A
+    ├── đĩa2 B→C
+    └── HN(1,A,B,C): đĩa1 A→C</pre>
+
+    <h4>B.2. Tổ hợp — trace C(5,2) bản ghi nhớ</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th class="center">Bước</th><th>Gọi</th><th>Kết quả</th></tr></thead>
+        <tbody>
+          <tr><td class="center">1</td><td>C(5,2)</td><td>chưa tính → gọi C(4,1), C(4,2)</td></tr>
+          <tr><td class="center">2</td><td>C(4,1)</td><td>chưa tính → gọi C(3,0)=1, C(3,1)</td></tr>
+          <tr><td class="center">3</td><td>C(3,1)</td><td>chưa tính → gọi C(2,0)=1, C(2,1)</td></tr>
+          <tr><td class="center">4</td><td>C(2,1)</td><td>chưa tính → gọi C(1,0)=1, C(1,1)=1 → <span class="hl">memo=2</span></td></tr>
+          <tr><td class="center">5</td><td>C(3,1)</td><td>= 1 + 2 = <span class="hl">3</span>, lưu memo</td></tr>
+          <tr><td class="center">6</td><td>C(4,1)</td><td>= 1 + 3 = <span class="hl">4</span>, lưu memo</td></tr>
+          <tr><td class="center">7</td><td>C(4,2)</td><td>gọi C(3,1) <span class="hl">đọc lại</span>=3, C(3,2) chưa tính → C(3,2)=<span class="hl">3</span>; C(4,2)=3+3=<span class="hl">6</span></td></tr>
+          <tr><td class="center">8</td><td>C(5,2)</td><td>= C(4,1)=4 + C(4,2)=6 = <span class="hl">10</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout">
+      <strong>Vì sao ghi nhớ chỉ tính 225 ô với n=30, k=15?</strong> Số ô không phải cơ sở = số cặp (i,j) với 1 ≤ j ≤ i−1, i ≤ 30, j ≤ 15 → đúng 225.
+    </div>
+
+    <h4>B.3. Hoán vị — cây quay lui n = 3</h4>
+<pre>Thu(1)
+├── v=1: [1]
+│   ├── v=2: [1,2] → v=3: [1,2,3] in
+│   └── v=3: [1,3] → v=2: [1,3,2] in
+├── v=2: [2]
+│   ├── v=1: [2,1] → v=3: [2,1,3] in
+│   └── v=3: [2,3] → v=1: [2,3,1] in
+└── v=3: [3]
+    ├── v=1: [3,1] → v=2: [3,1,2] in
+    └── v=2: [3,2] → v=1: [3,2,1] in</pre>
+    <p>Vòng lặp <code>v</code> tăng dần 1→n, đệ quy duyệt theo thứ tự → hoán vị sinh ra đúng <strong>thứ tự từ điển</strong>.</p>
+
+    <h4>B.4. Khử đệ quy — trace đầy đủ n = 2</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th class="center">Bước</th><th>Lấy ra</th><th>Hành động</th><th>Ngăn xếp còn lại</th></tr></thead>
+        <tbody>
+          <tr><td class="center">1</td><td>S(2,A,B,C)</td><td>đẩy S(1,B,A,C), M(2,A→C), S(1,A,C,B)</td><td>S(1,B,A,C)·M(2,A→C)·S(1,A,C,B)</td></tr>
+          <tr><td class="center">2</td><td>S(1,A,C,B)</td><td>đẩy S(0,C,A,B), M(1,A→B), S(0,A,B,C)</td><td>…·S(0,C,A,B)·M(1,A→B)·S(0,A,B,C)</td></tr>
+          <tr><td class="center">3</td><td>S(0,A,B,C)</td><td>bỏ qua</td><td>…·S(0,C,A,B)·M(1,A→B)</td></tr>
+          <tr><td class="center">4</td><td>M(1,A→B)</td><td>in Bước 1</td><td>…·S(0,C,A,B)</td></tr>
+          <tr><td class="center">5</td><td>S(0,C,A,B)</td><td>bỏ qua</td><td>S(1,B,A,C)·M(2,A→C)</td></tr>
+          <tr><td class="center">6</td><td>M(2,A→C)</td><td>in Bước 2</td><td>S(1,B,A,C)</td></tr>
+          <tr><td class="center">7</td><td>S(1,B,A,C)</td><td>đẩy 3 khung</td><td>S(0,A,B,C)·M(1,B→C)·S(0,B,C,A)</td></tr>
+          <tr><td class="center">8</td><td>S(0,B,C,A)</td><td>bỏ qua</td><td>S(0,A,B,C)·M(1,B→C)</td></tr>
+          <tr><td class="center">9</td><td>M(1,B→C)</td><td>in Bước 3</td><td>S(0,A,B,C)</td></tr>
+          <tr><td class="center">10</td><td>S(0,A,B,C)</td><td>bỏ qua</td><td>rỗng → dừng</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ Q&A ============ -->
+  <section class="card" id="qa">
+    <h3><span class="badge">?</span>Hỏi &amp; Đáp — Câu hỏi phản biện dự kiến</h3>
+    <p class="lead">Bấm vào từng câu để xem câu trả lời gợi ý</p>
+
+    <details open>
+      <summary>Q1: Vì sao T(n) = 2ⁿ − 1 là số bước nhỏ nhất?</summary>
+      <div class="answer">Vì đĩa lớn nhất buộc phải chuyển ít nhất 1 lần; trước đó phải đưa n−1 đĩa ra khỏi A, sau đó đưa n−1 đĩa về C → T(n) ≥ 2·T(n−1)+1. Thuật toán đạt đúng cận → tối ưu.</div>
+    </details>
+    <details>
+      <summary>Q2: Memoization khác gì quy hoạch động?</summary>
+      <div class="answer">Memoization là đệ quy <strong>top-down</strong> kèm cache — chỉ tính ô thực sự cần. Quy hoạch động là <strong>bottom-up</strong> — điền cả bảng từ nhỏ đến lớn. Cùng độ phức tạp nhưng memoization chỉ tính ô cần thiết.</div>
+    </details>
+    <details>
+      <summary>Q3: Vì sao phải "gỡ đánh dấu" ở bài hoán vị?</summary>
+      <div class="answer">Vì sau khi quay lui, giá trị đó phải được giải phóng để dùng lại ở nhánh khác. Nếu không gỡ, các hoán vị sau sẽ thiếu giá trị.</div>
+    </details>
+    <details>
+      <summary>Q4: Khử đệ quy có lợi gì khi độ phức tạp không đổi?</summary>
+      <div class="answer">Kiểm soát bộ nhớ, tránh tràn ngăn xếp hệ thống khi độ sâu lớn; đồng thời giúp hiểu cơ chế đệ quy bên dưới.</div>
+    </details>
+    <details>
+      <summary>Q5: Nếu n = 20 thì Tháp Hà Nội mất bao nhiêu bước?</summary>
+      <div class="answer">2²⁰ − 1 = <strong>1.048.575 bước</strong>. Chương trình vẫn chạy nhưng in rất nhiều dòng — đây là lý do giới hạn n ≤ 20.</div>
+    </details>
+    <details>
+      <summary>Q6: Vì sao đẩy 3 khung theo thứ tự ngược ở bài 1.4?</summary>
+      <div class="answer">Vì ngăn xếp là LIFO: khung đẩy sau cùng được lấy ra đầu tiên. Muốn xử lý S(n−1,a→b) trước thì phải đẩy nó sau cùng.</div>
+    </details>
+    <details>
+      <summary>Q7: Bản ghi nhớ bài 1.2 có thể bị tràn bộ nhớ không?</summary>
+      <div class="answer">Với n ≤ 30, mảng 31×31 là rất nhỏ (~7.5KB cho long long), không đáng kể. Nếu n lớn hơn nhiều thì cần cân nhắc.</div>
+    </details>
+    <details>
+      <summary>Q8: Bài 1.4 có thể áp dụng cho bài nào khác không?</summary>
+      <div class="answer">Có — mọi giải thuật đệ quy đều có thể khử bằng ngăn xếp tự cài theo cùng nguyên tắc: thay lời gọi bằng frame, đẩy ngược thứ tự.</div>
+    </details>
+  </section>
+
+  <!-- ============ MẸO ============ -->
+  <section class="card" id="meo">
+    <h3><span class="badge">✓</span>Mẹo thuyết trình</h3>
+    <ol>
+      <li><strong>Đừng đọc code</strong> — chỉ nói "hàm này làm gì". Nếu bị hỏi chi tiết mới mở code ra.</li>
+      <li><strong>Nhấn giọng vào con số</strong>: 2ⁿ−1, 310 triệu vs 225, 40320, 1023.</li>
+      <li><strong>Mỗi bài chốt 1 câu</strong>:
+        <ul>
+          <li>1.1 — "đệ quy cơ bản"</li>
+          <li>1.2 — "đổi bộ nhớ lấy thời gian"</li>
+          <li>1.3 — "thử – đánh dấu – gỡ dấu"</li>
+          <li>1.4 — "thay lời gọi bằng frame"</li>
+        </ul>
+      </li>
+      <li><strong>Bài 1.4 nếu bí</strong>: chỉ cần nói "kết quả giống hệt bản đệ quy, chỉ khác cách lưu trạng thái" — không cần giải thích bảng frame.</li>
+      <li><strong>Canh thời gian</strong>: nếu quá 12 phút, cắt bớt phần độ phức tạp của 1.2 và 1.4, giữ nguyên con số ấn tượng.</li>
+    </ol>
+  </section>
+
+</main>
+
+<button class="back-top" id="backTop" title="Lên đầu trang">↑</button>
+
+<script>
+  /* ===== Mobile menu ===== */
+  const sidebar = document.getElementById('sidebar');
+  const menuBtn = document.getElementById('menuBtn');
+  menuBtn.addEventListener('click', () => sidebar.classList.toggle('open'));
+  sidebar.querySelectorAll('nav a').forEach(a =>
+    a.addEventListener('click', () => sidebar.classList.remove('open'))
+  );
+
+  /* ===== Scroll spy ===== */
+  const links = [...document.querySelectorAll('#sidebar nav a')];
+  const sections = links.map(a => document.querySelector(a.getAttribute('href')));
+  const backTop = document.getElementById('backTop');
+
+  function onScroll(){
+    const y = window.scrollY + 140;
+    let idx = 0;
+    sections.forEach((sec, i) => { if (sec && sec.offsetTop <= y) idx = i; });
+    links.forEach((a, i) => a.classList.toggle('active', i === idx));
+
+    /* progress bar */
+    const docH = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = docH > 0 ? Math.min(100, Math.round(window.scrollY / docH * 100)) : 0;
+    document.getElementById('barFill').style.width = pct + '%';
+    document.getElementById('pct').textContent = pct + '%';
+
+    backTop.classList.toggle('show', window.scrollY > 400);
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+
+  backTop.addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
+
+  /* ===== In trang ===== */
+  document.addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'p') { /* để trình duyệt tự xử lý */ }
+  });
+</script>
+</body>
+</html>
