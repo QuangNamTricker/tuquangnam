@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Từ Quang Nam | Lập trình web & thiết kế website</title>
+<meta name="description" content="Portfolio của Từ Quang Nam, sinh viên Đại học Vinh. Thiết kế website theo yêu cầu, chuẩn SEO, chuẩn UX/UI.">
+<meta name="theme-color" content="#070816">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+<style>
+:root{--bg:#070816;--panel:#0e1030;--line:rgba(160,175,255,.14);--tx:#eef0ff;--mut:#9aa0c8;--cy:#35e6ff;--pk:#ff4fa3;--vi:#8b6bff;--font:'Sora',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{background:var(--bg);color:var(--tx);font:400 16px/1.75 var(--font);overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--cy);outline-offset:3px;border-radius:6px}
+#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0}
+#bar{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--cy),var(--vi),var(--pk));z-index:200}
+#glow{position:fixed;width:420px;height:420px;margin:-210px 0 0 -210px;border-radius:50%;background:radial-gradient(circle,rgba(139,107,255,.16),transparent 65%);pointer-events:none;z-index:1;transition:opacity .3s}
+#boot{position:fixed;inset:0;background:var(--bg);z-index:999;display:grid;place-items:center;font:600 14px var(--mono);color:var(--cy);transition:opacity .7s,visibility .7s}
+#boot.off{opacity:0;visibility:hidden}
+#boot span::after{content:"▌";animation:bl .7s steps(1) infinite}
+@keyframes bl{50%{opacity:0}}
+nav{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:100;display:flex;align-items:center;gap:4px;padding:6px;border:1px solid var(--line);border-radius:999px;background:rgba(10,11,32,.72);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+nav a{padding:8px 16px;border-radius:999px;font-size:14px;color:var(--mut);transition:.25s}
+nav a:hover,nav a.on{color:#fff;background:rgba(139,107,255,.25)}
+main,footer{position:relative;z-index:2}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+section{padding:110px 0 30px}
+h2{font-size:clamp(30px,5vw,48px);font-weight:800;letter-spacing:-.03em;line-height:1.15;margin-bottom:14px}
+.lead{color:var(--mut);max-width:60ch}
+/* hero */
+#home{min-height:100vh;display:flex;align-items:center;padding:110px 0 60px}
+.hero{display:grid;grid-template-columns:1.2fr .8fr;gap:48px;align-items:center}
+.hi{font:400 15px var(--mono);color:var(--cy);margin-bottom:14px}
+h1{font-size:clamp(46px,9vw,104px);font-weight:800;line-height:.98;letter-spacing:-.05em}
+h1 .ch{display:inline-block;transition:transform .25s cubic-bezier(.3,1.6,.5,1),color .25s}
+h1 .ch:hover{transform:translateY(-12px) rotate(-6deg);color:var(--cy)}
+h1 .l2{background:linear-gradient(100deg,var(--cy),var(--vi) 55%,var(--pk));-webkit-background-clip:text;background-clip:text;color:transparent}
+.role{margin:22px 0 10px;font-size:clamp(18px,2.6vw,24px);font-weight:600;min-height:1.6em}
+.role b{color:var(--pk);font-weight:600}
+.cur{display:inline-block;width:2px;height:1em;background:var(--cy);margin-left:3px;vertical-align:-.12em;animation:bl .8s steps(1) infinite}
+.cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:13px 24px;border-radius:14px;font-weight:600;font-size:15px;border:1px solid var(--line);cursor:pointer;font-family:inherit;color:var(--tx);background:transparent;transition:transform .25s,box-shadow .25s,background .25s}
+.btn:hover{transform:translateY(-3px)}
+.btn.p{background:linear-gradient(120deg,var(--cy),var(--vi));color:#06061a;border:0;box-shadow:0 10px 36px rgba(53,230,255,.22)}
+.btn.p:hover{box-shadow:0 14px 44px rgba(139,107,255,.4)}
+.btn.g:hover{background:rgba(255,255,255,.06)}
+.term{background:rgba(8,9,28,.82);border:1px solid var(--line);border-radius:18px;box-shadow:0 30px 80px rgba(0,0,0,.55),0 0 60px rgba(139,107,255,.12);overflow:hidden;transform-style:preserve-3d;transition:transform .15s ease-out}
+.term .top{display:flex;align-items:center;gap:7px;padding:12px 16px;border-bottom:1px solid var(--line)}
+.term .top i{width:11px;height:11px;border-radius:50%;background:#ff5f57}
+.term .top i:nth-child(2){background:#febc2e}.term .top i:nth-child(3){background:#28c840}
+.term .top em{margin-left:auto;font:400 12px var(--mono);color:var(--mut);font-style:normal}
+.avatar{display:grid;place-items:center;padding:26px 0 6px}
+.ring{position:relative;width:132px;height:132px;border-radius:50%;padding:4px;background:conic-gradient(var(--cy),var(--vi),var(--pk),var(--cy));animation:rot 6s linear infinite}
+.ring>div{width:100%;height:100%;border-radius:50%;background:var(--panel);display:grid;place-items:center;overflow:hidden;animation:rot 6s linear infinite reverse;font:800 38px var(--font);color:var(--cy)}
+.ring img{width:100%;height:100%;object-fit:cover}
+@keyframes rot{to{transform:rotate(360deg)}}
+pre{padding:12px 22px 24px;font:400 13px/1.9 var(--mono);color:#cfd3ff;white-space:pre-wrap;min-height:210px}
+pre .k{color:var(--vi)}pre .s{color:var(--cy)}pre .n{color:var(--pk)}
+.scroll{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);color:var(--mut);font-size:13px;display:flex;flex-direction:column;align-items:center;gap:8px}
+.scroll i{animation:dn 1.6s ease-in-out infinite}
+@keyframes dn{50%{transform:translateY(7px)}}
+/* about */
+.about{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;margin-top:34px}
+.about p{color:var(--mut);margin-bottom:14px}.about p strong{color:var(--tx);font-weight:600}
+.facts{border-top:1px solid var(--line)}
+.facts div{display:flex;justify-content:space-between;gap:20px;padding:15px 0;border-bottom:1px solid var(--line);font-size:15px}
+.facts span{color:var(--mut)}.facts b{font-weight:600;text-align:right}
+/* skills */
+.skills{margin-top:34px;display:grid;grid-template-columns:1fr 1fr;gap:20px 56px}
+.sk .row{display:flex;justify-content:space-between;font-size:15px;font-weight:600;margin-bottom:9px}
+.sk .row span{font:400 13px var(--mono);color:var(--cy)}
+.track{height:6px;background:rgba(255,255,255,.07);border-radius:9px;overflow:hidden}
+.fill{height:100%;width:0;border-radius:9px;background:linear-gradient(90deg,var(--cy),var(--vi),var(--pk));transition:width 1.5s cubic-bezier(.2,.8,.2,1)}
+.tags{display:flex;flex-wrap:wrap;gap:10px;margin-top:34px}
+.tags span{padding:8px 16px;border:1px solid var(--line);border-radius:999px;font:400 13px var(--mono);color:var(--mut);transition:.25s}
+.tags span:hover{color:var(--cy);border-color:var(--cy);transform:translateY(-2px)}
+/* projects */
+.list{margin-top:34px;border-top:1px solid var(--line)}
+.proj{position:relative;display:grid;grid-template-columns:200px 1fr auto;gap:28px;align-items:center;padding:30px 14px;border-bottom:1px solid var(--line);transition:background .3s,padding .3s}
+.proj::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(var(--cy),var(--pk));transform:scaleY(0);transition:transform .3s}
+.proj:hover{background:rgba(139,107,255,.07);padding-left:26px}
+.proj:hover::before{transform:scaleY(1)}
+.proj h3{font-size:22px;font-weight:600;line-height:1.3}
+.proj .t{font:400 12.5px var(--mono);color:var(--cy)}
+.proj p{color:var(--mut);font-size:15px}
+.proj .go{width:46px;height:46px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;transition:.3s}
+.proj:hover .go{background:var(--cy);color:#06061a;transform:rotate(-45deg)}
+/* services */
+.svc{margin-top:34px;display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.card{padding:28px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(160deg,rgba(24,26,70,.6),rgba(10,11,32,.6));transition:transform .3s,border-color .3s}
+.card:hover{transform:translateY(-6px);border-color:rgba(53,230,255,.45)}
+.card i{font-size:22px;color:var(--cy);margin-bottom:16px}
+.card:nth-child(2) i{color:var(--vi)}.card:nth-child(3) i{color:var(--pk)}
+.card h3{font-size:18px;margin-bottom:8px}.card p{color:var(--mut);font-size:14.5px}
+/* contact */
+.contact{margin-top:34px;display:grid;grid-template-columns:1fr 1fr;gap:40px}
+form{display:grid;gap:14px}
+label{display:grid;gap:7px;font-size:14px;font-weight:600;color:var(--mut)}
+input,textarea{font:inherit;font-size:15px;color:var(--tx);background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:12px;padding:13px 15px;outline:0;transition:.25s;width:100%}
+input:focus,textarea:focus{border-color:var(--cy);box-shadow:0 0 0 3px rgba(53,230,255,.12)}
+textarea{min-height:130px;resize:vertical}
+.note{font-size:13px;color:var(--mut);min-height:20px}
+.links{display:grid;gap:12px;align-content:start}
+.links a{display:flex;align-items:center;gap:16px;padding:15px 18px;border:1px solid var(--line);border-radius:16px;transition:.25s;cursor:pointer;background:transparent;color:inherit;font:inherit;text-align:left;width:100%}
+.links a:hover{transform:translateX(6px);border-color:var(--cy);background:rgba(53,230,255,.05)}
+.links i{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:rgba(139,107,255,.18);color:var(--cy);font-size:18px;flex:none}
+.links b{display:block;font-weight:600;font-size:15px;line-height:1.3}
+.links small{color:var(--mut);font-size:13px}
+footer{margin-top:90px;padding:30px 0 44px;border-top:1px solid var(--line);color:var(--mut);font-size:14px}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+#toast{position:fixed;bottom:30px;left:50%;transform:translate(-50%,30px);padding:12px 24px;border-radius:14px;background:var(--panel);border:1px solid var(--cy);font-size:14px;opacity:0;pointer-events:none;transition:.35s;z-index:300}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+.rv{opacity:0;transform:translateY(26px);transition:opacity .8s,transform .8s}
+.rv.in{opacity:1;transform:none}
+@media(max-width:860px){.hero,.about,.contact{grid-template-columns:1fr}.skills,.svc{grid-template-columns:1fr}.proj{grid-template-columns:1fr auto}.proj .t{grid-column:1/-1}.scroll{display:none}nav a{padding:8px 11px;font-size:13px}}
+@media(max-width:480px){nav a.hm{display:none}#glow{display:none}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:.01ms!important}html{scroll-behavior:auto}.rv{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div id="boot"><span id="bt"></span></div>
+<div id="bar"></div><div id="glow"></div><canvas id="fx" aria-hidden="true"></canvas>
+
+<nav aria-label="Điều hướng chính">
+  <a href="#home" class="on hm">Trang chủ</a><a href="#about">Giới thiệu</a><a href="#skills">Kỹ năng</a><a href="#projects">Dự án</a><a href="#contact">Liên hệ</a>
+</nav>
+
+<main>
+<section id="home"><div class="wrap hero">
+  <div>
+    <p class="hi" id="greet">Xin chào, mình là</p>
+    <h1 aria-label="Từ Quang Nam"><span id="n1"></span><br><span id="n2" class="l2"></span></h1>
+    <p class="role"><span id="typed"></span><span class="cur"></span></p>
+    <p class="lead">Sinh viên năm 2 Đại học Vinh. Mình xây website nhanh, gọn, dễ dùng và thân thiện với Google, rồi học thêm một chút mỗi ngày.</p>
+    <div class="cta">
+      <a class="btn p" href="#projects"><i class="fa-solid fa-rocket"></i> Xem dự án</a>
+      <a class="btn g" href="#contact"><i class="fa-solid fa-paper-plane"></i> Nhắn cho mình</a>
+      <a class="btn g" href="https://tuquangnam.pages.dev/chucnang/" target="_blank" rel="noopener"><i class="fa-solid fa-cube"></i> Công cụ của mình</a>
+    </div>
+  </div>
+  <div class="term" id="term">
+    <div class="top"><i></i><i></i><i></i><em>nam.config.json</em></div>
+    <div class="avatar"><div class="ring"><div><img src="img/avt/avt_tuquangnam.jpg" alt="Ảnh Từ Quang Nam" onerror="this.remove();this.parentNode.textContent='NQ'"></div></div></div>
+    <pre id="code" aria-label="Thông tin tóm tắt"></pre>
+  </div>
+  <div class="scroll"><span>Cuộn xuống</span><i class="fa-solid fa-chevron-down"></i></div>
+</div></section>
+
+<section id="about"><div class="wrap rv">
+  <h2>Học để làm ra thứ dùng được</h2>
+  <p class="lead">Mình thích biến một ý tưởng thành trang web chạy mượt trên điện thoại lẫn máy tính.</p>
+  <div class="about">
+    <div>
+      <p>Mình là <strong>Từ Quang Nam</strong>, sinh viên năm 2 tại <strong>Đại học Vinh</strong>. Mình bắt đầu từ HTML, CSS, JavaScript, sau đó mở rộng sang Python và làm việc nhóm bằng Git, GitHub.</p>
+      <p>Mỗi dự án nhỏ mình làm, từ trang cá nhân đến extension trình duyệt và website WordPress, đều dạy mình thêm một điều về cách người dùng thật sự dùng sản phẩm.</p>
+    </div>
+    <div class="facts">
+      <div><span>Trường</span><b>Đại học Vinh, năm 2</b></div>
+      <div><span>Mảng chính</span><b>Lập trình web</b></div>
+      <div><span>Công cụ</span><b>HTML, CSS, JS, Python, Git</b></div>
+      <div><span>Liên hệ nhanh</span><b>Zalo, Email, Facebook</b></div>
+    </div>
+  </div>
+</div></section>
+
+<section id="skills"><div class="wrap rv">
+  <h2>Mình dùng những gì</h2>
+  <p class="lead">Mức độ do mình tự đánh giá, và con số sẽ tăng theo từng dự án.</p>
+  <div class="skills" id="skillBox"></div>
+  <div class="tags"><span>HTML5</span><span>CSS3</span><span>JavaScript</span><span>Python</span><span>Git</span><span>GitHub</span><span>WordPress</span><span>Responsive</span><span>SEO cơ bản</span></div>
+</div></section>
+
+<section id="projects"><div class="wrap rv">
+  <h2>Những thứ mình đã làm</h2>
+  <p class="lead">Ba dự án, mỗi cái giải quyết một vấn đề cụ thể.</p>
+  <div class="list">
+    <a class="proj" href="https://github.com/tuquangnam07" target="_blank" rel="noopener">
+      <span class="t">HTML, CSS, JavaScript</span><div><h3>Website portfolio cá nhân</h3><p>Trang giới thiệu bản thân, kỹ năng và cách liên hệ, tối ưu cho cả điện thoại.</p></div><span class="go"><i class="fa-solid fa-arrow-right"></i></span>
+    </a>
+    <a class="proj" href="https://github.com/tuquangnam07" target="_blank" rel="noopener">
+      <span class="t">JavaScript, Extension</span><div><h3>Garena Auto Register</h3><p>Extension tự động hóa việc tạo tài khoản Garena, chạy trên Chrome, Cốc Cốc và Firefox.</p></div><span class="go"><i class="fa-solid fa-arrow-right"></i></span>
+    </a>
+    <a class="proj" href="https://github.com/tuquangnam07" target="_blank" rel="noopener">
+      <span class="t">WordPress</span><div><h3>Website Build PC</h3><p>Website chọn và tư vấn cấu hình máy tính, dựng bằng WordPress.</p></div><span class="go"><i class="fa-solid fa-arrow-right"></i></span>
+    </a>
+  </div>
+  <div class="svc">
+    <div class="card"><i class="fa-solid fa-pen-ruler"></i><h3>Thiết kế theo yêu cầu</h3><p>Giao diện dựng riêng theo thương hiệu của bạn, không dùng mẫu có sẵn.</p></div>
+    <div class="card"><i class="fa-solid fa-magnifying-glass-chart"></i><h3>Chuẩn SEO, chuẩn UX/UI</h3><p>Cấu trúc rõ ràng, tải nhanh, dễ tìm thấy trên Google và dễ dùng trên mọi màn hình.</p></div>
+    <div class="card"><i class="fa-solid fa-shield-heart"></i><h3>Bảo hành dài hạn</h3><p>Có lỗi thì sửa, cần thêm thì bàn. Mình ưu tiên làm việc lâu dài và đáng tin.</p></div>
+  </div>
+</div></section>
+
+<section id="contact"><div class="wrap rv">
+  <h2>Cùng làm một thứ hay ho nhé</h2>
+  <p class="lead">Gửi tin nhắn, mình sẽ phản hồi sớm nhất có thể.</p>
+  <div class="contact">
+    <form id="cf">
+      <label>Tên của bạn<input id="cn" maxlength="80" required autocomplete="name" placeholder="Bạn tên là gì?"></label>
+      <label>Email<input id="ce" type="email" maxlength="140" required autocomplete="email" placeholder="email@example.com"></label>
+      <label>Nội dung<textarea id="cm" maxlength="2000" required placeholder="Bạn cần làm website gì?"></textarea></label>
+      <button class="btn p" type="submit"><i class="fa-solid fa-paper-plane"></i> Gửi tin nhắn</button>
+      <p class="note" id="note" role="status" aria-live="polite">Nút gửi sẽ mở ứng dụng email của bạn với nội dung đã điền sẵn.</p>
+    </form>
+    <div class="links">
+      <a href="mailto:tuquangnamht2007@gmail.com"><i class="fa-solid fa-envelope"></i><span><b>Email</b><small>tuquangnamht2007@gmail.com</small></span></a>
+      <button class="links-btn" id="zalo" type="button" style="all:unset;display:block"><a style="pointer-events:none"><i class="fa-solid fa-phone"></i><span><b>Zalo</b><small>Bấm để sao chép số điện thoại</small></span></a></button>
+      <a href="https://facebook.com/tuquangnam07" target="_blank" rel="noopener"><i class="fa-brands fa-facebook-f"></i><span><b>Facebook</b><small>Từ Quang Nam</small></span></a>
+      <a href="https://t.me/tuquangnam" target="_blank" rel="noopener"><i class="fa-brands fa-telegram"></i><span><b>Telegram</b><small>@tuquangnam</small></span></a>
+      <a href="https://github.com/tuquangnam07" target="_blank" rel="noopener"><i class="fa-brands fa-github"></i><span><b>GitHub</b><small>tuquangnam07</small></span></a>
+      <a href="https://tiktok.com/@tuquangnam07" target="_blank" rel="noopener"><i class="fa-brands fa-tiktok"></i><span><b>TikTok</b><small>@tuquangnam07</small></span></a>
+    </div>
+  </div>
+</div></section>
+</main>
+
+<footer><div class="wrap"><span>© <span id="yr"></span> Từ Quang Nam. Đã đăng ký bản quyền.</span><a href="#home">Lên đầu trang <i class="fa-solid fa-arrow-up"></i></a></div></footer>
+<div id="toast" role="status"></div>
+
+<script>
+const $=s=>document.querySelector(s),RM=matchMedia('(prefers-reduced-motion:reduce)').matches;
+/* Chỉnh thông tin ở đây */
+const SKILLS=[['HTML & CSS',92],['JavaScript',80],['Python',68],['Git & GitHub',72],['WordPress',70],['UI/UX & Responsive',82]];
+const ROLES=['Lập trình web','Thiết kế website chuẩn SEO','Thiết kế giao diện UX/UI'];
+const ZALO='0888385536';
+
+$('#yr').textContent=new Date().getFullYear();
+const h=new Date().getHours();
+$('#greet').textContent=(h<5?'Khuya rồi mà bạn vẫn ghé, ':h<12?'Chào buổi sáng, ':h<18?'Chào buổi chiều, ':'Chào buổi tối, ')+'mình là';
+
+/* Mở đầu */
+(function(){const t='> khởi động portfolio...',el=$('#bt');let i=0;
+const go=()=>{el.textContent=t.slice(0,++i);i<t.length?setTimeout(go,RM?0:38):setTimeout(()=>$('#boot').classList.add('off'),RM?0:350)};go();})();
+
+/* Tên: từng chữ nhảy khi rê chuột */
+function spell(id,str){$(id).innerHTML=[...str].map(c=>c===' '?' ':`<span class="ch">${c}</span>`).join('')}
+spell('#n1','Từ Quang');spell('#n2','Nam.');
+
+/* Gõ chữ */
+(function(){let r=0,c=0,d=false;const el=$('#typed');
+if(RM){el.textContent=ROLES[0];return}
+(function tick(){const w=ROLES[r];el.textContent=w.slice(0,c+=d?-1:1);let t=d?35:75;
+if(!d&&c===w.length){d=true;t=1400}else if(d&&c===0){d=false;r=(r+1)%ROLES.length;t=350}setTimeout(tick,t)})();})();
+
+/* Bảng thông tin dạng code */
+(function(){const L=['<span class="k">const</span> nam = {','  name: <span class="s">"Từ Quang Nam"</span>,','  school: <span class="s">"Đại học Vinh"</span>,','  year: <span class="n">2</span>,','  stack: [<span class="s">"HTML"</span>, <span class="s">"CSS"</span>, <span class="s">"JS"</span>, <span class="s">"Python"</span>],','  openToWork: <span class="n">true</span>','};'];
+const el=$('#code');if(RM){el.innerHTML=L.join('\n');return}
+let i=0,out='';(function nx(){if(i>=L.length)return;out+=L[i++]+'\n';el.innerHTML=out;setTimeout(nx,380)})();})();
+
+/* Kỹ năng */
+$('#skillBox').innerHTML=SKILLS.map(([n,v])=>`<div class="sk"><div class="row">${n}<span>${v}%</span></div><div class="track"><div class="fill" data-w="${v}"></div></div></div>`).join('');
+
+/* Hiện dần khi cuộn */
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;e.target.classList.add('in');
+e.target.querySelectorAll('.fill').forEach(f=>f.style.width=f.dataset.w+'%');io.unobserve(e.target)}),{threshold:.12});
+document.querySelectorAll('.rv').forEach(e=>io.observe(e));
+
+/* Thanh tiến độ + menu theo vị trí */
+const links=[...document.querySelectorAll('nav a')],secs=links.map(a=>$(a.getAttribute('href')));
+addEventListener('scroll',()=>{const m=document.documentElement.scrollHeight-innerHeight;$('#bar').style.width=(scrollY/m*100)+'%';
+let cur=0;secs.forEach((s,i)=>{if(s.getBoundingClientRect().top<innerHeight*.4)cur=i});links.forEach((a,i)=>a.classList.toggle('on',i===cur))},{passive:true});
+
+/* Ánh sáng theo chuột + nghiêng 3D */
+const glow=$('#glow'),term=$('#term');
+addEventListener('pointermove',e=>{glow.style.transform=`translate(${e.clientX}px,${e.clientY}px)`;});
+if(!RM&&matchMedia('(hover:hover)').matches){
+term.addEventListener('pointermove',e=>{const r=term.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;
+term.style.transform=`perspective(900px) rotateX(${-y*10}deg) rotateY(${x*12}deg)`});
+term.addEventListener('pointerleave',()=>term.style.transform='')}
+
+/* Nền chòm sao: các điểm nối nhau và bị chuột kéo */
+(function(){const cv=$('#fx'),x=cv.getContext('2d');let W,H,P=[],m={x:-999,y:-999};
+const mk=()=>{const d=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;cv.width=W*d;cv.height=H*d;x.setTransform(d,0,0,d,0,0);
+P=Array.from({length:Math.min(110,Math.floor(W*H/14000))},()=>({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.35,vy:(Math.random()-.5)*.35,c:['53,230,255','139,107,255','255,79,163'][Math.random()*3|0]}))};
+mk();addEventListener('resize',mk);addEventListener('pointermove',e=>{m.x=e.clientX;m.y=e.clientY});
+function f(){x.clearRect(0,0,W,H);
+for(const p of P){if(!RM){p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1;
+const dx=m.x-p.x,dy=m.y-p.y,d=Math.hypot(dx,dy);if(d<170){p.x+=dx/d*.7;p.y+=dy/d*.7}}
+x.fillStyle=`rgba(${p.c},.85)`;x.beginPath();x.arc(p.x,p.y,1.6,0,6.3);x.fill()}
+for(let i=0;i<P.length;i++)for(let j=i+1;j<P.length;j++){const a=P[i],b=P[j],d=Math.hypot(a.x-b.x,a.y-b.y);
+if(d<120){x.strokeStyle=`rgba(${a.c},${(1-d/120)*.28})`;x.lineWidth=1;x.beginPath();x.moveTo(a.x,a.y);x.lineTo(b.x,b.y);x.stroke()}}
+if(!RM)requestAnimationFrame(f)}
+f()})();
+
+/* Thông báo nhỏ */
+function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),2600)}
+
+/* Sao chép Zalo */
+$('#zalo').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(ZALO)}catch(_){const t=document.createElement('textarea');t.value=ZALO;document.body.append(t);t.select();document.execCommand('copy');t.remove()}toast('Đã sao chép số Zalo: '+ZALO)});
+
+/* Form: mở ứng dụng email */
+$('#cf').addEventListener('submit',e=>{e.preventDefault();
+const n=$('#cn').value.trim(),m=$('#ce').value.trim(),c=$('#cm').value.trim();
+if(!n||!m||!c){$('#note').textContent='Vui lòng điền đủ tên, email và nội dung.';return}
+$('#note').textContent='Đang mở ứng dụng email. Bạn kiểm tra rồi bấm Gửi nhé.';
+location.href='mailto:tuquangnamht2007@gmail.com?subject='+encodeURIComponent('Liên hệ từ portfolio · '+n)+'&body='+encodeURIComponent('Tên: '+n+'\nEmail: '+m+'\n\n'+c)});
+</script>
+</body>
+</html>
